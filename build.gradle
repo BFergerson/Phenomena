@@ -9,26 +9,16 @@ apply plugin: 'groovy'
 
 repositories {
     mavenCentral()
-    maven {
-        name "soot-snapshot"
-        url "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot"
-    }
-    maven {
-        name "soot-release"
-        url "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release"
-    }
     maven { url 'https://jitpack.io' }
 }
 
 dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.12'
-
     implementation 'org.codehaus.groovy:groovy-all:2.3.11'
     implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.6.13'
     implementation group: 'commons-io', name: 'commons-io', version: '2.5'
     implementation group: 'org.jooq', name: 'joor-java-8', version: '0.9.7'
     implementation group: 'io.vertx', name: 'vertx-core', version: '3.5.0'
-    implementation group: 'ca.mcgill.sable', name: 'soot', version: '3.1.0-SNAPSHOT'
     implementation group: 'com.beust', name: 'jcommander', version: '1.72'
     implementation group: 'ai.grakn', name: 'grakn-core', version: '1.4.2'
     implementation group: 'ai.grakn', name: 'grakn-graql', version: '1.4.2'
