@@ -1,0 +1,10 @@
+define
+
+##########---------- Relationships ----------##########
+method_call sub relationship
+    relates has_method_call, relates is_method_call;
+has_method_call sub role;
+is_method_call sub role;
+
+MethodDeclaration plays has_method_call;
+MethodCallExpr plays is_method_call;

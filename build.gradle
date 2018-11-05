@@ -1,0 +1,61 @@
+plugins {
+    id "com.avast.gradle.docker-compose" version "0.6.6"
+}
+
+group 'com.codebrig.phenomena'
+version '0.1'
+
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+    maven {
+        name "soot-snapshot"
+        url "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot"
+    }
+    maven {
+        name "soot-release"
+        url "https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release"
+    }
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
+
+    implementation 'org.codehaus.groovy:groovy-all:2.3.11'
+    implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.6.13'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.5'
+    implementation group: 'org.jooq', name: 'joor-java-8', version: '0.9.7'
+    implementation group: 'io.vertx', name: 'vertx-core', version: '3.5.0'
+    implementation group: 'ca.mcgill.sable', name: 'soot', version: '3.1.0-SNAPSHOT'
+    implementation group: 'com.beust', name: 'jcommander', version: '1.72'
+    implementation group: 'ai.grakn', name: 'grakn-core', version: '1.4.2'
+    implementation group: 'ai.grakn', name: 'grakn-graql', version: '1.4.2'
+    implementation group: 'ai.grakn', name: 'grakn-factory', version: '1.4.2'
+    implementation group: 'ai.grakn', name: 'grakn-kb', version: '1.4.2'
+    implementation group: 'ai.grakn', name: 'client-java', version: '1.4.2'
+    implementation group: 'ai.grakn', name: 'migration-json', version: '1.4.2'
+    implementation 'org.bblfsh:bblfsh-client:1.10.1'
+    implementation 'com.github.codebrig:omnisrc:fea09feaaf'
+}
+
+dockerCompose {
+    useComposeFiles = ['./docker-compose.yml']
+    dockerComposeWorkingDirectory = './docker/'
+    captureContainersOutput = true
+}
+
+task createProperties(dependsOn: processResources) {
+    doLast {
+        new File("$buildDir/resources/main/phenomena_build.properties").withWriter { w ->
+            Properties p = new Properties()
+            p['version'] = project.version.toString()
+            p.store w, null
+        }
+    }
+}
+
+classes {
+    dependsOn createProperties
+}
