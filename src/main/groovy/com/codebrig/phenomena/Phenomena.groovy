@@ -30,7 +30,7 @@ class Phenomena {
     private static ResourceBundle buildBundle = ResourceBundle.getBundle("phenomena_build")
     public static final String PHENOMENA_VERSION = buildBundle.getString("version")
     private List<String> scanPath
-    private List<String> activeObservers = ["structure"] as List
+    private List<String> activeObservers = ["structure"]
     private String graknHost = "localhost"
     private int graknPort = 48555
     private String graknKeyspace = "grakn"
