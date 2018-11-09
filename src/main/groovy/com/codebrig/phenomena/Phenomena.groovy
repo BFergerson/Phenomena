@@ -7,14 +7,11 @@ import ai.grakn.util.SimpleURI
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.CodeObserverVisitor
-import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.ParsedSourceFile
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import gopkg.in.bblfsh.sdk.v1.protocol.generated.Encoding
 import gopkg.in.bblfsh.sdk.v1.protocol.generated.ParseResponse
-import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
 import org.bblfsh.client.BblfshClient
-import scala.collection.JavaConverters
 
 import static groovy.io.FileType.FILES
 
@@ -41,9 +38,15 @@ class Phenomena {
     private Grakn.Session session
 
     void init() {
+        init(new CodeStructureObserver())
+    }
+
+    void init(CodeObserver... codeObservers) {
         println "Initializing Phenomena (ver.$PHENOMENA_VERSION)"
         visitor = new CodeObserverVisitor(Keyspace.of(graknKeyspace))
-        visitor.addObserver(new CodeStructureObserver())
+        codeObservers.each {
+            visitor.addObserver(it)
+        }
         connectToBabelfish()
         connectToGrakn()
     }
@@ -63,19 +66,22 @@ class Phenomena {
     }
 
     void setupOntology(CodeObserver... codeObservers) {
+        def stringBuilder = new StringBuilder()
+        codeObservers.each {
+            stringBuilder.append(it.getSchema().trim()).append(" ")
+        }
+        setupOntology(stringBuilder.toString())
+    }
+
+    void setupOntology(String schemaDefinition) {
         if (session == null) {
             throw new IllegalStateException("Phenomena must be connected to Grakn before setting up the ontology")
         }
 
         println "Setting up ontology"
-        def stringBuilder = new StringBuilder()
-        codeObservers.each {
-            stringBuilder.append(it.getSchema().trim()).append(" ")
-        }
-
         def tx = session.transaction(GraknTxType.WRITE)
         def graql = tx.graql()
-        def query = graql.parse(stringBuilder.toString().replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", ""))
+        def query = graql.parse(schemaDefinition.replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", ""))
         query.execute()
         tx.commit()
     }
@@ -88,7 +94,7 @@ class Phenomena {
         println "Processing scan path"
         def rtnList = new ArrayList<ParsedSourceFile>()
         sourceFilesInScanPath.each {
-            rtnList.add(processSourceFile(it, SourceLanguage.getSourceLangauge(it)))
+            rtnList.add(processSourceFile(it, SourceLanguage.getSourceLanguage(it)))
 
         }
         return rtnList
@@ -110,37 +116,16 @@ class Phenomena {
 
         def resp = parseSourceFile(sourceFile, language)
         println "Saving $language file: " + sourceFile
-        ContextualNode rootNode
 
         def innerTx = session.transaction(GraknTxType.WRITE)
-        asJavaIterator(BblfshClient.iterator(resp.uast, BblfshClient.PostOrder())).each {
-            if (it != null) {
-                visitor.visit(rootNode = ContextualNode.getContextualNode(language, it), innerTx)
-            }
-        }
+        visitor.visit(language, resp.uast, innerTx)
         innerTx.commit()
 
         def parsedFile = new ParsedSourceFile()
-        parsedFile.rootNodeId = Optional.of(rootNode.getData(CodeStructureObserver.SELF_ID))
+        parsedFile.rootNodeId = Optional.of(visitor.getContextualNode(resp.uast).getData(CodeStructureObserver.SELF_ID))
         parsedFile.sourceFile = sourceFile
         parsedFile.parseResponse = resp
         return parsedFile
-    }
-
-    String processUAST(List<Node> uast, SourceLanguage language) {
-        if (visitor == null) {
-            throw new IllegalStateException("Phenomena must be initialized before processing source code")
-        }
-
-        ContextualNode rootNode
-        def innerTx = session.transaction(GraknTxType.WRITE)
-        uast.each {
-            if (it != null) {
-                visitor.visit(rootNode = ContextualNode.getContextualNode(language, it), innerTx)
-            }
-        }
-        innerTx.commit()
-        return rootNode.getData(CodeStructureObserver.SELF_ID)
     }
 
     List<File> getSourceFilesInScanPath() {
@@ -225,9 +210,4 @@ class Phenomena {
     String getGraknURI() {
         return graknHost + ":" + graknPort
     }
-
-    private static <T> Iterator<T> asJavaIterator(scala.collection.Iterator<T> scalaIterator) {
-        return JavaConverters.asJavaIteratorConverter(scalaIterator).asJava()
-    }
-
 }

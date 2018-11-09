@@ -2,8 +2,10 @@ package com.codebrig.phenomena.code.structure
 
 import ai.grakn.concept.ConceptId
 import ai.grakn.graql.QueryBuilder
+import com.codebrig.omnisrc.SourceFilter
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.observations.ObservedLanguage
+import com.codebrig.omnisrc.schema.filter.WildcardFilter
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.structure.key.SelfIdKey
@@ -24,39 +26,61 @@ import static ai.grakn.graql.Graql.var
 class CodeStructureObserver implements CodeObserver {
 
     static final SelfIdKey SELF_ID = new SelfIdKey()
+    private final SourceFilter filter
+
+    CodeStructureObserver() {
+        this(new WildcardFilter())
+    }
+
+    CodeStructureObserver(SourceFilter filter) {
+        this.filter = Objects.requireNonNull(filter)
+    }
 
     @Override
-    void applyObservation(ContextualNode n, QueryBuilder qb) {
-        def nodePattern = var("node").isa(getEntityType(n))
-        if (!getToken(n).isEmpty()) {
-            nodePattern = nodePattern.has("token", getToken(n))
+    void applyObservation(QueryBuilder qb, ContextualNode node,
+                          ContextualNode parentNode, ContextualNode previousNode) {
+        def nodePattern = var("node").isa(getEntityType(node))
+        if (!getToken(node).isEmpty()) {
+            nodePattern = nodePattern.has("token", getToken(node))
         }
-        def attributes = asJavaMap(n.underlyingNode.properties())
+        def attributes = asJavaMap(node.underlyingNode.properties())
         attributes.keySet().stream().filter({ it != "internalRole" && it != "token" }).each {
             def attrName = ObservedLanguage.toValidAttribute(it)
             attrName = attrName.substring(0, 1).toUpperCase() + attrName.substring(1)
-            nodePattern = nodePattern.has(n.language.key() + attrName, attributes.get(it))
+            nodePattern = nodePattern.has(node.language.key() + attrName, attributes.get(it))
         }
         def savedNode = qb.insert(nodePattern).execute().get(0)
-        n.setData(SELF_ID, savedNode.get("node").id().value)
+        node.setData(SELF_ID, savedNode.get("node").id().value)
+        def selfId = node.getData(SELF_ID)
 
-        def selfId = n.getData(SELF_ID)
-        getChildren(n).each {
-            if (it.underlyingNode.properties().get("internalRole").isDefined()) {
-                def childId = it.getData(SELF_ID)
-                def relation = ObservedLanguage.toValidRelation(it.underlyingNode.properties().get("internalRole").get())
+        if (parentNode != null) {
+            if (previousNode != null && previousNode != parentNode &&
+                    previousNode.underlyingNode.children().contains(parentNode.underlyingNode)) {
+                //parent and child don't relate in any way besides parent/child
+                def parentId = previousNode.getData(SELF_ID)
                 qb.match(
-                        var("parent").id(ConceptId.of(selfId)),
-                        var("child").id(ConceptId.of(childId))
+                        var("parent").id(ConceptId.of(parentId)),
+                        var("child").id(ConceptId.of(selfId))
                 ).insert(
-                        var().isa(n.language.key() + "_" + relation)
-                                .rel("has_" + n.language.key() + "_$relation", "parent")
-                                .rel("is_" + n.language.key() + "_$relation", "child")
+                        var().isa("parent_child_relation")
+                                .rel("is_parent", "parent")
+                                .rel("is_child", "child")
+                ).execute()
+            } else {
+                def parentId = parentNode.getData(SELF_ID)
+                def relation = ObservedLanguage.toValidRelation(node.underlyingNode.properties().get("internalRole").get())
+                qb.match(
+                        var("parent").id(ConceptId.of(parentId)),
+                        var("child").id(ConceptId.of(selfId))
+                ).insert(
+                        var().isa(node.language.key() + "_" + relation)
+                                .rel("has_" + node.language.key() + "_$relation", "parent")
+                                .rel("is_" + node.language.key() + "_$relation", "child")
                 ).execute()
             }
         }
 
-        def roleList = getRoles(n)
+        def roleList = getRoles(node)
         roleList.each {
             qb.match(
                     var("self").id(ConceptId.of(selfId))
@@ -109,12 +133,6 @@ class CodeStructureObserver implements CodeObserver {
                 .collect(Collectors.toList())
     }
 
-    private static List<ContextualNode> getChildren(ContextualNode n) {
-        return asJavaCollection(n.underlyingNode.children()).stream()
-                .map({ ContextualNode.getContextualNode(n.language, it) })
-                .collect(Collectors.toList())
-    }
-
     private static <T> Collection<T> asJavaCollection(scala.collection.Iterable<T> scalaIterator) {
         return JavaConverters.asJavaCollectionConverter(scalaIterator).asJavaCollection()
     }
@@ -124,8 +142,12 @@ class CodeStructureObserver implements CodeObserver {
     }
 
     @Override
+    SourceFilter getFilter() {
+        return filter
+    }
+
+    @Override
     String getSchema() {
         return SourceLanguage.OmniSRC.getFullSchemaDefinition("1.0")
     }
-
 }

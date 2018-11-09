@@ -1,6 +1,8 @@
 package com.codebrig.phenomena.code
 
 import ai.grakn.graql.QueryBuilder
+import com.codebrig.omnisrc.SourceFilter
+import com.codebrig.omnisrc.schema.filter.WildcardFilter
 
 import javax.validation.constraints.NotNull
 
@@ -13,12 +15,16 @@ import javax.validation.constraints.NotNull
  */
 trait CodeObserver {
 
-    void applyObservation(ContextualNode n, QueryBuilder qb) {
+    abstract void applyObservation(QueryBuilder qb, ContextualNode node,
+                                   ContextualNode parentNode, ContextualNode previousNode)
+
+    @NotNull
+    SourceFilter getFilter() {
+        return new WildcardFilter()
     }
 
     @NotNull
     String getSchema() {
         return ""
     }
-
 }
