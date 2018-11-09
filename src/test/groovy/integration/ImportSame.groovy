@@ -18,8 +18,7 @@ class ImportSame {
         phenomena.scanPath.add(new File(".", "/src/test/resources/same").absolutePath)
         phenomena.init()
         phenomena.setupOntology()
-        def list = phenomena.processScanPath()
-        println list.stream().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
     }
 
     @Test
@@ -34,7 +33,6 @@ class ImportSame {
         multiFilter.acceptFilter(new TypeFilter("MethodDeclaration"))
         phenomena.init(new CodeStructureObserver(multiFilter))
         phenomena.setupOntology(new File(".", "/src/test/resources/schema/Same_Schema.gql").text)
-        def list = phenomena.processScanPath()
-        println list.stream().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
     }
 }

@@ -14,7 +14,6 @@ class ImportJava {
         phenomena.scanPath.add(new File(".", "/src/test/resources/java").absolutePath)
         phenomena.init()
         phenomena.setupOntology()
-        def list = phenomena.processScanPath()
-        println list.stream().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
     }
 }

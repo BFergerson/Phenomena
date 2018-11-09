@@ -9,9 +9,14 @@ import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.ParsedSourceFile
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import com.google.common.collect.Streams
 import gopkg.in.bblfsh.sdk.v1.protocol.generated.Encoding
 import gopkg.in.bblfsh.sdk.v1.protocol.generated.ParseResponse
+import org.apache.commons.collections4.Transformer
+import org.apache.commons.collections4.iterators.TransformIterator
 import org.bblfsh.client.BblfshClient
+
+import java.util.stream.Stream
 
 import static groovy.io.FileType.FILES
 
@@ -86,27 +91,11 @@ class Phenomena {
         tx.commit()
     }
 
-    List<ParsedSourceFile> processScanPath() {
+    Stream<ParsedSourceFile> processScanPath() {
         if (visitor == null) {
             throw new IllegalStateException("Phenomena must be initialized before processing source code")
         }
-
-        println "Processing scan path"
-        def rtnList = new ArrayList<ParsedSourceFile>()
-        sourceFilesInScanPath.each {
-            rtnList.add(processSourceFile(it, SourceLanguage.getSourceLanguage(it)))
-
-        }
-        return rtnList
-    }
-
-    ParseResponse parseSourceFile(File sourceFile, SourceLanguage language) {
-        if (parser == null) {
-            throw new IllegalStateException("Phenomena must be connected to Babelfish before processing source code")
-        }
-
-        println "Parsing $language file: " + sourceFile
-        return parser.parse(sourceFile.name, sourceFile.text, language.key(), Encoding.UTF8$.MODULE$)
+        return Streams.stream(new TransformIterator(sourceFilesInScanPath.iterator(), new SourceFileTransformer()))
     }
 
     ParsedSourceFile processSourceFile(File sourceFile, SourceLanguage language) {
@@ -126,6 +115,15 @@ class Phenomena {
         parsedFile.sourceFile = sourceFile
         parsedFile.parseResponse = resp
         return parsedFile
+    }
+
+    ParseResponse parseSourceFile(File sourceFile, SourceLanguage language) {
+        if (parser == null) {
+            throw new IllegalStateException("Phenomena must be connected to Babelfish before processing source code")
+        }
+
+        println "Parsing $language file: " + sourceFile
+        return parser.parse(sourceFile.name, sourceFile.text, language.key(), Encoding.UTF8$.MODULE$)
     }
 
     List<File> getSourceFilesInScanPath() {
@@ -209,5 +207,12 @@ class Phenomena {
 
     String getGraknURI() {
         return graknHost + ":" + graknPort
+    }
+
+    private class SourceFileTransformer implements Transformer<File, ParsedSourceFile> {
+        @Override
+        ParsedSourceFile transform(File file) {
+            return processSourceFile(file, SourceLanguage.getSourceLanguage(file))
+        }
     }
 }
