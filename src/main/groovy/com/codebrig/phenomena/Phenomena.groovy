@@ -48,12 +48,16 @@ class Phenomena {
 
     void init(CodeObserver... codeObservers) {
         println "Initializing Phenomena (ver.$PHENOMENA_VERSION)"
+        setupVisitor(codeObservers)
+        connectToBabelfish()
+        connectToGrakn()
+    }
+
+    void setupVisitor(CodeObserver... codeObservers) {
         visitor = new CodeObserverVisitor(Keyspace.of(graknKeyspace))
         codeObservers.each {
             visitor.addObserver(it)
         }
-        connectToBabelfish()
-        connectToGrakn()
     }
 
     void connectToBabelfish() {
@@ -95,7 +99,7 @@ class Phenomena {
         if (visitor == null) {
             throw new IllegalStateException("Phenomena must be initialized before processing source code")
         }
-        return Streams.stream(new TransformIterator(sourceFilesInScanPath.iterator(), new SourceFileTransformer()))
+        return Streams.stream(new TransformIterator(sourceFilesInScanPath.iterator(), new ProcessSourceFileTransformer()))
     }
 
     ParsedSourceFile processSourceFile(File sourceFile, SourceLanguage language) {
@@ -117,9 +121,16 @@ class Phenomena {
         return parsedFile
     }
 
+    Stream<ParseResponse> parseScanPath() {
+        if (parser == null) {
+            throw new IllegalStateException("Phenomena must be connected to Babelfish before parsing source code")
+        }
+        return Streams.stream(new TransformIterator(sourceFilesInScanPath.iterator(), new ParseSourceFileTransformer()))
+    }
+
     ParseResponse parseSourceFile(File sourceFile, SourceLanguage language) {
         if (parser == null) {
-            throw new IllegalStateException("Phenomena must be connected to Babelfish before processing source code")
+            throw new IllegalStateException("Phenomena must be connected to Babelfish before parsing source code")
         }
 
         println "Parsing $language file: " + sourceFile
@@ -209,10 +220,17 @@ class Phenomena {
         return graknHost + ":" + graknPort
     }
 
-    private class SourceFileTransformer implements Transformer<File, ParsedSourceFile> {
+    private class ProcessSourceFileTransformer implements Transformer<File, ParsedSourceFile> {
         @Override
         ParsedSourceFile transform(File file) {
             return processSourceFile(file, SourceLanguage.getSourceLanguage(file))
+        }
+    }
+
+    private class ParseSourceFileTransformer implements Transformer<File, ParseResponse> {
+        @Override
+        ParseResponse transform(File file) {
+            return parseSourceFile(file, SourceLanguage.getSourceLanguage(file))
         }
     }
 }
