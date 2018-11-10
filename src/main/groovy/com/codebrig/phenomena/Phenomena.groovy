@@ -7,7 +7,7 @@ import ai.grakn.util.SimpleURI
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.CodeObserverVisitor
-import com.codebrig.phenomena.code.ParsedSourceFile
+import com.codebrig.phenomena.code.ProcessedSourceFile
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import com.google.common.collect.Streams
 import gopkg.in.bblfsh.sdk.v1.protocol.generated.Encoding
@@ -48,16 +48,9 @@ class Phenomena {
 
     void init(CodeObserver... codeObservers) {
         println "Initializing Phenomena (ver.$PHENOMENA_VERSION)"
-        setupVisitor(codeObservers)
         connectToBabelfish()
         connectToGrakn()
-    }
-
-    void setupVisitor(CodeObserver... codeObservers) {
-        visitor = new CodeObserverVisitor(Keyspace.of(graknKeyspace))
-        codeObservers.each {
-            visitor.addObserver(it)
-        }
+        setupVisitor(codeObservers)
     }
 
     void connectToBabelfish() {
@@ -68,6 +61,17 @@ class Phenomena {
     void connectToGrakn() {
         println "Connecting to Grakn"
         session = new Grakn(new SimpleURI(graknURI)).session(Keyspace.of(graknKeyspace))
+    }
+
+    void setupVisitor(CodeObserverVisitor visitor) {
+        this.visitor = Objects.requireNonNull(visitor)
+    }
+
+    void setupVisitor(CodeObserver... codeObservers) {
+        visitor = new CodeObserverVisitor(session)
+        codeObservers.each {
+            visitor.addObserver(it)
+        }
     }
 
     void setupOntology() {
@@ -95,14 +99,14 @@ class Phenomena {
         tx.commit()
     }
 
-    Stream<ParsedSourceFile> processScanPath() {
+    Stream<ProcessedSourceFile> processScanPath() {
         if (visitor == null) {
             throw new IllegalStateException("Phenomena must be initialized before processing source code")
         }
         return Streams.stream(new TransformIterator(sourceFilesInScanPath.iterator(), new ProcessSourceFileTransformer()))
     }
 
-    ParsedSourceFile processSourceFile(File sourceFile, SourceLanguage language) {
+    ProcessedSourceFile processSourceFile(File sourceFile, SourceLanguage language) {
         if (visitor == null) {
             throw new IllegalStateException("Phenomena must be initialized before processing source code")
         }
@@ -110,15 +114,13 @@ class Phenomena {
         def resp = parseSourceFile(sourceFile, language)
         println "Saving $language file: " + sourceFile
 
-        def innerTx = session.transaction(GraknTxType.WRITE)
-        visitor.visit(language, resp.uast, innerTx)
-        innerTx.commit()
+        visitor.visit(language, resp.uast)
 
-        def parsedFile = new ParsedSourceFile()
-        parsedFile.rootNodeId = Optional.of(visitor.getContextualNode(resp.uast).getData(CodeStructureObserver.SELF_ID))
-        parsedFile.sourceFile = sourceFile
-        parsedFile.parseResponse = resp
-        return parsedFile
+        def processedFile = new ProcessedSourceFile()
+        processedFile.rootNodeId = Optional.of(visitor.getContextualNode(resp.uast).getData(CodeStructureObserver.SELF_ID))
+        processedFile.sourceFile = sourceFile
+        processedFile.parseResponse = resp
+        return processedFile
     }
 
     Stream<ParseResponse> parseScanPath() {
@@ -141,10 +143,15 @@ class Phenomena {
         def rtnList = new ArrayList<File>()
         if (scanPath != null && !scanPath.isEmpty()) {
             scanPath.each {
-                new File(it).eachFileRecurse(FILES) {
-                    if (SourceLanguage.isSourceLanguageKnown(it)) {
-                        rtnList.add(it)
+                def file = new File(it)
+                if (file.isDirectory()) {
+                    file.eachFileRecurse(FILES) {
+                        if (SourceLanguage.isSourceLanguageKnown(it)) {
+                            rtnList.add(it)
+                        }
                     }
+                } else if (SourceLanguage.isSourceLanguageKnown(file)) {
+                    rtnList.add(file)
                 }
             }
         }
@@ -220,9 +227,9 @@ class Phenomena {
         return graknHost + ":" + graknPort
     }
 
-    private class ProcessSourceFileTransformer implements Transformer<File, ParsedSourceFile> {
+    private class ProcessSourceFileTransformer implements Transformer<File, ProcessedSourceFile> {
         @Override
-        ParsedSourceFile transform(File file) {
+        ProcessedSourceFile transform(File file) {
             return processSourceFile(file, SourceLanguage.getSourceLanguage(file))
         }
     }

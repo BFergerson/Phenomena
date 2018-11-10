@@ -1,7 +1,5 @@
 package com.codebrig.phenomena.code.structure
 
-import ai.grakn.concept.ConceptId
-import ai.grakn.graql.QueryBuilder
 import com.codebrig.omnisrc.SourceFilter
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.observations.ObservedLanguage
@@ -13,8 +11,6 @@ import gopkg.in.bblfsh.sdk.v1.uast.generated.Role
 import scala.collection.JavaConverters
 
 import java.util.stream.Collectors
-
-import static ai.grakn.graql.Graql.var
 
 /**
  * todo: description
@@ -37,59 +33,33 @@ class CodeStructureObserver implements CodeObserver {
     }
 
     @Override
-    void applyObservation(QueryBuilder qb, ContextualNode node,
-                          ContextualNode parentNode, ContextualNode previousNode) {
-        def nodePattern = var("node").isa(getEntityType(node))
+    void applyObservation(ContextualNode node, ContextualNode parentNode, ContextualNode previousNode) {
+        node.setEntityType(getEntityType(node))
         if (!getToken(node).isEmpty()) {
-            nodePattern = nodePattern.has("token", getToken(node))
+            node.hasAttribute("token", getToken(node))
         }
         def attributes = asJavaMap(node.underlyingNode.properties())
         attributes.keySet().stream().filter({ it != "internalRole" && it != "token" }).each {
             def attrName = ObservedLanguage.toValidAttribute(it)
             attrName = attrName.substring(0, 1).toUpperCase() + attrName.substring(1)
-            nodePattern = nodePattern.has(node.language.key() + attrName, attributes.get(it))
+            node.hasAttribute(node.language.key() + attrName, attributes.get(it))
         }
-        def savedNode = qb.insert(nodePattern).execute().get(0)
-        node.setData(SELF_ID, savedNode.get("node").id().value)
-        def selfId = node.getData(SELF_ID)
 
         if (parentNode != null) {
             if (previousNode != null && previousNode != parentNode &&
                     previousNode.underlyingNode.children().contains(parentNode.underlyingNode)) {
                 //parent and child don't relate in any way besides parent/child
-                def parentId = previousNode.getData(SELF_ID)
-                qb.match(
-                        var("parent").id(ConceptId.of(parentId)),
-                        var("child").id(ConceptId.of(selfId))
-                ).insert(
-                        var().isa("parent_child_relation")
-                                .rel("is_parent", "parent")
-                                .rel("is_child", "child")
-                ).execute()
+                node.addRelationshipTo(previousNode, "parent_child_relation", "is_child", "is_parent")
             } else {
-                def parentId = parentNode.getData(SELF_ID)
                 def relation = ObservedLanguage.toValidRelation(node.underlyingNode.properties().get("internalRole").get())
-                qb.match(
-                        var("parent").id(ConceptId.of(parentId)),
-                        var("child").id(ConceptId.of(selfId))
-                ).insert(
-                        var().isa(node.language.key() + "_" + relation)
-                                .rel("has_" + node.language.key() + "_$relation", "parent")
-                                .rel("is_" + node.language.key() + "_$relation", "child")
-                ).execute()
+                node.addRelationshipTo(parentNode, node.language.key() + "_" + relation)
             }
         }
 
         def roleList = getRoles(node)
         roleList.each {
-            qb.match(
-                    var("self").id(ConceptId.of(selfId))
-            ).insert(
-                    var().isa(it.name())
-                            .rel("IS_" + it.name(), "self")
-            ).execute()
+            node.playsRole(it.name())
         }
-
         if (roleList.size() > 1) {
             //add merged super role
             def sb = new StringBuilder()
@@ -105,12 +75,7 @@ class CodeStructureObserver implements CodeObserver {
             }
 
             def superRole = sb.toString()
-            qb.match(
-                    var("self").id(ConceptId.of(selfId))
-            ).insert(
-                    var().isa(superRole)
-                            .rel("IS_" + superRole, "self")
-            ).execute()
+            node.playsRole(superRole)
         }
     }
 

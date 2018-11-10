@@ -11,7 +11,7 @@ import groovy.transform.Canonical
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
 @Canonical
-class ParsedSourceFile {
+class ProcessedSourceFile {
     String rootNodeId
     File sourceFile
     ParseResponse parseResponse
