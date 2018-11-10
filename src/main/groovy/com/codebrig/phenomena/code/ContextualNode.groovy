@@ -64,22 +64,26 @@ class ContextualNode extends SourceNode {
 
     void save(QueryBuilder qb) {
         def patterns = new ArrayList<VarPattern>()
-        def nodePattern = var("self").isa(entityType)
-        attributes.each {
-            nodePattern = nodePattern.has(it.key, it.value)
+        if (entityType != null) {
+            def nodePattern = var("self").isa(entityType)
+            attributes.each {
+                nodePattern = nodePattern.has(it.key, it.value)
+            }
+            patterns.add(nodePattern)
         }
-        patterns.add(nodePattern)
-
         roles.each {
             patterns.add(var().isa(it)
                     .rel("IS_" + it, "self"))
         }
-        def result = qb.insert(patterns).execute()
-        def savedNode = result.get(0)
-        def selfId = savedNode.get("self").id().value
-        setData(CodeStructureObserver.SELF_ID, selfId)
+        if (!patterns.isEmpty()) {
+            def result = qb.insert(patterns).execute()
+            def savedNode = result.get(0)
+            def selfId = savedNode.get("self").id().value
+            setData(CodeStructureObserver.SELF_ID, selfId)
+        }
 
         relationships.each {
+            def selfId = getData(CodeStructureObserver.SELF_ID)
             def parentId = it.value.getData(CodeStructureObserver.SELF_ID)
             qb.match(
                     var("self").id(ConceptId.of(selfId)),
@@ -90,6 +94,12 @@ class ContextualNode extends SourceNode {
                             .rel(it.key.parentRole, "parent")
             ).execute()
         }
+
+        //flush data
+        entityType = null
+        attributes.clear()
+        roles.clear()
+        relationships.clear()
     }
 
     def <M> M getData(final DataKey<M> key) {
