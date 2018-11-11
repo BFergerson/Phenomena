@@ -1,4 +1,4 @@
-package com.codebrig.phenomena.code.analysis.dependence.java
+package com.codebrig.phenomena.code.analysis.language.java.dependence
 
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
@@ -8,7 +8,6 @@ import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
-import com.codebrig.phenomena.code.analysis.language.java.dependence.JavaMethodCallObserver
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import org.junit.Test
 
