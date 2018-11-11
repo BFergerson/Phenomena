@@ -8,7 +8,7 @@ import java.util.stream.Collectors
 class ImportJava {
 
     @Test
-    void doThing() {
+    void importAllJava() {
         def phenomena = new Phenomena()
         phenomena.scanPath = new ArrayList<>()
         phenomena.scanPath.add(new File(".", "/src/test/resources/java").absolutePath)
