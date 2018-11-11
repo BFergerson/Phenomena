@@ -68,6 +68,10 @@ class Phenomena {
     }
 
     void setupVisitor(CodeObserver... codeObservers) {
+        if (session == null) {
+            throw new IllegalStateException("Phenomena must be connected to Grakn before setting up the visitor")
+        }
+
         visitor = new CodeObserverVisitor(session)
         codeObservers.each {
             visitor.addObserver(it)
