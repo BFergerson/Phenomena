@@ -53,4 +53,16 @@ class JavaMethodCallObserverTest extends PhenomenaTest {
         phenomena.setupOntology()
         println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
     }
+
+    @Test
+    void externalMethodCall_withSave() {
+        def phenomena = new Phenomena()
+        phenomena.scanPath = new ArrayList<>()
+        phenomena.scanPath.add(new File(".", "/src/test/resources/java/CallExternalMethod.java").absolutePath)
+        phenomena.connectToBabelfish()
+        phenomena.connectToGrakn()
+        phenomena.setupVisitor(new CodeStructureObserver(), new JavaMethodCallObserver(new JavaParserIntegration(phenomena)))
+        phenomena.setupOntology()
+        println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+    }
 }
