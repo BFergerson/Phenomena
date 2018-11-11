@@ -72,6 +72,7 @@ class CodeObserverVisitor {
         }
         visitRecursively(queryBuilder, sourceFile, contextualRootNode, contextualRootNode.children)
 
+        previousNodes.clear()
         if (saveToGrakn) {
             contextualNodes.values().each {
                 it.save(queryBuilder)
