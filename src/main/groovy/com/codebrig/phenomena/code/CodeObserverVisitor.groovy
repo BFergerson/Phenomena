@@ -46,10 +46,10 @@ class CodeObserverVisitor {
         return new ArrayList<>(observers)
     }
 
-    void visit(SourceLanguage language, Node rootNode) {
+    void visit(SourceLanguage language, Node rootNode, File sourceFile) {
         Objects.requireNonNull(language)
         Objects.requireNonNull(rootNode)
-        contextualNodes.putIfAbsent(rootNode, new ContextualNode(this, rootNode, language, rootNode))
+        contextualNodes.putIfAbsent(rootNode, new ContextualNode(this, rootNode, sourceFile, language, rootNode))
 
         def observed = false
         def contextualRootNode = contextualNodes.get(rootNode)
@@ -70,14 +70,24 @@ class CodeObserverVisitor {
                 contextualRootNode.save(queryBuilder)
             }
         }
-        visitRecursively(queryBuilder, contextualRootNode, contextualRootNode.children)
+        visitRecursively(queryBuilder, sourceFile, contextualRootNode, contextualRootNode.children)
+
+        if (saveToGrakn) {
+            contextualNodes.values().each {
+                it.save(queryBuilder)
+            }
+        }
+        observers.each {
+            it.reset()
+        }
         transaction?.commit()
         transaction?.close()
     }
 
-    private void visitRecursively(QueryBuilder qb, ContextualNode parentNode, Iterator<SourceNode> childNodes) {
+    private void visitRecursively(QueryBuilder qb, File sourceFile,
+                                  ContextualNode parentNode, Iterator<SourceNode> childNodes) {
         childNodes.each { child ->
-            contextualNodes.putIfAbsent(child.underlyingNode, new ContextualNode(this, child))
+            contextualNodes.putIfAbsent(child.underlyingNode, new ContextualNode(this, child, sourceFile))
             def contextualChildNode = contextualNodes.get(child.underlyingNode)
 
             def observed = false
@@ -96,11 +106,15 @@ class CodeObserverVisitor {
                 contextualChildNode.save(qb)
             }
 
-            visitRecursively(qb, contextualChildNode, child.children)
+            visitRecursively(qb, sourceFile, contextualChildNode, child.children)
         }
     }
 
     ContextualNode getContextualNode(Node node) {
         return contextualNodes.get(node)
+    }
+
+    boolean getSaveToGrakn() {
+        return saveToGrakn
     }
 }

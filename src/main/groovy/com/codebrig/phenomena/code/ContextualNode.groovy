@@ -25,20 +25,35 @@ class ContextualNode extends SourceNode {
     private final Map<String, String> attributes = new HashMap<>()
     private final Map<NodeRelationship, ContextualNode> relationships = new HashMap<>()
     private final Set<String> roles = new HashSet<>()
+    private File sourceFile
     private String entityType
 
-    ContextualNode(CodeObserverVisitor context, Node rootNode, SourceLanguage language, Node node) {
+    ContextualNode(CodeObserverVisitor context, Node rootNode, File sourceFile, SourceLanguage language, Node node) {
         super(language, rootNode, node)
         this.context = Objects.requireNonNull(context)
+        this.sourceFile = sourceFile
     }
 
-    ContextualNode(CodeObserverVisitor context, SourceNode sourceNode) {
+    ContextualNode(CodeObserverVisitor context, SourceNode sourceNode, File sourceFile) {
         super(sourceNode.language, sourceNode.rootNode, sourceNode.underlyingNode)
         this.context = Objects.requireNonNull(context)
+        this.sourceFile = sourceFile
+    }
+
+    File getSourceFile() {
+        return sourceFile
     }
 
     String getEntityType() {
         return entityType
+    }
+
+    Map<String, String> getAttributes() {
+        return attributes
+    }
+
+    Map<NodeRelationship, ContextualNode> getRelationships() {
+        return relationships
     }
 
     void setEntityType(String entityType) {
@@ -95,7 +110,7 @@ class ContextualNode extends SourceNode {
             ).execute()
         }
 
-        //flush data
+        //reset data
         entityType = null
         attributes.clear()
         roles.clear()
@@ -111,10 +126,16 @@ class ContextualNode extends SourceNode {
     }
 
     @Canonical
-    private static class NodeRelationship {
+    static class NodeRelationship {
         String relationshipType
         String selfRole
         String parentRole
+
+        NodeRelationship(String relationshipType) {
+            this.relationshipType = relationshipType
+            this.selfRole = "is_$relationshipType"
+            this.parentRole = "has_$relationshipType"
+        }
 
         NodeRelationship(String relationshipType, String selfRole, String parentRole) {
             this.relationshipType = relationshipType

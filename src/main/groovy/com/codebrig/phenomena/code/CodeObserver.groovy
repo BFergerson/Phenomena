@@ -1,6 +1,5 @@
 package com.codebrig.phenomena.code
 
-
 import com.codebrig.omnisrc.SourceFilter
 import com.codebrig.omnisrc.schema.filter.WildcardFilter
 
@@ -16,6 +15,9 @@ import javax.validation.constraints.NotNull
 trait CodeObserver {
 
     abstract void applyObservation(ContextualNode node, ContextualNode parentNode, ContextualNode previousNode)
+
+    void reset() {
+    }
 
     @NotNull
     SourceFilter getFilter() {

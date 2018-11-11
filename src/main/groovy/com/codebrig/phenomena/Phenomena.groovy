@@ -112,12 +112,13 @@ class Phenomena {
         }
 
         def resp = parseSourceFile(sourceFile, language)
-        println "Saving $language file: " + sourceFile
-
-        visitor.visit(language, resp.uast)
+        println "Processing $language file: " + sourceFile
+        visitor.visit(language, resp.uast, sourceFile)
 
         def processedFile = new ProcessedSourceFile()
-        processedFile.rootNodeId = Optional.of(visitor.getContextualNode(resp.uast).getData(CodeStructureObserver.SELF_ID))
+        if (visitor.saveToGrakn) {
+            processedFile.rootNodeId = Optional.of(visitor.getContextualNode(resp.uast).getData(CodeStructureObserver.SELF_ID))
+        }
         processedFile.sourceFile = sourceFile
         processedFile.parseResponse = resp
         return processedFile

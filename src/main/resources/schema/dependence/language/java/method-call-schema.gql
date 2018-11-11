@@ -1,0 +1,4 @@
+define
+
+JavaMethodDeclarationArtifact plays has_method_call;
+JavaMethodInvocationArtifact plays is_method_call;
