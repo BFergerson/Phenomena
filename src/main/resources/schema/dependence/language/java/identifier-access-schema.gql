@@ -1,0 +1,5 @@
+define
+
+JavaFieldDeclarationArtifact plays has_identifier_access;
+JavaSingleVariableDeclarationArtifact plays has_identifier_access;
+JavaSimpleNameArtifact plays is_identifier_access;

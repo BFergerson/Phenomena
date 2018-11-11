@@ -4,8 +4,8 @@ public class CallMethod {
         return b_method(x);
     }
 
-    int b_method(int x) {
-        return x;
+    int b_method(int y) {
+        return y;
     }
 
 }

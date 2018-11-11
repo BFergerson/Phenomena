@@ -155,6 +155,21 @@ class JavaParserIntegration {
         return foundNode
     }
 
+    static Node getNameNodeAtRange(Node n, Range r) {
+        def foundNode
+        n.childNodes.each {
+            if (foundNode == null && it.range.isPresent()) {
+                def range = it.range.get()
+                if (range.begin == r.begin) {
+                    foundNode = it
+                } else if (range.contains(r)) {
+                    foundNode = getNameNodeAtRange(it, r)
+                }
+            }
+        }
+        return foundNode
+    }
+
     static Range toRange(gopkg.in.bblfsh.sdk.v1.uast.generated.Position startPosition,
                          gopkg.in.bblfsh.sdk.v1.uast.generated.Position endPosition) {
         return new Range(toJavaParserPosition(startPosition), toJavaParserPosition(endPosition))

@@ -74,6 +74,8 @@ class ContextualNode extends SourceNode {
     }
 
     void addRelationshipTo(ContextualNode otherNode, String relationshipType, String rel1, String rel2) {
+        Objects.requireNonNull(otherNode)
+        Objects.requireNonNull(relationshipType)
         relationships.put(new NodeRelationship(relationshipType, rel1, rel2), otherNode)
     }
 
