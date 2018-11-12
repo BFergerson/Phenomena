@@ -9,6 +9,8 @@ import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.dependence.IdentifierAccessObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
 import com.github.javaparser.ast.Node
+import com.github.javaparser.ast.body.Parameter
+import com.github.javaparser.ast.body.VariableDeclarator
 import com.github.javaparser.ast.expr.NameExpr
 import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade
 import com.github.javaparser.symbolsolver.javaparsermodel.declarations.JavaParserFieldDeclaration
@@ -53,11 +55,23 @@ class JavaIdentifierAccess extends IdentifierAccessObserver {
             if (nodeType.isSolved()) {
                 def declaration = nodeType.correspondingDeclaration
                 if (declaration instanceof JavaParserSymbolDeclaration) {
-                    def contextualDeclaration = contextualDeclarations.get(declaration.wrappedNode)
-                    node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                    def wrappedNode = declaration.wrappedNode
+                    if (wrappedNode instanceof VariableDeclarator) {
+                        def contextualDeclaration = contextualDeclarations.get(wrappedNode.name)
+                        node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                    } else {
+                        def contextualDeclaration = contextualDeclarations.get(wrappedNode)
+                        node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                    }
                 } else if (declaration instanceof JavaParserParameterDeclaration) {
-                    def contextualDeclaration = contextualDeclarations.get(declaration.wrappedNode)
-                    node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                    def wrappedNode = declaration.wrappedNode
+                    if (wrappedNode instanceof Parameter) {
+                        def contextualDeclaration = contextualDeclarations.get(wrappedNode.name)
+                        node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                    } else {
+                        def contextualDeclaration = contextualDeclarations.get(wrappedNode)
+                        node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                    }
                 } else if (declaration instanceof JavaParserFieldDeclaration) {
                     def contextualDeclaration = contextualDeclarations.get(declaration.wrappedNode)
                     node.addRelationshipTo(contextualDeclaration, "identifier_access")

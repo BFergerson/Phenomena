@@ -6,10 +6,7 @@ import com.github.javaparser.Position
 import com.github.javaparser.Range
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.Node
-import com.github.javaparser.ast.body.CallableDeclaration
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration
-import com.github.javaparser.ast.body.ConstructorDeclaration
-import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.body.*
 import com.github.javaparser.ast.expr.Name
 import com.github.javaparser.ast.expr.NameExpr
 import com.github.javaparser.ast.expr.SimpleName
@@ -160,8 +157,11 @@ class JavaParserIntegration {
         n.childNodes.each {
             if (foundNode == null && it.range.isPresent()) {
                 def range = it.range.get()
-                if (range.begin == r.begin) {
+                if (range.begin == r.begin
+                        && (it instanceof SimpleName || it instanceof Name || it instanceof NameExpr)) {
                     foundNode = it
+                } else if (range.begin == r.begin && it instanceof Parameter) {
+                    foundNode = it.name
                 } else if (range.contains(r)) {
                     foundNode = getNameNodeAtRange(it, r)
                 }
@@ -172,7 +172,8 @@ class JavaParserIntegration {
 
     static Range toRange(gopkg.in.bblfsh.sdk.v1.uast.generated.Position startPosition,
                          gopkg.in.bblfsh.sdk.v1.uast.generated.Position endPosition) {
-        return new Range(toJavaParserPosition(startPosition), toJavaParserPosition(endPosition))
+        def javaParserEnd = toJavaParserPosition(endPosition)
+        return new Range(toJavaParserPosition(startPosition), javaParserEnd.withColumn(javaParserEnd.column - 1))
     }
 
     static Position toJavaParserPosition(gopkg.in.bblfsh.sdk.v1.uast.generated.Position position) {

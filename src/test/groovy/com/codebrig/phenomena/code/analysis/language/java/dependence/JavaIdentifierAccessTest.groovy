@@ -22,6 +22,41 @@ import static org.junit.Assert.assertNotNull
 class JavaIdentifierAccessTest extends PhenomenaTest {
 
     @Test
+    void innerMethodIdentifierAccess_noSave() {
+        def phenomena = new Phenomena()
+        phenomena.scanPath = new ArrayList<>()
+        phenomena.scanPath.add(new File(".", "/src/test/resources/java/InnerMethodIdentifier.java").absolutePath)
+
+        def visitor = new CodeObserverVisitor()
+        visitor.addObserver(new CodeStructureObserver())
+        visitor.addObserver(new JavaIdentifierAccess(new JavaParserIntegration(phenomena)))
+        phenomena.setupVisitor(visitor)
+        phenomena.connectToBabelfish()
+
+        def processedFile = phenomena.processScanPath().findAny().get()
+        def sourceNode = new SourceNode(SourceLanguage.Java, processedFile.parseResponse.uast)
+        def arrayListArg = new NameFilter("arrayList").getFilteredNodes(sourceNode)[0]
+        def yayArg = new NameFilter("yay").getFilteredNodes(sourceNode)[0]
+        assertNotNull(arrayListArg)
+        assertNotNull(yayArg)
+
+        def arrayListVar = new SimpleNameFilter("arrayList").getFilteredNodes(sourceNode)[1]
+        def yayVar = new SimpleNameFilter("yay").getFilteredNodes(sourceNode)[1]
+        assertNotNull(arrayListVar)
+        assertNotNull(yayVar)
+
+        def contextualArrayList = visitor.getContextualNode(arrayListVar.underlyingNode)
+        def contextualYay = visitor.getContextualNode(yayVar.underlyingNode)
+        assertNotNull(contextualArrayList)
+        assertNotNull(contextualYay)
+
+        def arrayListAccessTo = contextualArrayList.relationships.get(new ContextualNode.NodeRelationship("identifier_access"))
+        def yayAccessTo = contextualYay.relationships.get(new ContextualNode.NodeRelationship("identifier_access"))
+        assertEquals(arrayListArg.underlyingNode, arrayListAccessTo.underlyingNode)
+        assertEquals(yayArg.underlyingNode, yayAccessTo.underlyingNode)
+    }
+
+    @Test
     void simpleIdentifierAccess_noSave() {
         def phenomena = new Phenomena()
         phenomena.scanPath = new ArrayList<>()
