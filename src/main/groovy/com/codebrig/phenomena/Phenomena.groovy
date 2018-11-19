@@ -141,7 +141,7 @@ class Phenomena {
         }
 
         println "Parsing $language file: " + sourceFile
-        return parser.parse(sourceFile.name, sourceFile.text, language.key(), Encoding.UTF8$.MODULE$)
+        return parser.parse(sourceFile.name, sourceFile.text, language.key, Encoding.UTF8$.MODULE$)
     }
 
     List<File> getSourceFilesInScanPath() {

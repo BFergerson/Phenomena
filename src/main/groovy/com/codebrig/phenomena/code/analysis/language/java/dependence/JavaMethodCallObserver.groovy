@@ -1,7 +1,7 @@
 package com.codebrig.phenomena.code.analysis.language.java.dependence
 
-import com.codebrig.omnisrc.SourceFilter
-import com.codebrig.omnisrc.schema.filter.TypeFilter
+import com.codebrig.omnisrc.SourceNodeFilter
+import com.codebrig.omnisrc.observe.filter.TypeFilter
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.dependence.MethodCallObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -79,7 +79,7 @@ class JavaMethodCallObserver extends MethodCallObserver {
     }
 
     @Override
-    SourceFilter getFilter() {
+    SourceNodeFilter getFilter() {
         return new TypeFilter("MethodDeclaration", "MethodInvocation")
     }
 

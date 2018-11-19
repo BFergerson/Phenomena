@@ -5,6 +5,7 @@ import ai.grakn.graql.QueryBuilder
 import ai.grakn.graql.VarPattern
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
+import com.codebrig.omnisrc.observe.ObservedLanguage
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
 import groovy.transform.Canonical
@@ -22,7 +23,7 @@ class ContextualNode extends SourceNode {
 
     private final CodeObserverVisitor context
     private final Map<DataKey<?>, Object> data = new IdentityHashMap<>()
-    private final Map<String, String> attributes = new HashMap<>()
+    private final Map<String, Object> attributes = new HashMap<>()
     private final Map<NodeRelationship, ContextualNode> relationships = new HashMap<>()
     private final Set<String> roles = new HashSet<>()
     private File sourceFile
@@ -48,7 +49,7 @@ class ContextualNode extends SourceNode {
         return entityType
     }
 
-    Map<String, String> getAttributes() {
+    Map<String, Object> getAttributes() {
         return attributes
     }
 
@@ -60,7 +61,8 @@ class ContextualNode extends SourceNode {
         this.entityType = entityType
     }
 
-    void hasAttribute(String key, String value) {
+    void hasAttribute(String key, Object value) {
+        ObservedLanguage.getLiteralAttributes()
         attributes.put(key, value)
     }
 
@@ -69,8 +71,7 @@ class ContextualNode extends SourceNode {
     }
 
     void addRelationshipTo(ContextualNode otherNode, String relationshipType) {
-        addRelationshipTo(otherNode, relationshipType,
-                "is_$relationshipType", "has_$relationshipType")
+        addRelationshipTo(otherNode, relationshipType, "is_$relationshipType", "has_$relationshipType")
     }
 
     void addRelationshipTo(ContextualNode otherNode, String relationshipType, String rel1, String rel2) {

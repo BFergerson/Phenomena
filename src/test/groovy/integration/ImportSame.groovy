@@ -1,8 +1,8 @@
 package integration
 
-import com.codebrig.omnisrc.schema.filter.MultiFilter
-import com.codebrig.omnisrc.schema.filter.TypeFilter
-import com.codebrig.omnisrc.schema.filter.WhitelistRoleFilter
+import com.codebrig.omnisrc.observe.filter.MultiFilter
+import com.codebrig.omnisrc.observe.filter.TypeFilter
+import com.codebrig.omnisrc.observe.filter.WhitelistRoleFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import org.junit.Test
@@ -27,7 +27,7 @@ class ImportSame {
         phenomena.scanPath = new ArrayList<>()
         phenomena.scanPath.add(new File(".", "/src/test/resources/same").absolutePath)
 
-        def multiFilter = new MultiFilter()
+        def multiFilter = new MultiFilter(MultiFilter.MatchStyle.ANY)
         def roleFilter = new WhitelistRoleFilter("FILE", "DECLARATION_FUNCTION")
         multiFilter.acceptFilter(roleFilter)
         multiFilter.acceptFilter(new TypeFilter("MethodDeclaration"))

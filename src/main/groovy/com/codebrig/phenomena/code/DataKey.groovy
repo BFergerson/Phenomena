@@ -18,5 +18,4 @@ abstract class DataKey<T> {
     boolean equals(Object obj) {
         return obj != null && getClass() == obj.getClass()
     }
-
 }

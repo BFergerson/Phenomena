@@ -1,7 +1,7 @@
 package com.codebrig.phenomena.code
 
-import com.codebrig.omnisrc.SourceFilter
-import com.codebrig.omnisrc.schema.filter.WildcardFilter
+import com.codebrig.omnisrc.SourceNodeFilter
+import com.codebrig.omnisrc.observe.filter.WildcardFilter
 
 import javax.validation.constraints.NotNull
 
@@ -20,7 +20,7 @@ trait CodeObserver {
     }
 
     @NotNull
-    SourceFilter getFilter() {
+    SourceNodeFilter getFilter() {
         return new WildcardFilter()
     }
 

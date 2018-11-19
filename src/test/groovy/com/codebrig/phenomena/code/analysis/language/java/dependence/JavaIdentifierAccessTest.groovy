@@ -2,10 +2,10 @@ package com.codebrig.phenomena.code.analysis.language.java.dependence
 
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
-import com.codebrig.omnisrc.schema.filter.BlacklistRoleFilter
-import com.codebrig.omnisrc.schema.filter.MultiFilter
-import com.codebrig.omnisrc.schema.filter.NameFilter
-import com.codebrig.omnisrc.schema.filter.SimpleNameFilter
+import com.codebrig.omnisrc.observe.filter.BlacklistRoleFilter
+import com.codebrig.omnisrc.observe.filter.MultiFilter
+import com.codebrig.omnisrc.observe.filter.NameFilter
+import com.codebrig.omnisrc.observe.filter.SimpleNameFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.CodeObserverVisitor

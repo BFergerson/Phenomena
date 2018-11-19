@@ -2,7 +2,7 @@ package com.codebrig.phenomena.code.analysis.language.java.dependence
 
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
-import com.codebrig.omnisrc.schema.filter.TypeFilter
+import com.codebrig.omnisrc.observe.filter.TypeFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.CodeObserverVisitor
