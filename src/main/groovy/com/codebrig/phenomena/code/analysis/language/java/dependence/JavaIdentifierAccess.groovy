@@ -4,7 +4,7 @@ import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNodeFilter
 import com.codebrig.omnisrc.observe.filter.LanguageFilter
 import com.codebrig.omnisrc.observe.filter.MultiFilter
-import com.codebrig.omnisrc.observe.filter.WhitelistRoleFilter
+import com.codebrig.omnisrc.observe.filter.RoleFilter
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.dependence.IdentifierAccessObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -29,9 +29,9 @@ import com.google.common.io.Resources
 class JavaIdentifierAccess extends IdentifierAccessObserver {
 
     private static final MultiFilter variableDeclarationFilter = MultiFilter.matchAll(new LanguageFilter(SourceLanguage.Java),
-            new WhitelistRoleFilter("DECLARATION"), new WhitelistRoleFilter("VARIABLE"))
+            new RoleFilter("DECLARATION"), new RoleFilter("VARIABLE"))
     private static final MultiFilter identifierFilter = MultiFilter.matchAll(new LanguageFilter(SourceLanguage.Java),
-            new WhitelistRoleFilter("IDENTIFIER"))
+            new RoleFilter("IDENTIFIER"))
     private static final Map<Node, ContextualNode> contextualDeclarations = new IdentityHashMap<>()
     private final JavaParserIntegration integration
 

@@ -2,9 +2,9 @@ package com.codebrig.phenomena.code.analysis.language.java.dependence
 
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
-import com.codebrig.omnisrc.observe.filter.BlacklistRoleFilter
 import com.codebrig.omnisrc.observe.filter.MultiFilter
 import com.codebrig.omnisrc.observe.filter.NameFilter
+import com.codebrig.omnisrc.observe.filter.RoleFilter
 import com.codebrig.omnisrc.observe.filter.SimpleNameFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.PhenomenaTest
@@ -75,8 +75,7 @@ class JavaIdentifierAccessTest extends PhenomenaTest {
         assertNotNull(xArg)
         assertNotNull(yArg)
 
-        def notNameFilter = new BlacklistRoleFilter()
-        notNameFilter.rejectRole("NAME")
+        def notNameFilter = new RoleFilter().reject("NAME")
         def xVar = MultiFilter.matchAll(notNameFilter, new SimpleNameFilter("x")).getFilteredNodes(sourceNode)[0]
         def yVar = MultiFilter.matchAll(notNameFilter, new SimpleNameFilter("y")).getFilteredNodes(sourceNode)[0]
         assertNotNull(xVar)

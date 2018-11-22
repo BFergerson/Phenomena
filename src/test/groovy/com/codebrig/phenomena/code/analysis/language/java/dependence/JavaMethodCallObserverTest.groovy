@@ -37,7 +37,7 @@ class JavaMethodCallObserverTest extends PhenomenaTest {
             assertNotNull(contextualNode)
             def calledMethod = contextualNode.relationships.get(new ContextualNode.NodeRelationship("method_call"))
             assertNotNull(calledMethod)
-            assertEquals("CallMethod.b_method(int)", calledMethod.qualifiedName)
+            assertEquals("CallMethod.b_method(int)", calledMethod.name)
         }
     }
 
