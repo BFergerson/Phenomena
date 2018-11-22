@@ -34,18 +34,19 @@ class CyclomaticComplexity implements CodeObserver {
 
     CyclomaticComplexity() {
         functionFilter = new FunctionFilter()
-        complexityFilter = new MultiFilter(MultiFilter.MatchStyle.ANY)
-        complexityFilter.accept(new IfConditionalFilter())
-        complexityFilter.accept(new ElseIfConditionalFilter())
-        complexityFilter.accept(new WhileLoopFilter())
-        complexityFilter.accept(new DoWhileLoopFilter())
-        complexityFilter.accept(new ForLoopFilter())
-        complexityFilter.accept(new ForEachLoopFilter())
-        complexityFilter.accept(new SwitchCaseConditionalFilter())
-        complexityFilter.accept(new CatchFilter())
-        complexityFilter.accept(new AndOperatorFilter())
-        complexityFilter.accept(new OrOperatorFilter())
-        complexityFilter.accept(new TernaryOperatorFilter())
+        complexityFilter = MultiFilter.matchAny(
+                new IfConditionalFilter(),
+                new ElseIfConditionalFilter(),
+                new WhileLoopFilter(),
+                new DoWhileLoopFilter(),
+                new ForLoopFilter(),
+                new ForEachLoopFilter(),
+                new SwitchCaseConditionalFilter(),
+                new CatchFilter(),
+                new AndOperatorFilter(),
+                new OrOperatorFilter(),
+                new TernaryOperatorFilter()
+        )
     }
 
     @Override
