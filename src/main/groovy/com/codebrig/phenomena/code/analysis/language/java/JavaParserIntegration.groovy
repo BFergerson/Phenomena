@@ -1,5 +1,6 @@
 package com.codebrig.phenomena.code.analysis.language.java
 
+import com.codebrig.omnisrc.observe.structure.naming.JavaNaming
 import com.codebrig.phenomena.Phenomena
 import com.github.javaparser.JavaParser
 import com.github.javaparser.Position
@@ -77,16 +78,7 @@ class JavaParserIntegration {
         } else if (type.isVoidType()) {
             argumentSignature.append("void")
         } else if (type.isClassOrInterfaceType()) {
-            if ("String" == type.asString()) {
-                argumentSignature.append("java.lang.String")
-            } else if ("Object" == type.asString()) {
-                argumentSignature.append("java.lang.Object")
-            } else if ("Double" == type.asString()) {
-                argumentSignature.append("java.lang.Double")
-            } else {
-                argumentSignature.append(type as String)
-                //throw new RuntimeException("unsupported: " + it + " Type: " + it.class.name)
-            }
+            argumentSignature.append(JavaNaming.getJavaQualifiedName(type.asString()))
         } else {
             throw new RuntimeException("unsupported: " + type + " Type: " + type.class.name)
         }
