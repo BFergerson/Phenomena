@@ -33,7 +33,8 @@ class JavaIdentifierAccess extends IdentifierAccessObserver {
             new RoleFilter("DECLARATION"), new RoleFilter("VARIABLE")
     )
     private static final MultiFilter identifierFilter = MultiFilter.matchAll(
-            new LanguageFilter(SourceLanguage.Java), new RoleFilter("IDENTIFIER")
+            new LanguageFilter(SourceLanguage.Java),
+            new RoleFilter("IDENTIFIER")
     )
     private static final Map<Node, ContextualNode> contextualDeclarations = new IdentityHashMap<>()
     private final JavaParserIntegration integration
