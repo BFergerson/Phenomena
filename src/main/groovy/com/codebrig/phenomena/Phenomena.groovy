@@ -133,7 +133,7 @@ class Phenomena {
 
         def processedFile = new ProcessedSourceFile()
         if (visitor.saveToGrakn) {
-            processedFile.rootNodeId = Optional.of(visitor.getContextualNode(resp.uast).getData(CodeStructureObserver.SELF_ID))
+            processedFile.rootNodeId = Optional.ofNullable(visitor.getContextualNode(resp.uast).getData(CodeStructureObserver.SELF_ID))
         }
         processedFile.sourceFile = sourceFile
         processedFile.parseResponse = resp
