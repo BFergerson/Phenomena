@@ -99,7 +99,6 @@ class Phenomena {
             throw new IllegalStateException("Phenomena must be connected to Grakn before setting up the ontology")
         }
 
-        println "Setting up ontology"
         def tx = session.transaction(GraknTxType.WRITE)
         def graql = tx.graql()
         def query = graql.parse(schemaDefinition.replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", ""))
