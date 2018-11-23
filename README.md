@@ -6,9 +6,13 @@ This schema can be extended with custom definitions and inference rules which ar
 Phenomena comes with the following code observers:
 
 ### Structure
+
+#### Description
 [CodeStructureObserver](https://github.com/CodeBrig/Phenomena/blob/master/src/main/groovy/com/codebrig/phenomena/code/structure/CodeStructureObserver.groovy)
 is the base observer which is required to use Phenomena.
 This observer creates nodes and edges which contain the structure of the source code in the form of an abstract syntax graph.
+
+#### Observers
 
 | Structure                   | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
@@ -17,12 +21,20 @@ This observer creates nodes and edges which contain the structure of the source 
 
 ### Dependence
 
+#### Description
+
+#### Observers
+
 | Metric                      | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
 | Identifier access           | Java                               |
 | Method call                 | Java                               |
 
 ### Metric
+
+#### Description
+
+#### Observers
 
 | Metric                      | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
