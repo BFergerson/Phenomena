@@ -46,7 +46,16 @@ class Phenomena {
         init(new CodeStructureObserver())
     }
 
+    void init(List<CodeObserver> codeObservers) {
+        Objects.requireNonNull(codeObservers)
+        init(codeObservers.toArray(new CodeObserver[0]))
+    }
+
     void init(CodeObserver... codeObservers) {
+        if (codeObservers.length == 0) {
+            throw new IllegalArgumentException("Missing code observers")
+        }
+
         println "Initializing Phenomena (ver.$PHENOMENA_VERSION)"
         connectToBabelfish()
         connectToGrakn()
