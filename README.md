@@ -16,8 +16,8 @@ This observer creates nodes and edges which contain the structure of the source 
 
 | Structure                   | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Abstract syntax tree        | Go, Java, JavaScript, Python       |
-| Semantic roles              | Go, Java, JavaScript, Python       |
+| Abstract syntax tree        | [Go, Java, JavaScript, Python](https://github.com/CodeBrig/Phenomena/blob/v0.2-alpha/src/main/groovy/com/codebrig/phenomena/code/structure/CodeStructureObserver.groovy) |
+| Semantic roles              | [Go, Java, JavaScript, Python](https://github.com/CodeBrig/Phenomena/blob/v0.2-alpha/src/main/groovy/com/codebrig/phenomena/code/structure/CodeStructureObserver.groovy) |
 
 ### Dependence
 
@@ -27,8 +27,8 @@ This observer creates nodes and edges which contain the structure of the source 
 
 | Metric                      | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Identifier access           | Java                               |
-| Method call                 | Java                               |
+| Identifier access           | [Java](https://github.com/CodeBrig/Phenomena/blob/v0.2-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/language/java/dependence/JavaIdentifierAccess.groovy) |
+| Method call                 | [Java](https://github.com/CodeBrig/Phenomena/blob/v0.2-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/language/java/dependence/JavaMethodCallObserver.groovy) |
 
 ### Metric
 
