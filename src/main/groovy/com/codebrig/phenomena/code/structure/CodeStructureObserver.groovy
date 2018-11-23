@@ -35,7 +35,7 @@ class CodeStructureObserver implements CodeObserver {
 
     CodeStructureObserver(SourceNodeFilter filter) {
         this.filter = Objects.requireNonNull(filter)
-        this.includeIndividualSemanticRoles = true
+        this.includeIndividualSemanticRoles = false
         this.includeActualSemanticRoles = false
     }
 
