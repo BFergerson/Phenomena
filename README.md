@@ -19,6 +19,9 @@ This observer creates nodes and edges which contain the structure of the source 
 | Abstract syntax tree        | [Go, Java, JavaScript, Python](https://github.com/CodeBrig/Phenomena/blob/v0.2-alpha/src/main/groovy/com/codebrig/phenomena/code/structure/CodeStructureObserver.groovy) |
 | Semantic roles              | [Go, Java, JavaScript, Python](https://github.com/CodeBrig/Phenomena/blob/v0.2-alpha/src/main/groovy/com/codebrig/phenomena/code/structure/CodeStructureObserver.groovy) |
 
+#### Schema
+[OmniSRC_Omnilingual_Base_Structure (v0.3-alpha)](https://github.com/CodeBrig/OmniSRC/blob/v0.3-alpha/src/main/resources/schema/omnilingual/OmniSRC_Omnilingual_Base_Structure.gql)
+
 ### Dependence
 
 #### Description
@@ -39,6 +42,3 @@ This observer creates nodes and edges which contain the structure of the source 
 | Metric                      | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
 | Cyclomatic complexity       | [Go, Java, JavaScript, Python](https://github.com/CodeBrig/Phenomena/blob/v0.2-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/metric/CyclomaticComplexity.groovy) |
-
-#### Schema
-[OmniSRC_Omnilingual_Base_Structure (v0.3-alpha)](https://github.com/CodeBrig/OmniSRC/blob/v0.3-alpha/src/main/resources/schema/omnilingual/OmniSRC_Omnilingual_Base_Structure.gql)
