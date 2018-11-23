@@ -28,15 +28,19 @@ import com.google.common.io.Resources
  */
 class JavaIdentifierAccess extends IdentifierAccessObserver {
 
-    private static final MultiFilter variableDeclarationFilter = MultiFilter.matchAll(new LanguageFilter(SourceLanguage.Java),
-            new RoleFilter("DECLARATION"), new RoleFilter("VARIABLE"))
-    private static final MultiFilter identifierFilter = MultiFilter.matchAll(new LanguageFilter(SourceLanguage.Java),
-            new RoleFilter("IDENTIFIER"))
+    private static final MultiFilter variableDeclarationFilter = MultiFilter.matchAll(
+            new LanguageFilter(SourceLanguage.Java),
+            new RoleFilter("DECLARATION"), new RoleFilter("VARIABLE")
+    )
+    private static final MultiFilter identifierFilter = MultiFilter.matchAll(
+            new LanguageFilter(SourceLanguage.Java),
+            new RoleFilter("IDENTIFIER")
+    )
     private static final Map<Node, ContextualNode> contextualDeclarations = new IdentityHashMap<>()
     private final JavaParserIntegration integration
 
     JavaIdentifierAccess(JavaParserIntegration integration) {
-        this.integration = integration
+        this.integration = Objects.requireNonNull(integration)
     }
 
     @Override
@@ -47,10 +51,7 @@ class JavaIdentifierAccess extends IdentifierAccessObserver {
 
         if (variableDeclarationFilter.evaluate(node)) {
             contextualDeclarations.put(javaParserNode, node)
-            return
-        }
-
-        if (javaParserNode instanceof NameExpr) {
+        } else if (javaParserNode instanceof NameExpr) {
             def nodeType = JavaParserFacade.get(integration.typeSolver).solve(javaParserNode)
             if (nodeType.isSolved()) {
                 def declaration = nodeType.correspondingDeclaration
@@ -95,8 +96,7 @@ class JavaIdentifierAccess extends IdentifierAccessObserver {
 
     @Override
     String getSchema() {
-        return super.getSchema() + " " +
-                Resources.toString(Resources.getResource(
-                        "schema/dependence/language/java/identifier-access-schema.gql"), Charsets.UTF_8)
+        return super.getSchema() + " " + Resources.toString(Resources.getResource(
+                "schema/dependence/language/java/identifier-access-schema.gql"), Charsets.UTF_8)
     }
 }
