@@ -26,6 +26,8 @@ This observer creates nodes and edges which contain the structure of the source 
 
 #### Description
 
+The dependence observers create edges between program statements and the preceding statements of which they depend on.
+
 #### Observers
 
 | Metric                      | Supported language(s)              |
@@ -36,6 +38,8 @@ This observer creates nodes and edges which contain the structure of the source 
 ### Metric
 
 #### Description
+
+The metric observers create attributes on correlating source code nodes with calculated metric data.
 
 #### Observers
 
