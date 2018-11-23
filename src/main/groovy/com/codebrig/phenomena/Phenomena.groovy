@@ -61,6 +61,10 @@ class Phenomena {
     void connectToGrakn() {
         println "Connecting to Grakn"
         session = new Grakn(new SimpleURI(graknURI)).session(Keyspace.of(graknKeyspace))
+
+        //test connection
+        def testTx = session.transaction(GraknTxType.READ)
+        testTx.close()
     }
 
     void setupVisitor(CodeObserverVisitor visitor) {
