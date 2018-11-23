@@ -77,6 +77,10 @@ class CyclomaticComplexity implements CodeObserver {
 
     @Override
     String getSchema() {
+        return getFullSchema()
+    }
+
+    static String getFullSchema() {
         return Resources.toString(Resources.getResource(
                 "schema/metric/cyclomatic-complexity-schema.gql"), Charsets.UTF_8)
     }

@@ -17,4 +17,13 @@ abstract class MethodCallObserver implements CodeObserver {
         return Resources.toString(Resources.getResource(
                 "schema/dependence/method-call-schema.gql"), Charsets.UTF_8)
     }
+
+    static String getFullSchema() {
+        //todo: smarter
+        def schemaDefinition = Resources.toString(Resources.getResource(
+                "schema/dependence/method-call-schema.gql"), Charsets.UTF_8) + " "
+        schemaDefinition += Resources.toString(Resources.getResource(
+                "schema/dependence/language/java/method-call-schema.gql"), Charsets.UTF_8)
+        return schemaDefinition.replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", "")
+    }
 }
