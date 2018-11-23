@@ -5,6 +5,7 @@ import com.codebrig.omnisrc.SourceNodeFilter
 import com.codebrig.omnisrc.observe.filter.LanguageFilter
 import com.codebrig.omnisrc.observe.filter.MultiFilter
 import com.codebrig.omnisrc.observe.filter.RoleFilter
+import com.codebrig.omnisrc.observe.filter.TypeFilter
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.dependence.IdentifierAccessObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -30,7 +31,8 @@ class JavaIdentifierAccess extends IdentifierAccessObserver {
 
     private static final MultiFilter variableDeclarationFilter = MultiFilter.matchAll(
             new LanguageFilter(SourceLanguage.Java),
-            new RoleFilter("DECLARATION"), new RoleFilter("VARIABLE")
+            new RoleFilter("DECLARATION"), new RoleFilter("VARIABLE"),
+            new TypeFilter().reject("VariableDeclarationFragment")
     )
     private static final MultiFilter identifierFilter = MultiFilter.matchAll(
             new LanguageFilter(SourceLanguage.Java),

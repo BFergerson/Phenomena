@@ -11,6 +11,8 @@ import com.github.javaparser.ast.body.*
 import com.github.javaparser.ast.expr.Name
 import com.github.javaparser.ast.expr.NameExpr
 import com.github.javaparser.ast.expr.SimpleName
+import com.github.javaparser.ast.expr.VariableDeclarationExpr
+import com.github.javaparser.ast.stmt.ExpressionStmt
 import com.github.javaparser.ast.type.ArrayType
 import com.github.javaparser.ast.type.Type
 import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver
@@ -125,6 +127,9 @@ class JavaParserIntegration {
         }
     }
 
+    /**
+     * todo: smarter
+     */
     static Node getNodeAtRange(Node n, Range r) {
         def foundNode
         n.childNodes.each {
@@ -144,12 +149,21 @@ class JavaParserIntegration {
         return foundNode
     }
 
+    /**
+     * todo: smarter
+     */
     static Node getNameNodeAtRange(Node n, Range r) {
         def foundNode
         n.childNodes.each {
             if (foundNode == null && it.range.isPresent()) {
                 def range = it.range.get()
-                if (range.begin == r.begin
+                if (range.begin == r.begin && range.end == r.end && it instanceof ExpressionStmt) {
+                    if (it.expression instanceof VariableDeclarationExpr) {
+                        foundNode = ((VariableDeclarationExpr) it.expression).variables.get(0).getName()
+                    } else {
+                        throw new UnsupportedOperationException("Expression: " + it.expression)
+                    }
+                } else if (range.begin == r.begin
                         && (it instanceof SimpleName || it instanceof Name || it instanceof NameExpr)) {
                     foundNode = it
                 } else if (range.begin == r.begin && it instanceof Parameter) {

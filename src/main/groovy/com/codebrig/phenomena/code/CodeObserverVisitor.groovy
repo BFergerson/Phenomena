@@ -70,7 +70,7 @@ class CodeObserverVisitor {
                 contextualRootNode.save(queryBuilder)
             }
         }
-        visitRecursively(queryBuilder, sourceFile, contextualRootNode, contextualRootNode.children)
+        visitCompletely(queryBuilder, sourceFile, contextualRootNode)
 
         previousNodes.clear()
         if (saveToGrakn) {
@@ -85,29 +85,39 @@ class CodeObserverVisitor {
         transaction?.close()
     }
 
-    private void visitRecursively(QueryBuilder qb, File sourceFile,
-                                  ContextualNode parentNode, Iterator<SourceNode> childNodes) {
-        childNodes.each { child ->
-            contextualNodes.putIfAbsent(child.underlyingNode, new ContextualNode(this, child, sourceFile))
-            def contextualChildNode = contextualNodes.get(child.underlyingNode)
+    private void visitCompletely(QueryBuilder qb, File sourceFile, ContextualNode rootSourceNode) {
+        Stack<ContextualNode> parentStack = new Stack<>()
+        Stack<Iterator<SourceNode>> childrenStack = new Stack<>()
+        parentStack.push(rootSourceNode)
+        childrenStack.push(rootSourceNode.children)
 
-            def observed = false
-            observers.each {
-                if (it.filter.evaluate(contextualChildNode)) {
-                    observed = true
-                    if (previousNodes.containsKey(it)) {
-                        it.applyObservation(contextualChildNode, parentNode, previousNodes.get(it))
-                    } else {
-                        it.applyObservation(contextualChildNode, parentNode, null)
+        while (!parentStack.isEmpty() && !childrenStack.isEmpty()) {
+            def parent = parentStack.pop()
+            def children = childrenStack.pop()
+
+            children.each {
+                contextualNodes.putIfAbsent(it.underlyingNode, new ContextualNode(this, it, sourceFile))
+                def contextualChildNode = contextualNodes.get(it.underlyingNode)
+
+                def observed = false
+                observers.each {
+                    if (it.filter.evaluate(contextualChildNode)) {
+                        observed = true
+                        if (previousNodes.containsKey(it)) {
+                            it.applyObservation(contextualChildNode, parent, previousNodes.get(it))
+                        } else {
+                            it.applyObservation(contextualChildNode, parent, null)
+                        }
+                        previousNodes.put(it, contextualChildNode)
                     }
-                    previousNodes.put(it, contextualChildNode)
                 }
-            }
-            if (observed && saveToGrakn) {
-                contextualChildNode.save(qb)
-            }
+                if (observed && saveToGrakn) {
+                    contextualChildNode.save(qb)
+                }
 
-            visitRecursively(qb, sourceFile, contextualChildNode, child.children)
+                parentStack.push(contextualChildNode)
+                childrenStack.push(contextualChildNode.children)
+            }
         }
     }
 
