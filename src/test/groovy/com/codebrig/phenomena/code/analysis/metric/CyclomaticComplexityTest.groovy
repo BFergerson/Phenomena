@@ -103,4 +103,76 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         assertNotNull(processedFile.rootNodeId)
         println processedFile.rootNodeId
     }
+
+    @Test
+    void goCyclomaticComplexity_noSave() {
+        def file = new File(".", "/src/test/resources/go/CyclomaticComplexity.go")
+        def language = SourceLanguage.getSourceLanguage(file)
+        def phenomena = new Phenomena()
+        def visitor = new CodeObserverVisitor()
+        visitor.addObserver(new CyclomaticComplexity())
+        phenomena.setupVisitor(visitor)
+        phenomena.connectToBabelfish()
+        def processedFile = phenomena.processSourceFile(file, language)
+
+        def foundSortaComplex = false
+        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("sortaComplex"))
+                .getFilteredNodes(language, processedFile.parseResponse.uast).each {
+            foundSortaComplex = true
+            def contextualNode = visitor.getContextualNode(it.underlyingNode)
+            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomaticComplexity")
+            assertEquals(7, cyclomaticComplexity)
+        }
+        assertTrue(foundSortaComplex)
+    }
+
+    @Test
+    void goCyclomaticComplexity_withSave() {
+        def file = new File(".", "/src/test/resources/go/CyclomaticComplexity.go")
+        def language = SourceLanguage.getSourceLanguage(file)
+        def phenomena = new Phenomena()
+        phenomena.connectToBabelfish()
+        phenomena.connectToGrakn()
+        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexity())
+        phenomena.setupOntology()
+        def processedFile = phenomena.processSourceFile(file, language)
+        assertNotNull(processedFile.rootNodeId)
+        println processedFile.rootNodeId
+    }
+
+    @Test
+    void javascriptCyclomaticComplexity_noSave() {
+        def file = new File(".", "/src/test/resources/javascript/CyclomaticComplexity.js")
+        def language = SourceLanguage.getSourceLanguage(file)
+        def phenomena = new Phenomena()
+        def visitor = new CodeObserverVisitor()
+        visitor.addObserver(new CyclomaticComplexity())
+        phenomena.setupVisitor(visitor)
+        phenomena.connectToBabelfish()
+        def processedFile = phenomena.processSourceFile(file, language)
+
+        def foundSortaComplex = false
+        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("sortaComplex"))
+                .getFilteredNodes(language, processedFile.parseResponse.uast).each {
+            foundSortaComplex = true
+            def contextualNode = visitor.getContextualNode(it.underlyingNode)
+            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomaticComplexity")
+            assertEquals(7, cyclomaticComplexity)
+        }
+        assertTrue(foundSortaComplex)
+    }
+
+    @Test
+    void javascriptCyclomaticComplexity_withSave() {
+        def file = new File(".", "/src/test/resources/javascript/CyclomaticComplexity.js")
+        def language = SourceLanguage.getSourceLanguage(file)
+        def phenomena = new Phenomena()
+        phenomena.connectToBabelfish()
+        phenomena.connectToGrakn()
+        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexity())
+        phenomena.setupOntology()
+        def processedFile = phenomena.processSourceFile(file, language)
+        assertNotNull(processedFile.rootNodeId)
+        println processedFile.rootNodeId
+    }
 }
