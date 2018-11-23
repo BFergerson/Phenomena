@@ -21,7 +21,7 @@ import java.util.stream.Stream
 import static groovy.io.FileType.FILES
 
 /**
- * todo: description
+ * Main entry-point used to parse, process, and store source code files
  *
  * @version 0.2
  * @since 0.1

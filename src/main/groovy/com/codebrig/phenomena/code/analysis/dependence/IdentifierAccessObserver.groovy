@@ -5,7 +5,7 @@ import com.google.common.base.Charsets
 import com.google.common.io.Resources
 
 /**
- * todo: description
+ * Creates edges between variable usages and their declarations
  *
  * @version 0.2
  * @since 0.2

@@ -4,7 +4,7 @@ import gopkg.in.bblfsh.sdk.v1.protocol.generated.ParseResponse
 import groovy.transform.Canonical
 
 /**
- * todo: description
+ * Represents a source code file which as been processed
  *
  * @version 0.2
  * @since 0.1

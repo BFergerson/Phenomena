@@ -20,7 +20,7 @@ import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeS
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver
 
 /**
- * todo: description
+ * Used to integrate JavaParser AST nodes
  *
  * @version 0.2
  * @since 0.2

@@ -6,7 +6,8 @@ import com.codebrig.omnisrc.observe.filter.WildcardFilter
 import javax.validation.constraints.NotNull
 
 /**
- * todo: description
+ * Represents an entity which observers the properties of source code nodes
+ * in order to extract/calculate additional source code properties.
  *
  * @version 0.2
  * @since 0.1

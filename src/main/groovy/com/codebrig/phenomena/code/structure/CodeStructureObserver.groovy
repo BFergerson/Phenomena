@@ -14,7 +14,8 @@ import scala.collection.JavaConverters
 import java.util.stream.Collectors
 
 /**
- * todo: description
+ * The code structure observer creates nodes and edges which contain
+ * the structure of the source code in the form of an abstract syntax graph.
  *
  * @version 0.2
  * @since 0.1

@@ -8,7 +8,7 @@ import com.codebrig.omnisrc.SourceNode
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
 
 /**
- * todo: description
+ * Used to execute source code observers over source code files
  *
  * @version 0.2
  * @since 0.1

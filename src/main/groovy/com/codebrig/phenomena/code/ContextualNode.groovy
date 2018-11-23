@@ -13,7 +13,8 @@ import groovy.transform.Canonical
 import static ai.grakn.graql.Graql.var
 
 /**
- * todo: description
+ * Represents a source code node (AST node) which
+ * has additional contextual data associated to it.
  *
  * @version 0.2
  * @since 0.1
