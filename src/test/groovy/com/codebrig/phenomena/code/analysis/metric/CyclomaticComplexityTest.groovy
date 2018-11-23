@@ -31,14 +31,14 @@ class CyclomaticComplexityTest extends PhenomenaTest {
                 .getFilteredNodes(language, processedFile.parseResponse.uast).each {
             foundOuter = true
             def contextualNode = visitor.getContextualNode(it.underlyingNode)
-            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomatic_complexity")
+            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomaticComplexity")
             assertEquals(1, cyclomaticComplexity)
         }
         MultiFilter.matchAll(new FunctionFilter(), new NameFilter("inner_increment"))
                 .getFilteredNodes(language, processedFile.parseResponse.uast).each {
             foundInner = true
             def contextualNode = visitor.getContextualNode(it.underlyingNode)
-            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomatic_complexity")
+            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomaticComplexity")
             assertEquals(2, cyclomaticComplexity)
         }
         assertTrue(foundOuter)
@@ -76,14 +76,14 @@ class CyclomaticComplexityTest extends PhenomenaTest {
                 .getFilteredNodes(language, processedFile.parseResponse.uast).each {
             foundCheckForError = true
             def contextualNode = visitor.getContextualNode(it.underlyingNode)
-            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomatic_complexity")
+            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomaticComplexity")
             assertEquals(4, cyclomaticComplexity)
         }
         MultiFilter.matchAll(new FunctionFilter(), new NameFilter("isReady"))
                 .getFilteredNodes(language, processedFile.parseResponse.uast).each {
             foundIsReady = true
             def contextualNode = visitor.getContextualNode(it.underlyingNode)
-            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomatic_complexity")
+            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomaticComplexity")
             assertEquals(1, cyclomaticComplexity)
         }
         assertTrue(foundCheckForError)

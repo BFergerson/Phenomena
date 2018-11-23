@@ -66,7 +66,7 @@ class CyclomaticComplexity implements CodeObserver {
                 }
             }
         }
-        node.hasAttribute("cyclomatic_complexity", cyclomaticComplexity as long)
+        node.hasAttribute("cyclomaticComplexity", cyclomaticComplexity as long)
     }
 
     @Override
