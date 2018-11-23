@@ -43,6 +43,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         }
         assertTrue(foundOuter)
         assertTrue(foundInner)
+        phenomena.close()
     }
 
     @Test
@@ -57,6 +58,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
         println processedFile.rootNodeId
+        phenomena.close()
     }
 
     @Test
@@ -88,6 +90,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         }
         assertTrue(foundCheckForError)
         assertTrue(foundIsReady)
+        phenomena.close()
     }
 
     @Test
@@ -102,6 +105,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
         println processedFile.rootNodeId
+        phenomena.close()
     }
 
     @Test
@@ -124,6 +128,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
             assertEquals(7, cyclomaticComplexity)
         }
         assertTrue(foundSortaComplex)
+        phenomena.close()
     }
 
     @Test
@@ -138,6 +143,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
         println processedFile.rootNodeId
+        phenomena.close()
     }
 
     @Test
@@ -160,6 +166,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
             assertEquals(7, cyclomaticComplexity)
         }
         assertTrue(foundSortaComplex)
+        phenomena.close()
     }
 
     @Test
@@ -174,5 +181,6 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
         println processedFile.rootNodeId
+        phenomena.close()
     }
 }

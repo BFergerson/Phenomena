@@ -15,5 +15,6 @@ class ImportJava {
         phenomena.init()
         phenomena.setupOntology()
         println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        phenomena.close()
     }
 }

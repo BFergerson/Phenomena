@@ -54,6 +54,7 @@ class JavaIdentifierAccessTest extends PhenomenaTest {
         def yayAccessTo = contextualYay.relationships.get(new ContextualNode.NodeRelationship("identifier_access"))
         assertEquals(arrayListArg.underlyingNode, arrayListAccessTo.underlyingNode)
         assertEquals(yayArg.underlyingNode, yayAccessTo.underlyingNode)
+        phenomena.close()
     }
 
     @Test
@@ -90,6 +91,7 @@ class JavaIdentifierAccessTest extends PhenomenaTest {
         def yAccessTo = contextualY.relationships.get(new ContextualNode.NodeRelationship("identifier_access"))
         assertEquals(xArg.underlyingNode, xAccessTo.underlyingNode)
         assertEquals(yArg.underlyingNode, yAccessTo.underlyingNode)
+        phenomena.close()
     }
 
     @Test
@@ -102,5 +104,6 @@ class JavaIdentifierAccessTest extends PhenomenaTest {
         phenomena.setupVisitor(new CodeStructureObserver(), new JavaIdentifierAccess(new JavaParserIntegration(phenomena)))
         phenomena.setupOntology()
         println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        phenomena.close()
     }
 }

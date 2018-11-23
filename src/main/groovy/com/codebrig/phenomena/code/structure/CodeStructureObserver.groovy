@@ -50,7 +50,11 @@ class CodeStructureObserver implements CodeObserver {
                         node.hasAttribute(literalAttribute, Boolean.valueOf(node.token))
                         break
                     case StructureLiteral.numberValueLiteral():
-                        node.hasAttribute(literalAttribute, Long.valueOf(node.token))
+                        if (node.token.endsWith("L")) {
+                            node.hasAttribute(literalAttribute, Long.valueOf(node.token.substring(0, node.token.length() - 1)))
+                        } else {
+                            node.hasAttribute(literalAttribute, Long.valueOf(node.token))
+                        }
                         break
                     case StructureLiteral.floatValueLiteral():
                         node.hasAttribute(literalAttribute, Float.valueOf(node.token))

@@ -39,6 +39,7 @@ class JavaMethodCallObserverTest extends PhenomenaTest {
             assertNotNull(calledMethod)
             assertEquals("CallMethod.b_method(int)", calledMethod.name)
         }
+        phenomena.close()
     }
 
     @Test
@@ -51,6 +52,7 @@ class JavaMethodCallObserverTest extends PhenomenaTest {
         phenomena.setupVisitor(new CodeStructureObserver(), new JavaMethodCallObserver(new JavaParserIntegration(phenomena)))
         phenomena.setupOntology()
         println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        phenomena.close()
     }
 
     @Test
@@ -63,5 +65,6 @@ class JavaMethodCallObserverTest extends PhenomenaTest {
         phenomena.setupVisitor(new CodeStructureObserver(), new JavaMethodCallObserver(new JavaParserIntegration(phenomena)))
         phenomena.setupOntology()
         println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        phenomena.close()
     }
 }
