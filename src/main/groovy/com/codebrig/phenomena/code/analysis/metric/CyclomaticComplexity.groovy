@@ -55,6 +55,7 @@ class CyclomaticComplexity implements CodeObserver {
         def cyclomaticComplexity = 1
         def stack = new Stack<SourceNode>()
         stack.push(node)
+
         while (!stack.isEmpty()) {
             stack.pop().children.each {
                 // don't follow inner functions (python, go, etc)
