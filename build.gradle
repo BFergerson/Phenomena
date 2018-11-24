@@ -25,7 +25,7 @@ dependencies {
     implementation group: 'ai.grakn', name: 'client-java', version: '1.4.2'
     implementation group: 'ai.grakn', name: 'migration-json', version: '1.4.2'
     implementation 'org.bblfsh:bblfsh-client:1.10.1'
-    implementation 'com.github.codebrig:omnisrc:e7d27a417d'
+    implementation 'com.github.codebrig:omnisrc:d7c1e17cae'
 }
 
 dockerCompose {
