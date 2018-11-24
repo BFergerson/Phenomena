@@ -115,19 +115,23 @@ class Phenomena {
         tx.commit()
     }
 
-    Stream<ProcessedSourceFile> processScanPath() {
+    Stream<ProcessedSourceFile> processScanPath() throws ParseException {
         if (visitor == null) {
             throw new IllegalStateException("Phenomena must be initialized before processing source code")
         }
         return Streams.stream(new TransformIterator(sourceFilesInScanPath.iterator(), new ProcessSourceFileTransformer()))
     }
 
-    ProcessedSourceFile processSourceFile(File sourceFile, SourceLanguage language) {
+    ProcessedSourceFile processSourceFile(File sourceFile, SourceLanguage language) throws ParseException {
         if (visitor == null) {
             throw new IllegalStateException("Phenomena must be initialized before processing source code")
         }
 
         def resp = parseSourceFile(sourceFile, language)
+        if (!resp.status().isOk()) {
+            throw new ParseException("Failed to parse: $sourceFile\nReason(s): " + resp.errors().toString(), resp)
+        }
+
         println "Processing $language file: " + sourceFile
         visitor.visit(language, resp.uast, sourceFile)
 
