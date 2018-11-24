@@ -12,13 +12,19 @@ import gopkg.in.bblfsh.sdk.v1.protocol.generated.ParseResponse
 class ParseException extends RuntimeException {
 
     private ParseResponse parseResponse
+    private File sourceFile
 
-    ParseException(String message, ParseResponse parseResponse) {
+    ParseException(String message, ParseResponse parseResponse, File sourceFile) {
         super(Objects.requireNonNull(message))
         this.parseResponse = Objects.requireNonNull(parseResponse)
+        this.sourceFile = sourceFile
     }
 
     ParseResponse getParseResponse() {
         return parseResponse
+    }
+
+    File getSourceFile() {
+        return sourceFile
     }
 }

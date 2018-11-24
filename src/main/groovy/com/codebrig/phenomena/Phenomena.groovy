@@ -129,7 +129,8 @@ class Phenomena {
 
         def resp = parseSourceFile(sourceFile, language)
         if (!resp.status().isOk()) {
-            throw new ParseException("Failed to parse: $sourceFile\nReason(s): " + resp.errors().toString(), resp)
+            throw new ParseException("Failed to parse: $sourceFile\nReason(s): " + resp.errors().toString(),
+                    resp, sourceFile)
         }
 
         println "Processing $language file: " + sourceFile
