@@ -20,8 +20,8 @@ class CodeObserverVisitor {
 
     private final Grakn.Session session
     private final List<CodeObserver> observers
-    private final Map<Integer, ContextualNode> previousNodes
-    private final Map<Integer, ContextualNode> contextualNodes
+    private final ConcurrentHashMap<Integer, ContextualNode> previousNodes
+    private final ConcurrentHashMap<Integer, ContextualNode> contextualNodes
     private final boolean saveToGrakn
 
     CodeObserverVisitor() {
@@ -76,9 +76,12 @@ class CodeObserverVisitor {
 
         previousNodes.clear()
         if (saveToGrakn) {
-            contextualNodes.values().each {
-                it.save(queryBuilder)
-            }
+            contextualNodes.forEach({ key, node ->
+                node.save(queryBuilder)
+                if (node.underlyingNode != node.rootNode) {
+                    contextualNodes.remove(key)
+                }
+            })
         }
         observers.each {
             it.reset()
