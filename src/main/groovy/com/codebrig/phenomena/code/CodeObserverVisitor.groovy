@@ -7,6 +7,8 @@ import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
 
+import java.util.concurrent.ConcurrentHashMap
+
 /**
  * Used to execute source code observers over source code files
  *
@@ -18,24 +20,24 @@ class CodeObserverVisitor {
 
     private final Grakn.Session session
     private final List<CodeObserver> observers
-    private final IdentityHashMap<CodeObserver, ContextualNode> previousNodes
-    private final IdentityHashMap<Node, ContextualNode> contextualNodes
+    private final Map<Integer, ContextualNode> previousNodes
+    private final Map<Integer, ContextualNode> contextualNodes
     private final boolean saveToGrakn
 
     CodeObserverVisitor() {
         this.saveToGrakn = false
         this.session = null
         this.observers = new ArrayList<>()
-        this.previousNodes = new IdentityHashMap<>()
-        this.contextualNodes = new IdentityHashMap<>()
+        this.previousNodes = new ConcurrentHashMap<>()
+        this.contextualNodes = new ConcurrentHashMap<>()
     }
 
     CodeObserverVisitor(Grakn.Session session) {
         this.saveToGrakn = true
         this.session = Objects.requireNonNull(session)
         this.observers = new ArrayList<>()
-        this.previousNodes = new IdentityHashMap<>()
-        this.contextualNodes = new IdentityHashMap<>()
+        this.previousNodes = new ConcurrentHashMap<>()
+        this.contextualNodes = new ConcurrentHashMap<>()
     }
 
     void addObserver(CodeObserver observer) {
@@ -49,14 +51,14 @@ class CodeObserverVisitor {
     void visit(SourceLanguage language, Node rootNode, File sourceFile) {
         Objects.requireNonNull(language)
         Objects.requireNonNull(rootNode)
-        contextualNodes.putIfAbsent(rootNode, new ContextualNode(this, rootNode, sourceFile, language, rootNode))
+        contextualNodes.putIfAbsent(System.identityHashCode(rootNode), new ContextualNode(this, rootNode, sourceFile, language, rootNode))
 
         def observed = false
-        def contextualRootNode = contextualNodes.get(rootNode)
+        def contextualRootNode = contextualNodes.get(System.identityHashCode(rootNode))
         observers.each {
             if (it.filter.evaluate(contextualRootNode)) {
                 observed = true
-                previousNodes.put(it, contextualRootNode)
+                previousNodes.put(System.identityHashCode(it), contextualRootNode)
                 it.applyObservation(contextualRootNode, null, null)
             }
         }
@@ -96,19 +98,19 @@ class CodeObserverVisitor {
             def children = childrenStack.pop()
 
             children.each {
-                contextualNodes.putIfAbsent(it.underlyingNode, new ContextualNode(this, it, sourceFile))
-                def contextualChildNode = contextualNodes.get(it.underlyingNode)
+                contextualNodes.putIfAbsent(System.identityHashCode(it.underlyingNode), new ContextualNode(this, it, sourceFile))
+                def contextualChildNode = contextualNodes.get(System.identityHashCode(it.underlyingNode))
 
                 def observed = false
                 observers.each {
                     if (it.filter.evaluate(contextualChildNode)) {
                         observed = true
-                        if (previousNodes.containsKey(it)) {
-                            it.applyObservation(contextualChildNode, parent, previousNodes.get(it))
+                        if (previousNodes.containsKey(System.identityHashCode(it))) {
+                            it.applyObservation(contextualChildNode, parent, previousNodes.get(System.identityHashCode(it)))
                         } else {
                             it.applyObservation(contextualChildNode, parent, null)
                         }
-                        previousNodes.put(it, contextualChildNode)
+                        previousNodes.put(System.identityHashCode(it), contextualChildNode)
                     }
                 }
                 if (observed && saveToGrakn) {
@@ -122,7 +124,7 @@ class CodeObserverVisitor {
     }
 
     ContextualNode getContextualNode(Node node) {
-        return contextualNodes.get(node)
+        return contextualNodes.get(System.identityHashCode(node))
     }
 
     boolean getSaveToGrakn() {
