@@ -50,18 +50,10 @@ class CodeStructureObserver implements CodeObserver {
                         node.hasAttribute(literalAttribute, Boolean.valueOf(node.token))
                         break
                     case StructureLiteral.numberValueLiteral():
-                        if (node.token.toUpperCase().contains("X") && node.token.toUpperCase().endsWith("L")) {
-                            node.hasAttribute(literalAttribute, Long.decode(node.token.substring(0, node.token.length() - 1)))
-                        } else if (node.token.toUpperCase().contains("X")) {
-                            node.hasAttribute(literalAttribute, Long.decode(node.token))
-                        } else if (node.token.toUpperCase().endsWith("L")) {
-                            node.hasAttribute(literalAttribute, Long.valueOf(node.token.substring(0, node.token.length() - 1)))
-                        } else {
-                            node.hasAttribute(literalAttribute, Long.valueOf(node.token))
-                        }
+                        node.hasAttribute(literalAttribute, node.language.structureLiteral.toLong(node.token))
                         break
                     case StructureLiteral.floatValueLiteral():
-                        node.hasAttribute(literalAttribute, Double.valueOf(node.token))
+                        node.hasAttribute(literalAttribute, node.language.structureLiteral.toDouble(node.token))
                         break
                     default:
                         throw new UnsupportedOperationException(literalAttribute)
