@@ -61,7 +61,7 @@ class CodeStructureObserver implements CodeObserver {
                         }
                         break
                     case StructureLiteral.floatValueLiteral():
-                        node.hasAttribute(literalAttribute, Float.valueOf(node.token))
+                        node.hasAttribute(literalAttribute, Double.valueOf(node.token))
                         break
                     default:
                         throw new UnsupportedOperationException(literalAttribute)
