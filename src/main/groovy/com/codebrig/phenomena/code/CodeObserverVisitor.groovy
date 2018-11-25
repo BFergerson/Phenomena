@@ -20,8 +20,8 @@ class CodeObserverVisitor {
 
     private final Grakn.Session session
     private final List<CodeObserver> observers
-    private final ConcurrentHashMap<Integer, ContextualNode> previousNodes
-    private final ConcurrentHashMap<Integer, ContextualNode> contextualNodes
+    private final Map<Integer, ContextualNode> previousNodes
+    private final Map<Integer, ContextualNode> contextualNodes
     private final boolean saveToGrakn
 
     CodeObserverVisitor() {
