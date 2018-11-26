@@ -7,8 +7,11 @@ import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
 import com.codebrig.omnisrc.observe.ObservedLanguage
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import com.google.common.collect.Sets
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
 import groovy.transform.Canonical
+
+import java.util.concurrent.ConcurrentHashMap
 
 import static ai.grakn.graql.Graql.var
 
@@ -24,9 +27,9 @@ class ContextualNode extends SourceNode {
 
     private final CodeObserverVisitor context
     private final Map<DataKey<?>, Object> data = new IdentityHashMap<>()
-    private final Map<String, Object> attributes = new HashMap<>()
-    private final Map<NodeRelationship, ContextualNode> relationships = new HashMap<>()
-    private final Set<String> roles = new HashSet<>()
+    private final Map<String, Object> attributes = new ConcurrentHashMap<>()
+    private final Map<NodeRelationship, ContextualNode> relationships = new ConcurrentHashMap<>()
+    private final Set<String> roles = Sets.newConcurrentHashSet()
     private File sourceFile
     private String entityType
 
