@@ -107,14 +107,16 @@ class ContextualNode extends SourceNode {
         relationships.each {
             def selfId = getData(CodeStructureObserver.SELF_ID)
             def parentId = it.value.getData(CodeStructureObserver.SELF_ID)
-            qb.match(
-                    var("self").id(ConceptId.of(selfId)),
-                    var("parent").id(ConceptId.of(parentId))
-            ).insert(
-                    var().isa(it.key.relationshipType)
-                            .rel(it.key.selfRole, "self")
-                            .rel(it.key.parentRole, "parent")
-            ).execute()
+            if (parentId != null) {
+                qb.match(
+                        var("self").id(ConceptId.of(selfId)),
+                        var("parent").id(ConceptId.of(parentId))
+                ).insert(
+                        var().isa(it.key.relationshipType)
+                                .rel(it.key.selfRole, "self")
+                                .rel(it.key.parentRole, "parent")
+                ).execute()
+            }
         }
 
         //reset data

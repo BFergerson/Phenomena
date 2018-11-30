@@ -23,6 +23,7 @@ class CodeObserverVisitor {
     private final Map<Integer, ContextualNode> previousNodes
     private final Map<Integer, ContextualNode> contextualNodes
     private final boolean saveToGrakn
+    private ContextualNode rootObservedNode
 
     CodeObserverVisitor() {
         this.saveToGrakn = false
@@ -70,6 +71,9 @@ class CodeObserverVisitor {
             queryBuilder = transaction.graql()
             if (observed) {
                 contextualRootNode.save(queryBuilder)
+                if (rootObservedNode == null) {
+                    rootObservedNode = contextualRootNode
+                }
             }
         }
         visitCompletely(queryBuilder, sourceFile, contextualRootNode)
@@ -78,6 +82,10 @@ class CodeObserverVisitor {
         if (saveToGrakn) {
             contextualNodes.forEach({ key, node ->
                 node.save(queryBuilder)
+                if (rootObservedNode == null) {
+                    rootObservedNode = node
+                }
+
                 if (node.underlyingNode != node.rootNode) {
                     contextualNodes.remove(key)
                 }
@@ -118,12 +126,19 @@ class CodeObserverVisitor {
                 }
                 if (observed && saveToGrakn) {
                     contextualChildNode.save(qb)
+                    if (rootObservedNode == null) {
+                        rootObservedNode = contextualChildNode
+                    }
                 }
 
                 parentStack.push(contextualChildNode)
                 childrenStack.push(contextualChildNode.children)
             }
         }
+    }
+
+    ContextualNode getRootObservedNode() {
+        return rootObservedNode
     }
 
     ContextualNode getContextualNode(Node node) {
