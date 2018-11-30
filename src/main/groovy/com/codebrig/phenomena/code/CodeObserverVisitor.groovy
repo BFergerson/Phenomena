@@ -23,7 +23,6 @@ class CodeObserverVisitor {
     private final Map<Integer, ContextualNode> previousNodes
     private final Map<Integer, ContextualNode> contextualNodes
     private final boolean saveToGrakn
-    private ContextualNode rootObservedNode
 
     CodeObserverVisitor() {
         this.saveToGrakn = false
@@ -49,10 +48,11 @@ class CodeObserverVisitor {
         return new ArrayList<>(observers)
     }
 
-    void visit(SourceLanguage language, Node rootNode, File sourceFile) {
+    ContextualNode visit(SourceLanguage language, Node rootNode, File sourceFile) {
         Objects.requireNonNull(language)
         Objects.requireNonNull(rootNode)
-        contextualNodes.putIfAbsent(System.identityHashCode(rootNode), new ContextualNode(this, rootNode, sourceFile, language, rootNode))
+        contextualNodes.putIfAbsent(System.identityHashCode(rootNode),
+                new ContextualNode(this, rootNode, sourceFile, language, rootNode))
 
         def observed = false
         def contextualRootNode = contextualNodes.get(System.identityHashCode(rootNode))
@@ -64,6 +64,7 @@ class CodeObserverVisitor {
             }
         }
 
+        ContextualNode rootObservedNode
         def transaction = null
         def queryBuilder = null
         if (saveToGrakn) {
@@ -76,7 +77,11 @@ class CodeObserverVisitor {
                 }
             }
         }
-        visitCompletely(queryBuilder, sourceFile, contextualRootNode)
+        if (rootObservedNode == null) {
+            rootObservedNode = visitCompletely(queryBuilder, sourceFile, contextualRootNode)
+        } else {
+            visitCompletely(queryBuilder, sourceFile, contextualRootNode)
+        }
 
         previousNodes.clear()
         if (saveToGrakn) {
@@ -96,9 +101,11 @@ class CodeObserverVisitor {
         }
         transaction?.commit()
         transaction?.close()
+        return rootObservedNode
     }
 
-    private void visitCompletely(QueryBuilder qb, File sourceFile, ContextualNode rootSourceNode) {
+    private ContextualNode visitCompletely(QueryBuilder qb, File sourceFile, ContextualNode rootSourceNode) {
+        ContextualNode rootObservedNode = null
         Stack<ContextualNode> parentStack = new Stack<>()
         Stack<Iterator<SourceNode>> childrenStack = new Stack<>()
         parentStack.push(rootSourceNode)
@@ -136,9 +143,6 @@ class CodeObserverVisitor {
                 childrenStack.push(contextualChildNode.children)
             }
         }
-    }
-
-    ContextualNode getRootObservedNode() {
         return rootObservedNode
     }
 
