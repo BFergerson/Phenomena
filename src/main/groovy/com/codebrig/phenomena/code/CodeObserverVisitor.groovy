@@ -109,8 +109,9 @@ class CodeObserverVisitor {
             def children = childrenStack.pop()
 
             children.each {
-                contextualNodes.putIfAbsent(System.identityHashCode(it.underlyingNode), new ContextualNode(this, it, sourceFile))
-                def contextualChildNode = contextualNodes.get(System.identityHashCode(it.underlyingNode))
+                ContextualNode contextualChildNode
+                contextualNodes.putIfAbsent(System.identityHashCode(it.underlyingNode),
+                        contextualChildNode = new ContextualNode(this, it, sourceFile))
 
                 def observed = false
                 observers.each {
