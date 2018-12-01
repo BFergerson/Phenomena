@@ -26,7 +26,7 @@ import static ai.grakn.graql.Graql.var
 class ContextualNode extends SourceNode {
 
     private final CodeObserverVisitor context
-    private final Map<DataKey<?>, Object> data = new ConcurrentHashMap<>()
+    private final Map<DataKey<?>, Object> data = new IdentityHashMap<>()
     private final Map<String, Object> attributes = new ConcurrentHashMap<>()
     private final Map<NodeRelationship, ContextualNode> relationships = new ConcurrentHashMap<>()
     private final Set<String> roles = Sets.newConcurrentHashSet()
