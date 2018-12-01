@@ -20,7 +20,6 @@ class CodeObserverVisitor {
 
     private final Grakn.Session session
     private final List<CodeObserver> observers
-    private final Map<Integer, ContextualNode> previousNodes
     private final Map<Integer, ContextualNode> contextualNodes
     private final boolean saveToGrakn
 
@@ -28,7 +27,6 @@ class CodeObserverVisitor {
         this.saveToGrakn = false
         this.session = null
         this.observers = new ArrayList<>()
-        this.previousNodes = new ConcurrentHashMap<>()
         this.contextualNodes = new ConcurrentHashMap<>()
     }
 
@@ -36,7 +34,6 @@ class CodeObserverVisitor {
         this.saveToGrakn = true
         this.session = Objects.requireNonNull(session)
         this.observers = new ArrayList<>()
-        this.previousNodes = new ConcurrentHashMap<>()
         this.contextualNodes = new ConcurrentHashMap<>()
     }
 
@@ -59,8 +56,7 @@ class CodeObserverVisitor {
         observers.each {
             if (it.filter.evaluate(contextualRootNode)) {
                 observed = true
-                previousNodes.put(System.identityHashCode(it), contextualRootNode)
-                it.applyObservation(contextualRootNode, null, null)
+                it.applyObservation(contextualRootNode, null)
             }
         }
 
@@ -83,7 +79,6 @@ class CodeObserverVisitor {
             visitCompletely(queryBuilder, sourceFile, contextualRootNode)
         }
 
-        previousNodes.clear()
         if (saveToGrakn) {
             contextualNodes.forEach({ key, node ->
                 node.save(queryBuilder)
@@ -124,23 +119,23 @@ class CodeObserverVisitor {
                 observers.each {
                     if (it.filter.evaluate(contextualChildNode)) {
                         observed = true
-                        if (previousNodes.containsKey(System.identityHashCode(it))) {
-                            it.applyObservation(contextualChildNode, parent, previousNodes.get(System.identityHashCode(it)))
-                        } else {
-                            it.applyObservation(contextualChildNode, parent, null)
+                        it.applyObservation(contextualChildNode, parent)
+                    }
+                }
+                if (observed) {
+                    if (saveToGrakn) {
+                        contextualChildNode.save(qb)
+                        if (rootObservedNode == null) {
+                            rootObservedNode = contextualChildNode
                         }
-                        previousNodes.put(System.identityHashCode(it), contextualChildNode)
                     }
-                }
-                if (observed && saveToGrakn) {
-                    contextualChildNode.save(qb)
-                    if (rootObservedNode == null) {
-                        rootObservedNode = contextualChildNode
-                    }
-                }
 
-                parentStack.push(contextualChildNode)
-                childrenStack.push(contextualChildNode.children)
+                    parentStack.push(contextualChildNode)
+                    childrenStack.push(contextualChildNode.children)
+                } else {
+                    parentStack.push(parent)
+                    childrenStack.push(contextualChildNode.children)
+                }
             }
         }
         return rootObservedNode

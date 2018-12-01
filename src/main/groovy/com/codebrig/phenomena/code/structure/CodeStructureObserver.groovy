@@ -40,7 +40,7 @@ class CodeStructureObserver implements CodeObserver {
     }
 
     @Override
-    void applyObservation(ContextualNode node, ContextualNode parentNode, ContextualNode previousNode) {
+    void applyObservation(ContextualNode node, ContextualNode parentNode) {
         node.setEntityType(getEntityType(node))
         if (!node.token.isEmpty()) {
             if (node.isLiteralNode()) {
@@ -86,10 +86,9 @@ class CodeStructureObserver implements CodeObserver {
         }
 
         if (parentNode != null) {
-            if (previousNode != null && previousNode != parentNode &&
-                    previousNode.underlyingNode.children().contains(parentNode.underlyingNode)) {
+            if (!parentNode.underlyingNode.children().contains(node.underlyingNode)) {
                 //parent and child don't relate in any way besides parent/child
-                node.addRelationshipTo(previousNode, "parent_child_relation", "is_child", "is_parent")
+                node.addRelationshipTo(parentNode, "parent_child_relation", "is_child", "is_parent")
             } else {
                 def relation = node.language.key + "_" + ObservedLanguage.toValidRelation(node.underlyingNode.properties().get("internalRole").get())
                 def selfRole = "is_" + relation.substring(0, relation.length() - 8) + "role"

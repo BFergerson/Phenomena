@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull
  */
 trait CodeObserver {
 
-    abstract void applyObservation(ContextualNode node, ContextualNode parentNode, ContextualNode previousNode)
+    abstract void applyObservation(ContextualNode node, ContextualNode parentNode)
 
     void reset() {
     }

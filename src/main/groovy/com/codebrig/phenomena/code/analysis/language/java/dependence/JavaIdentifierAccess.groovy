@@ -46,7 +46,7 @@ class JavaIdentifierAccess extends IdentifierAccessObserver {
     }
 
     @Override
-    void applyObservation(ContextualNode node, ContextualNode parentNode, ContextualNode previousNode) {
+    void applyObservation(ContextualNode node, ContextualNode parentNode) {
         def unit = integration.parseFile(node.sourceFile)
         def range = JavaParserIntegration.toRange(node.underlyingNode.startPosition, node.underlyingNode.endPosition)
         def javaParserNode = JavaParserIntegration.getNameNodeAtRange(unit, range)

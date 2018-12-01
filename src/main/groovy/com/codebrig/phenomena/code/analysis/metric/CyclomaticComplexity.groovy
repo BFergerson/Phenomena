@@ -51,7 +51,7 @@ class CyclomaticComplexity implements CodeObserver {
     }
 
     @Override
-    void applyObservation(ContextualNode node, ContextualNode parentNode, ContextualNode previousNode) {
+    void applyObservation(ContextualNode node, ContextualNode parentNode) {
         def cyclomaticComplexity = 1
         def stack = new Stack<SourceNode>()
         stack.push(node)
