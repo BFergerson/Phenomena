@@ -92,10 +92,11 @@ class ContextualNode extends SourceNode {
                 nodePattern = nodePattern.has(it.key, it.value)
             }
             patterns.add(nodePattern)
-        }
-        roles.each {
-            patterns.add(var().isa(it)
-                    .rel("IS_" + it, "self"))
+
+            roles.each {
+                patterns.add(var().isa(it)
+                        .rel("IS_" + it, "self"))
+            }
         }
         if (!patterns.isEmpty()) {
             def result = qb.insert(patterns).execute()
