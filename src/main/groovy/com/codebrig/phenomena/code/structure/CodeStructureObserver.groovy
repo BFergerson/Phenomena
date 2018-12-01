@@ -52,7 +52,7 @@ class CodeStructureObserver implements CodeObserver {
                     case StructureLiteral.numberValueLiteral():
                         node.hasAttribute(literalAttribute, node.language.structureLiteral.toLong(node.token))
                         break
-                    case StructureLiteral.floatValueLiteral():
+                    case StructureLiteral.doubleValueLiteral():
                         node.hasAttribute(literalAttribute, node.language.structureLiteral.toDouble(node.token))
                         break
                     default:
@@ -62,6 +62,10 @@ class CodeStructureObserver implements CodeObserver {
                 node.hasAttribute("token", node.token)
             }
         }
+        if (node.language.structureNaming.isNamedNodeType(node)) {
+            node.hasAttribute("name", node.getName())
+        }
+
         def attributes = asJavaMap(node.underlyingNode.properties())
         attributes.keySet().stream().filter({ it != "internalRole" && it != "token" }).each {
             def attrName = ObservedLanguage.toValidAttribute(it)
@@ -73,7 +77,7 @@ class CodeStructureObserver implements CodeObserver {
                     case StructureLiteral.numberValueLiteral():
                         node.hasAttribute(attrName, Long.valueOf(attributes.get(it)))
                         break
-                    case StructureLiteral.floatValueLiteral():
+                    case StructureLiteral.doubleValueLiteral():
                         node.hasAttribute(attrName, Float.valueOf(attributes.get(it)))
                         break
                     default:
