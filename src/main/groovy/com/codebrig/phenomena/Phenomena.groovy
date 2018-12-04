@@ -27,7 +27,7 @@ import static groovy.io.FileType.FILES
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
-class Phenomena {
+class Phenomena implements Closeable {
 
     private static ResourceBundle buildBundle = ResourceBundle.getBundle("phenomena_build")
     public static final String PHENOMENA_VERSION = buildBundle.getString("version")
