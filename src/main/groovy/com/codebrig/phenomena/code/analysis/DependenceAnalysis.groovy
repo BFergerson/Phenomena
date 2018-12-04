@@ -36,22 +36,19 @@ enum DependenceAnalysis {
     }
 
     List<CodeObserver> getCodeObservers(Phenomena phenomena) {
-        return getCodeObservers(phenomena, SourceLanguage.supportedLanguages)
+        return getCodeObserversByLanguage(phenomena, SourceLanguage.supportedLanguages)
     }
 
-    List<CodeObserver> getCodeObservers(Phenomena phenomena, SourceLanguage... sourceLanguages) {
-        return getCodeObservers(phenomena, Arrays.asList(sourceLanguages))
+    List<CodeObserver> getCodeObserversByLanguage(Phenomena phenomena, SourceLanguage... sourceLanguages) {
+        getCodeObserversByLanguage(phenomena, Arrays.asList(sourceLanguages))
     }
 
-    List<CodeObserver> getCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages) {
-        getCodeObservers(phenomena, sourceLanguages, this)
+    List<CodeObserver> getCodeObserversByLanguage(Phenomena phenomena, List<SourceLanguage> sourceLanguages) {
+        getCodeObservers(phenomena, sourceLanguages, Collections.singletonList(this))
     }
 
-    static List<CodeObserver> getCodeObservers(Phenomena phenomena, DependenceAnalysis... dependenceAnalyses) {
-        return getCodeObservers(phenomena, Arrays.asList(dependenceAnalyses))
-    }
-
-    static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<DependenceAnalysis> dependenceAnalyses) {
+    static List<CodeObserver> getCodeObserversByAnalysis(Phenomena phenomena,
+                                                         List<DependenceAnalysis> dependenceAnalyses) {
         return getCodeObservers(phenomena, SourceLanguage.supportedLanguages, dependenceAnalyses)
     }
 

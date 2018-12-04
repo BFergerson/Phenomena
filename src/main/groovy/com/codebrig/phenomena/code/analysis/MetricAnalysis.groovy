@@ -31,22 +31,18 @@ enum MetricAnalysis {
     }
 
     List<CodeObserver> getCodeObservers(Phenomena phenomena) {
-        return getCodeObservers(phenomena, SourceLanguage.supportedLanguages)
+        return getCodeObserversByLanguage(phenomena, SourceLanguage.supportedLanguages)
     }
 
-    List<CodeObserver> getCodeObservers(Phenomena phenomena, SourceLanguage... sourceLanguages) {
-        return getCodeObservers(phenomena, Arrays.asList(sourceLanguages))
+    List<CodeObserver> getCodeObserversByLanguage(Phenomena phenomena, SourceLanguage... sourceLanguages) {
+        getCodeObserversByLanguage(phenomena, Arrays.asList(sourceLanguages))
     }
 
-    List<CodeObserver> getCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages) {
-        getCodeObservers(phenomena, sourceLanguages, this)
+    List<CodeObserver> getCodeObserversByLanguage(Phenomena phenomena, List<SourceLanguage> sourceLanguages) {
+        getCodeObservers(phenomena, sourceLanguages, Collections.singletonList(this))
     }
 
-    static List<CodeObserver> getCodeObservers(Phenomena phenomena, MetricAnalysis... metricAnalyses) {
-        return getCodeObservers(phenomena, Arrays.asList(metricAnalyses))
-    }
-
-    static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<MetricAnalysis> metricAnalyses) {
+    static List<CodeObserver> getCodeObserversByAnalysis(Phenomena phenomena, List<MetricAnalysis> metricAnalyses) {
         return getCodeObservers(phenomena, SourceLanguage.supportedLanguages, metricAnalyses)
     }
 
