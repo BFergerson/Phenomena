@@ -21,7 +21,7 @@ import static com.codebrig.omnisrc.SourceLanguage.Java
 enum DependenceAnalysis {
 
     Identifier_Access(Java),
-    Method_Call(Java);
+    Method_Call(Java)
 
     private final List<SourceLanguage> supportedLanguages
 
@@ -48,28 +48,6 @@ enum DependenceAnalysis {
 
     List<SourceLanguage> getSupportedLanguages() {
         return supportedLanguages
-    }
-
-    List<CodeObserver> getCodeObservers(Phenomena phenomena) {
-        return getCodeObserversByLanguage(phenomena, SourceLanguage.supportedLanguages)
-    }
-
-    List<CodeObserver> getCodeObserversByLanguage(Phenomena phenomena, SourceLanguage... sourceLanguages) {
-        getCodeObserversByLanguage(phenomena, Arrays.asList(sourceLanguages))
-    }
-
-    List<CodeObserver> getCodeObserversByLanguage(Phenomena phenomena, List<SourceLanguage> sourceLanguages) {
-        getCodeObservers(phenomena, sourceLanguages, Collections.singletonList(this))
-    }
-
-    static List<CodeObserver> getCodeObserversByAnalysis(Phenomena phenomena,
-                                                         List<DependenceAnalysis> dependenceAnalyses) {
-        return getCodeObservers(phenomena, SourceLanguage.supportedLanguages, dependenceAnalyses)
-    }
-
-    static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages,
-                                               DependenceAnalysis... dependenceAnalyses) {
-        return getCodeObservers(phenomena, sourceLanguages, Arrays.asList(dependenceAnalyses))
     }
 
     static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages,
@@ -100,5 +78,27 @@ enum DependenceAnalysis {
             }
         }
         return codeObservers
+    }
+
+    List<CodeObserver> getCodeObservers(Phenomena phenomena) {
+        return getCodeObserversByLanguage(phenomena, SourceLanguage.supportedLanguages)
+    }
+
+    List<CodeObserver> getCodeObserversByLanguage(Phenomena phenomena, SourceLanguage... sourceLanguages) {
+        getCodeObserversByLanguage(phenomena, Arrays.asList(sourceLanguages))
+    }
+
+    List<CodeObserver> getCodeObserversByLanguage(Phenomena phenomena, List<SourceLanguage> sourceLanguages) {
+        getCodeObservers(phenomena, sourceLanguages, Collections.singletonList(this))
+    }
+
+    static List<CodeObserver> getCodeObserversByAnalysis(Phenomena phenomena,
+                                                         List<DependenceAnalysis> dependenceAnalyses) {
+        return getCodeObservers(phenomena, SourceLanguage.supportedLanguages, dependenceAnalyses)
+    }
+
+    static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages,
+                                               DependenceAnalysis... dependenceAnalyses) {
+        return getCodeObservers(phenomena, sourceLanguages, Arrays.asList(dependenceAnalyses))
     }
 }

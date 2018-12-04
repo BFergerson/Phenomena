@@ -16,7 +16,7 @@ import com.google.common.io.Resources
  */
 enum MetricAnalysis {
 
-    Cyclomatic_Complexity(SourceLanguage.OmniSRC);
+    Cyclomatic_Complexity(SourceLanguage.OmniSRC)
 
     private final List<SourceLanguage> supportedLanguages
 
@@ -45,6 +45,21 @@ enum MetricAnalysis {
         return supportedLanguages
     }
 
+    static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages,
+                                               List<MetricAnalysis> metricAnalyses) {
+        def codeObservers = new ArrayList<>()
+        metricAnalyses.each {
+            switch (it) {
+                case Cyclomatic_Complexity:
+                    codeObservers.add(new CyclomaticComplexityObserver())
+                    break
+                default:
+                    throw new UnsupportedOperationException()
+            }
+        }
+        return codeObservers
+    }
+
     List<CodeObserver> getCodeObservers(Phenomena phenomena) {
         return getCodeObserversByLanguage(phenomena, SourceLanguage.supportedLanguages)
     }
@@ -64,20 +79,5 @@ enum MetricAnalysis {
     static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages,
                                                MetricAnalysis... metricAnalyses) {
         return getCodeObservers(phenomena, sourceLanguages, Arrays.asList(metricAnalyses))
-    }
-
-    static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages,
-                                               List<MetricAnalysis> metricAnalyses) {
-        def codeObservers = new ArrayList<>()
-        metricAnalyses.each {
-            switch (it) {
-                case Cyclomatic_Complexity:
-                    codeObservers.add(new CyclomaticComplexityObserver())
-                    break
-                default:
-                    throw new UnsupportedOperationException()
-            }
-        }
-        return codeObservers
     }
 }
