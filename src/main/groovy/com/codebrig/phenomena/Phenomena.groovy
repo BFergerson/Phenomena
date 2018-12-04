@@ -180,6 +180,7 @@ class Phenomena implements Closeable {
         return rtnList
     }
 
+    @Override
     void close() {
         parser?.close()
         session?.close()
