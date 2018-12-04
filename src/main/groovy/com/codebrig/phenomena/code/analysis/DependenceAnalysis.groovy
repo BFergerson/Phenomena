@@ -48,11 +48,20 @@ enum DependenceAnalysis {
     }
 
     static List<CodeObserver> getCodeObservers(Phenomena phenomena, DependenceAnalysis... dependenceAnalyses) {
+        return getCodeObservers(phenomena, Arrays.asList(dependenceAnalyses))
+    }
+
+    static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<DependenceAnalysis> dependenceAnalyses) {
         return getCodeObservers(phenomena, SourceLanguage.supportedLanguages, dependenceAnalyses)
     }
 
     static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages,
                                                DependenceAnalysis... dependenceAnalyses) {
+        return getCodeObservers(phenomena, sourceLanguages, Arrays.asList(dependenceAnalyses))
+    }
+
+    static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages,
+                                               List<DependenceAnalysis> dependenceAnalyses) {
         def javaParserIntegration = null
         def codeObservers = new ArrayList<>()
 

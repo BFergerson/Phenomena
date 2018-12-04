@@ -43,11 +43,20 @@ enum MetricAnalysis {
     }
 
     static List<CodeObserver> getCodeObservers(Phenomena phenomena, MetricAnalysis... metricAnalyses) {
+        return getCodeObservers(phenomena, Arrays.asList(metricAnalyses))
+    }
+
+    static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<MetricAnalysis> metricAnalyses) {
         return getCodeObservers(phenomena, SourceLanguage.supportedLanguages, metricAnalyses)
     }
 
     static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages,
                                                MetricAnalysis... metricAnalyses) {
+        return getCodeObservers(phenomena, sourceLanguages, Arrays.asList(metricAnalyses))
+    }
+
+    static List<CodeObserver> getCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages,
+                                               List<MetricAnalysis> metricAnalyses) {
         def codeObservers = new ArrayList<>()
         metricAnalyses.each {
             switch (it) {
