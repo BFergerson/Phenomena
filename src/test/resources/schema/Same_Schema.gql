@@ -1,6 +1,7 @@
 define
 
 ##########---------- Attributes ----------##########
+name sub attribute datatype string;
 token sub attribute datatype string;
 
 #####----- Java -----#####
@@ -25,6 +26,8 @@ GoFileArtifact sub FileArtifact
 	plays has_go_decls_role;
 
 GoFuncDeclArtifact sub GoSourceArtifact
+	# Attributes
+	has name
 	# Structural
 	plays is_go_decls_role
 	# Semantic
@@ -36,6 +39,8 @@ GoFuncDeclArtifact sub GoSourceArtifact
 JavaSourceArtifact sub SourceArtifact;
 
 JavaCompilationUnitArtifact sub JavaSourceArtifact
+	# Attributes
+	has name
 	# Structural
 	plays is_parent
 	# Semantic
@@ -44,6 +49,7 @@ JavaCompilationUnitArtifact sub JavaSourceArtifact
 JavaMethodDeclarationArtifact sub JavaSourceArtifact
 	# Attributes
 	has javaConstructorAttribute
+	has name
 	# Structural
 	plays is_child
 	# Semantic
