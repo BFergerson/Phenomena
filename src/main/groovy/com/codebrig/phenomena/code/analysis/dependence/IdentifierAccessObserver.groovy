@@ -17,13 +17,4 @@ abstract class IdentifierAccessObserver implements CodeObserver {
         return Resources.toString(Resources.getResource(
                 "schema/dependence/identifier-access-schema.gql"), Charsets.UTF_8)
     }
-
-    static String getFullSchema() {
-        //todo: smarter
-        def schemaDefinition = Resources.toString(Resources.getResource(
-                "schema/dependence/identifier-access-schema.gql"), Charsets.UTF_8) + " "
-        schemaDefinition += Resources.toString(Resources.getResource(
-                "schema/dependence/language/java/identifier-access-schema.gql"), Charsets.UTF_8)
-        return schemaDefinition.replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", "")
-    }
 }

@@ -6,6 +6,8 @@ import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
 import com.codebrig.phenomena.code.analysis.language.java.dependence.JavaIdentifierAccessObserver
 import com.codebrig.phenomena.code.analysis.language.java.dependence.JavaMethodCallObserver
+import com.google.common.base.Charsets
+import com.google.common.io.Resources
 
 import static com.codebrig.omnisrc.SourceLanguage.Java
 
@@ -29,6 +31,19 @@ enum DependenceAnalysis {
 
     DependenceAnalysis(List<SourceLanguage> supportedLanguages) {
         this.supportedLanguages = supportedLanguages
+    }
+
+    String getSchemaDefinition() {
+        def analysisType = name().toLowerCase().replace("_", "-")
+        def schemaDefinition = Resources.toString(Resources.getResource(
+                "schema/dependence/$analysisType-schema.gql"), Charsets.UTF_8) + " "
+        supportedLanguages.each {
+            if (it != SourceLanguage.OmniSRC) {
+                schemaDefinition += Resources.toString(Resources.getResource(
+                        "schema/dependence/language/" + it.key + "/$analysisType-schema.gql"), Charsets.UTF_8)
+            }
+        }
+        return schemaDefinition.replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", "")
     }
 
     List<SourceLanguage> getSupportedLanguages() {

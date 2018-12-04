@@ -168,13 +168,13 @@ class CodeStructureObserver implements CodeObserver {
 
     @Override
     String getSchema() {
-        def fullSchema = SourceLanguage.OmniSRC.getBaseStructureSchemaDefinition()
+        def structureSchema = SourceLanguage.OmniSRC.getBaseStructureSchemaDefinition()
         if (includeIndividualSemanticRoles) {
-            fullSchema += "\n" + SourceLanguage.OmniSRC.getIndividualSemanticRolesSchemaDefinition()
+            structureSchema += "\n" + SourceLanguage.OmniSRC.getIndividualSemanticRolesSchemaDefinition()
         }
         if (includeActualSemanticRoles) {
-            fullSchema += "\n" + SourceLanguage.OmniSRC.getActualSemanticRolesSchemaDefinition()
+            structureSchema += "\n" + SourceLanguage.OmniSRC.getActualSemanticRolesSchemaDefinition()
         }
-        return fullSchema
+        return structureSchema
     }
 }

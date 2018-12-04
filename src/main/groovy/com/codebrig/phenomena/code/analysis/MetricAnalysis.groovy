@@ -4,6 +4,8 @@ import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.analysis.metric.CyclomaticComplexityObserver
+import com.google.common.base.Charsets
+import com.google.common.io.Resources
 
 /**
  * todo: description
@@ -14,7 +16,7 @@ import com.codebrig.phenomena.code.analysis.metric.CyclomaticComplexityObserver
  */
 enum MetricAnalysis {
 
-    Cyclomatic_Complexity(SourceLanguage.supportedLanguages);
+    Cyclomatic_Complexity(SourceLanguage.OmniSRC);
 
     private final List<SourceLanguage> supportedLanguages
 
@@ -24,6 +26,19 @@ enum MetricAnalysis {
 
     MetricAnalysis(List<SourceLanguage> supportedLanguages) {
         this.supportedLanguages = supportedLanguages
+    }
+
+    String getSchemaDefinition() {
+        def analysisType = name().toLowerCase().replace("_", "-")
+        def schemaDefinition = Resources.toString(Resources.getResource(
+                "schema/metric/$analysisType-schema.gql"), Charsets.UTF_8) + " "
+        supportedLanguages.each {
+            if (it != SourceLanguage.OmniSRC) {
+                schemaDefinition += Resources.toString(Resources.getResource(
+                        "schema/metric/language/" + it.key + "/$analysisType-schema.gql"), Charsets.UTF_8)
+            }
+        }
+        return schemaDefinition.replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", "")
     }
 
     List<SourceLanguage> getSupportedLanguages() {
