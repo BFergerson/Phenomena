@@ -28,12 +28,12 @@ import com.google.common.io.Resources
  * @since 0.2
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
-class CyclomaticComplexity implements CodeObserver {
+class CyclomaticComplexityObserver implements CodeObserver {
 
     private final FunctionFilter functionFilter
     private final MultiFilter complexityFilter
 
-    CyclomaticComplexity() {
+    CyclomaticComplexityObserver() {
         functionFilter = new FunctionFilter()
         complexityFilter = MultiFilter.matchAny(
                 new IfConditionalFilter(),

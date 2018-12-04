@@ -12,7 +12,7 @@ import org.junit.Test
 
 import static org.junit.Assert.*
 
-class CyclomaticComplexityTest extends PhenomenaTest {
+class CyclomaticComplexityObserverTest extends PhenomenaTest {
 
     @Test
     void pythonInnerMethod_noSave() {
@@ -20,7 +20,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         def language = SourceLanguage.getSourceLanguage(file)
         def phenomena = new Phenomena()
         def visitor = new CodeObserverVisitor()
-        visitor.addObserver(new CyclomaticComplexity())
+        visitor.addObserver(new CyclomaticComplexityObserver())
         phenomena.setupVisitor(visitor)
         phenomena.connectToBabelfish()
         def processedFile = phenomena.processSourceFile(file, language)
@@ -53,7 +53,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         def phenomena = new Phenomena()
         phenomena.connectToBabelfish()
         phenomena.connectToGrakn()
-        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexity())
+        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
@@ -67,7 +67,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         def language = SourceLanguage.getSourceLanguage(file)
         def phenomena = new Phenomena()
         def visitor = new CodeObserverVisitor()
-        visitor.addObserver(new CyclomaticComplexity())
+        visitor.addObserver(new CyclomaticComplexityObserver())
         phenomena.setupVisitor(visitor)
         phenomena.connectToBabelfish()
         def processedFile = phenomena.processSourceFile(file, language)
@@ -100,7 +100,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         def phenomena = new Phenomena()
         phenomena.connectToBabelfish()
         phenomena.connectToGrakn()
-        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexity())
+        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
@@ -114,7 +114,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         def language = SourceLanguage.getSourceLanguage(file)
         def phenomena = new Phenomena()
         def visitor = new CodeObserverVisitor()
-        visitor.addObserver(new CyclomaticComplexity())
+        visitor.addObserver(new CyclomaticComplexityObserver())
         phenomena.setupVisitor(visitor)
         phenomena.connectToBabelfish()
         def processedFile = phenomena.processSourceFile(file, language)
@@ -138,7 +138,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         def phenomena = new Phenomena()
         phenomena.connectToBabelfish()
         phenomena.connectToGrakn()
-        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexity())
+        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
@@ -152,7 +152,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         def language = SourceLanguage.getSourceLanguage(file)
         def phenomena = new Phenomena()
         def visitor = new CodeObserverVisitor()
-        visitor.addObserver(new CyclomaticComplexity())
+        visitor.addObserver(new CyclomaticComplexityObserver())
         phenomena.setupVisitor(visitor)
         phenomena.connectToBabelfish()
         def processedFile = phenomena.processSourceFile(file, language)
@@ -176,7 +176,7 @@ class CyclomaticComplexityTest extends PhenomenaTest {
         def phenomena = new Phenomena()
         phenomena.connectToBabelfish()
         phenomena.connectToGrakn()
-        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexity())
+        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)

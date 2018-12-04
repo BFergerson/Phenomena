@@ -27,7 +27,7 @@ import com.google.common.io.Resources
  * @since 0.2
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
-class JavaIdentifierAccess extends IdentifierAccessObserver {
+class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
 
     private static final MultiFilter variableDeclarationFilter = MultiFilter.matchAll(
             new LanguageFilter(SourceLanguage.Java),
@@ -41,7 +41,7 @@ class JavaIdentifierAccess extends IdentifierAccessObserver {
     private static final Map<Node, ContextualNode> contextualDeclarations = new IdentityHashMap<>()
     private final JavaParserIntegration integration
 
-    JavaIdentifierAccess(JavaParserIntegration integration) {
+    JavaIdentifierAccessObserver(JavaParserIntegration integration) {
         this.integration = Objects.requireNonNull(integration)
     }
 

@@ -19,7 +19,7 @@ import java.util.stream.Collectors
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertNotNull
 
-class JavaIdentifierAccessTest extends PhenomenaTest {
+class JavaIdentifierAccessObserverTest extends PhenomenaTest {
 
     @Test
     void innerMethodIdentifierAccess_noSave() {
@@ -29,7 +29,7 @@ class JavaIdentifierAccessTest extends PhenomenaTest {
 
         def visitor = new CodeObserverVisitor()
         visitor.addObserver(new CodeStructureObserver())
-        visitor.addObserver(new JavaIdentifierAccess(new JavaParserIntegration(phenomena)))
+        visitor.addObserver(new JavaIdentifierAccessObserver(new JavaParserIntegration(phenomena)))
         phenomena.setupVisitor(visitor)
         phenomena.connectToBabelfish()
 
@@ -65,7 +65,7 @@ class JavaIdentifierAccessTest extends PhenomenaTest {
 
         def visitor = new CodeObserverVisitor()
         visitor.addObserver(new CodeStructureObserver())
-        visitor.addObserver(new JavaIdentifierAccess(new JavaParserIntegration(phenomena)))
+        visitor.addObserver(new JavaIdentifierAccessObserver(new JavaParserIntegration(phenomena)))
         phenomena.setupVisitor(visitor)
         phenomena.connectToBabelfish()
 
@@ -101,7 +101,7 @@ class JavaIdentifierAccessTest extends PhenomenaTest {
         phenomena.scanPath.add(new File(".", "/src/test/resources/java/CallMethod.java").absolutePath)
         phenomena.connectToBabelfish()
         phenomena.connectToGrakn()
-        phenomena.setupVisitor(new CodeStructureObserver(), new JavaIdentifierAccess(new JavaParserIntegration(phenomena)))
+        phenomena.setupVisitor(new CodeStructureObserver(), new JavaIdentifierAccessObserver(new JavaParserIntegration(phenomena)))
         phenomena.setupOntology()
         println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
