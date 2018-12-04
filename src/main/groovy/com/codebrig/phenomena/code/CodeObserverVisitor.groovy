@@ -41,6 +41,10 @@ class CodeObserverVisitor {
         observers.add(Objects.requireNonNull(observer))
     }
 
+    void addObservers(List<CodeObserver> observers) {
+        observers.addAll(Objects.requireNonNull(observers))
+    }
+
     List<CodeObserver> getObservers() {
         return new ArrayList<>(observers)
     }
