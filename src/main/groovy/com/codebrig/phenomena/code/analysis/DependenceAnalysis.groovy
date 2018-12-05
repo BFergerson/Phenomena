@@ -21,7 +21,7 @@ import static com.codebrig.omnisrc.SourceLanguage.Java
 enum DependenceAnalysis {
 
     Identifier_Access(Java),
-    Method_Call(Java);
+    Method_Call(Java)
 
     private final List<SourceLanguage> supportedLanguages
 

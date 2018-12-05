@@ -21,8 +21,8 @@ import com.google.common.base.Charsets
 import com.google.common.io.Resources
 
 /**
- * Creates an additional attribute on function
- * declarations with the function's cyclomatic complexity.
+ * Creates an additional attribute on function declarations
+ * with the function's cyclomatic complexity.
  *
  * @version 0.2
  * @since 0.2

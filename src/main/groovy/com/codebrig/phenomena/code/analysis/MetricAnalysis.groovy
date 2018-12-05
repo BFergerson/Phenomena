@@ -16,7 +16,7 @@ import com.google.common.io.Resources
  */
 enum MetricAnalysis {
 
-    Cyclomatic_Complexity(SourceLanguage.OmniSRC);
+    Cyclomatic_Complexity(SourceLanguage.OmniSRC)
 
     private final List<SourceLanguage> supportedLanguages
 
