@@ -99,7 +99,8 @@ class CodeObserverVisitor {
             })
         }
         observers.each {
-            it.reset()
+            //todo: https://github.com/CodeBrig/Phenomena/issues/17
+            //it.reset()
         }
         transaction?.commit()
         transaction?.close()
