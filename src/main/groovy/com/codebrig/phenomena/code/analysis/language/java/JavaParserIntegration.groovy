@@ -18,6 +18,8 @@ import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSol
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver
 import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver
 
+import java.util.concurrent.ConcurrentHashMap
+
 /**
  * Used to integrate JavaParser AST nodes
  *
@@ -28,7 +30,7 @@ import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeS
 class JavaParserIntegration {
 
     private CombinedTypeSolver typeSolver
-    private Map<File, CompilationUnit> parsedFiles = new HashMap<>()
+    private Map<File, CompilationUnit> parsedFiles = new ConcurrentHashMap<>()
 
     JavaParserIntegration(Phenomena phenomena) {
         typeSolver = new CombinedTypeSolver()
