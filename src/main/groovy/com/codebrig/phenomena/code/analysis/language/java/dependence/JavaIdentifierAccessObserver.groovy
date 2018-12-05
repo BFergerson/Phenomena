@@ -58,9 +58,7 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
         def unit = integration.parseFile(node.sourceFile)
         def javaParserNode = JavaParserIntegration.getEquivalentNode(unit, node)
         if (variableDeclarationFilter.evaluate(node) || variableDeclarationFragmentFilter.evaluate(node)) {
-            def nameNode = JavaParserIntegration.getNameNode(javaParserNode)
-            println nameNode
-            contextualDeclarations.put(nameNode, node)
+            contextualDeclarations.put(JavaParserIntegration.getNameNode(javaParserNode), node)
         } else if (javaParserNode instanceof SimpleName) {
             addRelationship(node, JavaParserFacade.get(integration.typeSolver).solve(javaParserNode))
         } else if (javaParserNode instanceof NodeWithSimpleName) {
