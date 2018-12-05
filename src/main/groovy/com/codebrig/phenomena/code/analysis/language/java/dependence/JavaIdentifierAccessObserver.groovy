@@ -9,7 +9,6 @@ import com.codebrig.omnisrc.observe.filter.TypeFilter
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.dependence.IdentifierAccessObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
-import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.body.VariableDeclarator
 import com.github.javaparser.ast.expr.SimpleName
@@ -21,6 +20,7 @@ import com.github.javaparser.symbolsolver.javaparsermodel.declarations.JavaParse
 import com.github.javaparser.symbolsolver.model.resolution.SymbolReference
 import com.google.common.base.Charsets
 import com.google.common.io.Resources
+import org.spark_project.guava.collect.Maps
 
 /**
  * Creates edges between Java variable usages and their declarations
@@ -42,7 +42,7 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
     )
     private static final TypeFilter variableDeclarationFragmentFilter =
             new TypeFilter("VariableDeclarationFragment")
-    private static final Map<Node, ContextualNode> contextualDeclarations = new IdentityHashMap<>()
+    private static final Map<Integer, ContextualNode> contextualDeclarations = Maps.newConcurrentMap()
     private final JavaParserIntegration integration
 
     JavaIdentifierAccessObserver(JavaParserIntegration integration) {
@@ -59,7 +59,7 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
         def unit = integration.parseFile(node.sourceFile)
         def javaParserNode = JavaParserIntegration.getEquivalentNode(unit, node)
         if (variableDeclarationFilter.evaluate(node) || variableDeclarationFragmentFilter.evaluate(node)) {
-            contextualDeclarations.put(JavaParserIntegration.getNameNode(javaParserNode), node)
+            contextualDeclarations.put(System.identityHashCode(JavaParserIntegration.getNameNode(javaParserNode)), node)
         } else if (javaParserNode instanceof SimpleName) {
             addRelationship(node, JavaParserFacade.get(integration.typeSolver).solve(javaParserNode))
         } else if (javaParserNode instanceof NodeWithSimpleName) {
@@ -73,23 +73,24 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
             if (declaration instanceof JavaParserSymbolDeclaration) {
                 def wrappedNode = declaration.wrappedNode
                 if (wrappedNode instanceof VariableDeclarator) {
-                    def contextualDeclaration = contextualDeclarations.get(wrappedNode.name)
+                    def contextualDeclaration = contextualDeclarations.get(System.identityHashCode(wrappedNode.name))
                     node.addRelationshipTo(contextualDeclaration, "identifier_access")
                 } else {
-                    def contextualDeclaration = contextualDeclarations.get(wrappedNode)
+                    def contextualDeclaration = contextualDeclarations.get(System.identityHashCode(wrappedNode))
                     node.addRelationshipTo(contextualDeclaration, "identifier_access")
                 }
             } else if (declaration instanceof JavaParserParameterDeclaration) {
                 def wrappedNode = declaration.wrappedNode
                 if (wrappedNode instanceof Parameter) {
-                    def contextualDeclaration = contextualDeclarations.get(wrappedNode.name)
+                    def contextualDeclaration = contextualDeclarations.get(System.identityHashCode(wrappedNode.name))
                     node.addRelationshipTo(contextualDeclaration, "identifier_access")
                 } else {
-                    def contextualDeclaration = contextualDeclarations.get(wrappedNode)
+                    def contextualDeclaration = contextualDeclarations.get(System.identityHashCode(wrappedNode))
                     node.addRelationshipTo(contextualDeclaration, "identifier_access")
                 }
             } else if (declaration instanceof JavaParserFieldDeclaration) {
-                def contextualDeclaration = contextualDeclarations.get(declaration.wrappedNode.variables.get(0).name)
+                def contextualDeclaration = contextualDeclarations.get(System.identityHashCode(
+                        declaration.wrappedNode.variables.get(0).name))
                 node.addRelationshipTo(contextualDeclaration, "identifier_access")
             } else {
                 throw new UnsupportedOperationException("Unsupported declaration type: " + declaration)
