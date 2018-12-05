@@ -2,16 +2,15 @@ package com.codebrig.phenomena.code.analysis.language.java
 
 import com.codebrig.omnisrc.observe.structure.naming.JavaNaming
 import com.codebrig.phenomena.Phenomena
+import com.codebrig.phenomena.code.ContextualNode
 import com.github.javaparser.JavaParser
 import com.github.javaparser.Position
 import com.github.javaparser.Range
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.*
-import com.github.javaparser.ast.expr.Name
-import com.github.javaparser.ast.expr.NameExpr
-import com.github.javaparser.ast.expr.SimpleName
-import com.github.javaparser.ast.expr.VariableDeclarationExpr
+import com.github.javaparser.ast.expr.*
+import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName
 import com.github.javaparser.ast.stmt.ExpressionStmt
 import com.github.javaparser.ast.type.ArrayType
 import com.github.javaparser.ast.type.Type
@@ -127,59 +126,118 @@ class JavaParserIntegration {
         }
     }
 
-    /**
-     * todo: smarter
-     */
-    static Node getNodeAtRange(Node n, Range r) {
-        def foundNode
-        n.childNodes.each {
-            if (foundNode == null && it.range.isPresent()) {
-                def range = it.range.get()
-                if (range.begin == r.begin) {
-                    if (it instanceof SimpleName || it instanceof Name || it instanceof NameExpr) {
-                        foundNode = it.parentNode.get()
-                    } else {
-                        foundNode = it
-                    }
-                } else if (range.contains(r)) {
-                    foundNode = getNodeAtRange(it, r)
-                }
-            }
+    static Node getNameNode(Node node) {
+        if (node instanceof SimpleName) {
+            return node
+        } else if (node instanceof NameExpr) {
+            return node.name
+        } else if (node instanceof NodeWithSimpleName) {
+            return node.name
+        } else if (node instanceof Name) {
+            return node
+        } else if (node instanceof VariableDeclarationExpr) {
+            return node.variables.get(0).name //todo: shouldn't hardcore zero?
+        } else if (node instanceof FieldDeclaration) {
+            return node.variables.get(0).name //todo: shouldn't hardcore zero?
+        } else {
+            return null
         }
-        return foundNode
     }
 
-    /**
-     * todo: smarter
-     */
-    static Node getNameNodeAtRange(Node n, Range r) {
-        def foundNode
-        n.childNodes.each {
-            if (foundNode == null && it.range.isPresent()) {
-                def range = it.range.get()
-                if (range.begin == r.begin && range.end == r.end && it instanceof ExpressionStmt) {
-                    if (it.expression instanceof VariableDeclarationExpr) {
-                        foundNode = ((VariableDeclarationExpr) it.expression).variables.get(0).getName()
-                    } else {
-                        throw new UnsupportedOperationException("Expression: " + it.expression)
+    static Node getEquivalentNode(CompilationUnit compilationUnit, ContextualNode contextualNode) {
+        def range = toRange(contextualNode.underlyingNode.startPosition, contextualNode.underlyingNode.endPosition)
+        def stack = new Stack<Node>()
+        stack.push(compilationUnit)
+
+        boolean pastCallableDeclaration = false
+        def equivalentNode = null
+        while (!stack.isEmpty() && equivalentNode == null) {
+            def it = stack.pop()
+            if (it.range.isPresent()) {
+                def nodeRange = it.range.get()
+                if (nodeRange.contains(range) || pastCallableDeclaration) {
+                    it.childNodes.each {
+                        stack.push(it)
                     }
-                } else if (range.begin == r.begin
-                        && (it instanceof SimpleName || it instanceof Name || it instanceof NameExpr)) {
-                    foundNode = it
-                } else if (range.begin == r.begin && it instanceof Parameter) {
-                    foundNode = it.name
-                } else if (range.contains(r)) {
-                    foundNode = getNameNodeAtRange(it, r)
+                    if (it instanceof CallableDeclaration) {
+                        pastCallableDeclaration = true
+                    }
+                }
+
+                if (range.contains(nodeRange)) {
+                    equivalentNode = checkNodeType(contextualNode, it)
                 }
             }
         }
-        return foundNode
+        return equivalentNode
+    }
+
+    private static Node checkNodeType(ContextualNode contextualNode, Node node) {
+        switch (contextualNode.internalType) {
+            case "FieldDeclaration":
+                if (node instanceof FieldDeclaration) {
+                    return node
+                }
+                break
+            case "MethodDeclaration":
+                if (node instanceof CallableDeclaration) {
+                    return node
+                }
+                break
+            case "MethodInvocation":
+                if (node instanceof MethodCallExpr) {
+                    return node
+                } else if (node instanceof ExpressionStmt) {
+                    return node.expression
+                }
+                break
+            case "SingleVariableDeclaration":
+                if (node instanceof Parameter) {
+                    return node
+                } else if (node instanceof VariableDeclarationExpr) {
+                    return node.variables.get(0) //todo: shouldn't hardcore zero?
+                }
+                break
+            case "SimpleName":
+                if (node instanceof SimpleName) {
+                    return node
+                } else if (node instanceof NameExpr) {
+                    return node.name
+                } else if (node instanceof NodeWithSimpleName) {
+                    return node.name
+                } else if (node instanceof Name) {
+                    return node
+                }
+                break
+            case "QualifiedName":
+                if (node instanceof FieldAccessExpr) {
+                    return node
+                } else if (node instanceof Name) {
+                    return node
+                }
+                break
+            case "VariableDeclarationExpression":
+                if (node instanceof VariableDeclarationExpr) {
+                    return node
+                }
+                break
+            case "VariableDeclarationFragment":
+                if (node instanceof VariableDeclarator) {
+                    return node
+                }
+                break
+            case "VariableDeclarationStatement":
+                if (node instanceof ExpressionStmt) {
+                    return node.expression
+                }
+                break
+        }
+        throw new UnsupportedOperationException(contextualNode.internalType)
     }
 
     static Range toRange(gopkg.in.bblfsh.sdk.v1.uast.generated.Position startPosition,
                          gopkg.in.bblfsh.sdk.v1.uast.generated.Position endPosition) {
-        def javaParserEnd = toJavaParserPosition(endPosition)
-        return new Range(toJavaParserPosition(startPosition), javaParserEnd.withColumn(javaParserEnd.column - 1))
+        return new Range(toJavaParserPosition(startPosition), toJavaParserPosition(endPosition))
     }
 
     static Position toJavaParserPosition(gopkg.in.bblfsh.sdk.v1.uast.generated.Position position) {

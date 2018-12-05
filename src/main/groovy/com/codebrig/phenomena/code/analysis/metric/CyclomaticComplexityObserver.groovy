@@ -28,7 +28,7 @@ import com.google.common.io.Resources
  * @since 0.2
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
-class CyclomaticComplexityObserver implements CodeObserver {
+class CyclomaticComplexityObserver extends CodeObserver {
 
     private final FunctionFilter functionFilter
     private final MultiFilter complexityFilter

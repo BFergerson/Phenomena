@@ -21,7 +21,7 @@ import java.util.stream.Collectors
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
-class CodeStructureObserver implements CodeObserver {
+class CodeStructureObserver extends CodeObserver {
 
     static final Set<String> literalAttributes = StructureLiteral.allLiteralAttributes.keySet()
     static final SelfIdKey SELF_ID = new SelfIdKey()

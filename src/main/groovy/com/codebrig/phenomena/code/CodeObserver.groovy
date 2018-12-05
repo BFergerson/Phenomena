@@ -13,9 +13,19 @@ import javax.validation.constraints.NotNull
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
-trait CodeObserver {
+abstract class CodeObserver {
 
     abstract void applyObservation(ContextualNode node, ContextualNode parentNode)
+
+    private CodeObserverVisitor codeObserverVisitor
+
+    void setCodeObserverVisitor(CodeObserverVisitor codeObserverVisitor) {
+        this.codeObserverVisitor = codeObserverVisitor
+    }
+
+    CodeObserverVisitor getCodeObserverVisitor() {
+        return codeObserverVisitor
+    }
 
     void reset() {
     }

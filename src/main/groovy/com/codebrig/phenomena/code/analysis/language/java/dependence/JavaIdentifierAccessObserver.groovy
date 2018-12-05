@@ -12,11 +12,13 @@ import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
 import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.body.VariableDeclarator
-import com.github.javaparser.ast.expr.NameExpr
+import com.github.javaparser.ast.expr.SimpleName
+import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName
 import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade
 import com.github.javaparser.symbolsolver.javaparsermodel.declarations.JavaParserFieldDeclaration
 import com.github.javaparser.symbolsolver.javaparsermodel.declarations.JavaParserParameterDeclaration
 import com.github.javaparser.symbolsolver.javaparsermodel.declarations.JavaParserSymbolDeclaration
+import com.github.javaparser.symbolsolver.model.resolution.SymbolReference
 import com.google.common.base.Charsets
 import com.google.common.io.Resources
 
@@ -38,6 +40,8 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
             new LanguageFilter(SourceLanguage.Java),
             new RoleFilter("IDENTIFIER")
     )
+    private static final TypeFilter variableDeclarationFragmentFilter =
+            new TypeFilter("VariableDeclarationFragment")
     private static final Map<Node, ContextualNode> contextualDeclarations = new IdentityHashMap<>()
     private final JavaParserIntegration integration
 
@@ -47,40 +51,49 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
 
     @Override
     void applyObservation(ContextualNode node, ContextualNode parentNode) {
-        def unit = integration.parseFile(node.sourceFile)
-        def range = JavaParserIntegration.toRange(node.underlyingNode.startPosition, node.underlyingNode.endPosition)
-        def javaParserNode = JavaParserIntegration.getNameNodeAtRange(unit, range)
+        new TypeFilter("VariableDeclarationFragment").getFilteredNodes(node.children).each {
+            applyObservation(codeObserverVisitor.getOrCreateContextualNode(it, node.sourceFile), node)
+        }
 
-        if (variableDeclarationFilter.evaluate(node)) {
-            contextualDeclarations.put(javaParserNode, node)
-        } else if (javaParserNode instanceof NameExpr) {
-            def nodeType = JavaParserFacade.get(integration.typeSolver).solve(javaParserNode)
-            if (nodeType.isSolved()) {
-                def declaration = nodeType.correspondingDeclaration
-                if (declaration instanceof JavaParserSymbolDeclaration) {
-                    def wrappedNode = declaration.wrappedNode
-                    if (wrappedNode instanceof VariableDeclarator) {
-                        def contextualDeclaration = contextualDeclarations.get(wrappedNode.name)
-                        node.addRelationshipTo(contextualDeclaration, "identifier_access")
-                    } else {
-                        def contextualDeclaration = contextualDeclarations.get(wrappedNode)
-                        node.addRelationshipTo(contextualDeclaration, "identifier_access")
-                    }
-                } else if (declaration instanceof JavaParserParameterDeclaration) {
-                    def wrappedNode = declaration.wrappedNode
-                    if (wrappedNode instanceof Parameter) {
-                        def contextualDeclaration = contextualDeclarations.get(wrappedNode.name)
-                        node.addRelationshipTo(contextualDeclaration, "identifier_access")
-                    } else {
-                        def contextualDeclaration = contextualDeclarations.get(wrappedNode)
-                        node.addRelationshipTo(contextualDeclaration, "identifier_access")
-                    }
-                } else if (declaration instanceof JavaParserFieldDeclaration) {
-                    def contextualDeclaration = contextualDeclarations.get(declaration.wrappedNode)
+        def unit = integration.parseFile(node.sourceFile)
+        def javaParserNode = JavaParserIntegration.getEquivalentNode(unit, node)
+        if (variableDeclarationFilter.evaluate(node) || variableDeclarationFragmentFilter.evaluate(node)) {
+            def nameNode = JavaParserIntegration.getNameNode(javaParserNode)
+            println nameNode
+            contextualDeclarations.put(nameNode, node)
+        } else if (javaParserNode instanceof SimpleName) {
+            addRelationship(node, JavaParserFacade.get(integration.typeSolver).solve(javaParserNode))
+        } else if (javaParserNode instanceof NodeWithSimpleName) {
+            addRelationship(node, JavaParserFacade.get(integration.typeSolver).solve(javaParserNode.name))
+        }
+    }
+
+    private static void addRelationship(ContextualNode node, SymbolReference nodeType) {
+        if (nodeType.isSolved()) {
+            def declaration = nodeType.correspondingDeclaration
+            if (declaration instanceof JavaParserSymbolDeclaration) {
+                def wrappedNode = declaration.wrappedNode
+                if (wrappedNode instanceof VariableDeclarator) {
+                    def contextualDeclaration = contextualDeclarations.get(wrappedNode.name)
                     node.addRelationshipTo(contextualDeclaration, "identifier_access")
                 } else {
-                    throw new UnsupportedOperationException("Unsupported declaration type: " + declaration)
+                    def contextualDeclaration = contextualDeclarations.get(wrappedNode)
+                    node.addRelationshipTo(contextualDeclaration, "identifier_access")
                 }
+            } else if (declaration instanceof JavaParserParameterDeclaration) {
+                def wrappedNode = declaration.wrappedNode
+                if (wrappedNode instanceof Parameter) {
+                    def contextualDeclaration = contextualDeclarations.get(wrappedNode.name)
+                    node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                } else {
+                    def contextualDeclaration = contextualDeclarations.get(wrappedNode)
+                    node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                }
+            } else if (declaration instanceof JavaParserFieldDeclaration) {
+                def contextualDeclaration = contextualDeclarations.get(declaration.wrappedNode.variables.get(0).name)
+                node.addRelationshipTo(contextualDeclaration, "identifier_access")
+            } else {
+                throw new UnsupportedOperationException("Unsupported declaration type: " + declaration)
             }
         }
     }

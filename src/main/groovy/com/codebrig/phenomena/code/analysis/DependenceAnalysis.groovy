@@ -101,4 +101,16 @@ enum DependenceAnalysis {
         }
         return codeObservers
     }
+
+    static List<CodeObserver> getAllCodeObservers(Phenomena phenomena) {
+        return getCodeObservers(phenomena, SourceLanguage.supportedLanguages, Arrays.asList(values()))
+    }
+
+    static List<CodeObserver> getAllCodeObservers(Phenomena phenomena, SourceLanguage... sourceLanguages) {
+        return getCodeObservers(phenomena, Arrays.asList(sourceLanguages), Arrays.asList(values()))
+    }
+
+    static List<CodeObserver> getAllCodeObservers(Phenomena phenomena, List<SourceLanguage> sourceLanguages) {
+        return getCodeObservers(phenomena, sourceLanguages, Arrays.asList(values()))
+    }
 }

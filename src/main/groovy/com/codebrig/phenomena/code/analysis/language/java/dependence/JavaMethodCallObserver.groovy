@@ -6,12 +6,13 @@ import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.dependence.MethodCallObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
 import com.github.javaparser.ast.Node
-import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.body.CallableDeclaration
 import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.stmt.ExpressionStmt
 import com.github.javaparser.resolution.UnsolvedSymbolException
 import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade
 import com.github.javaparser.symbolsolver.javaparsermodel.declarations.JavaParserMethodDeclaration
+import com.github.javaparser.symbolsolver.reflectionmodel.ReflectionMethodDeclaration
 import com.google.common.base.Charsets
 import com.google.common.io.Resources
 
@@ -35,10 +36,9 @@ class JavaMethodCallObserver extends MethodCallObserver {
     @Override
     void applyObservation(ContextualNode node, ContextualNode parentNode) {
         def unit = integration.parseFile(node.sourceFile)
-        def range = JavaParserIntegration.toRange(node.underlyingNode.startPosition, node.underlyingNode.endPosition)
-        def javaParserNode = JavaParserIntegration.getNodeAtRange(unit, range)
+        def javaParserNode = JavaParserIntegration.getEquivalentNode(unit, node)
 
-        if (javaParserNode instanceof MethodDeclaration) {
+        if (javaParserNode instanceof CallableDeclaration) {
             if (methodInvocations.containsKey(javaParserNode)) {
                 def methodInvocation = methodInvocations.get(javaParserNode)
                 methodInvocation.addRelationshipTo(node, "method_call")
@@ -62,6 +62,8 @@ class JavaMethodCallObserver extends MethodCallObserver {
                     } else {
                         methodInvocations.put(method, node)
                     }
+                } else if (declaration instanceof ReflectionMethodDeclaration) {
+                    //can't solve these
                 } else {
                     throw new IllegalArgumentException("Unsupported declaration: " + declaration.qualifiedName)
                 }

@@ -39,10 +39,13 @@ class CodeObserverVisitor {
 
     void addObserver(CodeObserver observer) {
         observers.add(Objects.requireNonNull(observer))
+        observer.codeObserverVisitor = this
     }
 
     void addObservers(List<CodeObserver> observers) {
-        observers.addAll(Objects.requireNonNull(observers))
+        Objects.requireNonNull(observers).each {
+            addObserver(it)
+        }
     }
 
     List<CodeObserver> getObservers() {
@@ -52,10 +55,10 @@ class CodeObserverVisitor {
     ContextualNode visit(SourceLanguage language, Node rootNode, File sourceFile) {
         Objects.requireNonNull(language)
         Objects.requireNonNull(rootNode)
-        contextualNodes.putIfAbsent(System.identityHashCode(rootNode),
-                new ContextualNode(this, rootNode, sourceFile, language, rootNode))
 
         def observed = false
+        contextualNodes.putIfAbsent(System.identityHashCode(rootNode),
+                new ContextualNode(this, rootNode, sourceFile, language, rootNode))
         def contextualRootNode = contextualNodes.get(System.identityHashCode(rootNode))
         observers.each {
             if (it.filter.evaluate(contextualRootNode)) {
@@ -115,11 +118,9 @@ class CodeObserverVisitor {
             def children = childrenStack.pop()
 
             children.each {
-                ContextualNode contextualChildNode
-                contextualNodes.putIfAbsent(System.identityHashCode(it.underlyingNode),
-                        contextualChildNode = new ContextualNode(this, it, sourceFile))
-
+                def contextualChildNode = getOrCreateContextualNode(it, sourceFile)
                 def observed = false
+
                 observers.each {
                     if (it.filter.evaluate(contextualChildNode)) {
                         observed = true
@@ -147,6 +148,13 @@ class CodeObserverVisitor {
 
     ContextualNode getContextualNode(Node node) {
         return contextualNodes.get(System.identityHashCode(node))
+    }
+
+    ContextualNode getOrCreateContextualNode(SourceNode node, File sourceFile) {
+        def nexContextualNode
+        def existingContextualNode = contextualNodes.putIfAbsent(System.identityHashCode(node.underlyingNode),
+                nexContextualNode = new ContextualNode(this, node, sourceFile))
+        return existingContextualNode != null ? existingContextualNode : nexContextualNode
     }
 
     boolean getSaveToGrakn() {

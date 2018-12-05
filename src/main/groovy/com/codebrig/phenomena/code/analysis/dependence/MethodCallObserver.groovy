@@ -11,7 +11,7 @@ import com.google.common.io.Resources
  * @since 0.2
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
-abstract class MethodCallObserver implements CodeObserver {
+abstract class MethodCallObserver extends CodeObserver {
     @Override
     String getSchema() {
         return Resources.toString(Resources.getResource(
