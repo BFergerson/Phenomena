@@ -51,6 +51,7 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
 
     @Override
     void applyObservation(ContextualNode node, ContextualNode parentNode) {
+        //ensures when declaring multiple variables on a single line that all are visited during that pass
         new TypeFilter("VariableDeclarationFragment").getFilteredNodes(node.children).each {
             applyObservation(codeObserverVisitor.getOrCreateContextualNode(it, node.sourceFile), node)
         }
