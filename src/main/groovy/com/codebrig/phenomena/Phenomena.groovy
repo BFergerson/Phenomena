@@ -182,6 +182,9 @@ class Phenomena implements Closeable {
 
     @Override
     void close() {
+        visitor?.observers?.each {
+            it.reset()
+        }
         parser?.close()
         session?.close()
     }
