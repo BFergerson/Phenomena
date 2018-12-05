@@ -145,6 +145,8 @@ class JavaParserIntegration {
     }
 
     static Node getEquivalentNode(CompilationUnit compilationUnit, ContextualNode contextualNode) {
+        Objects.requireNonNull(compilationUnit)
+        Objects.requireNonNull(contextualNode)
         def range = toRange(contextualNode.underlyingNode.startPosition, contextualNode.underlyingNode.endPosition)
         def stack = new Stack<Node>()
         stack.push(compilationUnit)
