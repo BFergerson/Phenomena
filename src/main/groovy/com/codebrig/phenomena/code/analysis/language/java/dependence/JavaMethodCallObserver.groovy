@@ -68,6 +68,8 @@ class JavaMethodCallObserver extends MethodCallObserver {
                     throw new IllegalArgumentException("Unsupported declaration: " + declaration.qualifiedName)
                 }
             }
+        } catch (UnsupportedOperationException | RuntimeException ex) {
+            //ignore; JavaParser developers haven't gotten to it yet
         } catch (UnsolvedSymbolException ex) {
             //ignore; external method call
         }

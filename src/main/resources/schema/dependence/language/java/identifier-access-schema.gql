@@ -1,11 +1,8 @@
 define
 
 #has_identifier_access
-JavaFieldDeclarationArtifact plays has_identifier_access;
-JavaSingleVariableDeclarationArtifact plays has_identifier_access;
-JavaVariableDeclarationExpressionArtifact plays has_identifier_access;
-JavaVariableDeclarationFragmentArtifact plays has_identifier_access;
-JavaVariableDeclarationStatementArtifact plays has_identifier_access;
+JavaSimpleNameArtifact plays has_identifier_access;
 
 #is_identifier_access
 JavaSimpleNameArtifact plays is_identifier_access;
+JavaQualifiedNameArtifact plays is_identifier_access;

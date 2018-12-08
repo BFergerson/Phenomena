@@ -32,28 +32,30 @@ class JavaIdentifierAccessObserverTest extends PhenomenaTest {
         visitor.addObserver(new JavaIdentifierAccessObserver(new JavaParserIntegration(phenomena)))
         phenomena.setupVisitor(visitor)
         phenomena.connectToBabelfish()
-
         def processedFile = phenomena.processScanPath().findAny().get()
         def sourceNode = new SourceNode(SourceLanguage.Java, processedFile.parseResponse.uast)
-        def arrayListArg = new NameFilter("arrayList").getFilteredNodes(sourceNode)[0]
-        def yayArg = new NameFilter("yay").getFilteredNodes(sourceNode)[0]
-        assertNotNull(arrayListArg)
-        assertNotNull(yayArg)
 
-        def arrayListVar = new SimpleNameFilter("arrayList").getFilteredNodes(sourceNode)[1]
-        def yayVar = new SimpleNameFilter("yay").getFilteredNodes(sourceNode)[1]
-        assertNotNull(arrayListVar)
-        assertNotNull(yayVar)
+        def arrayListDeclaration = new SimpleNameFilter("arrayList").getFilteredNodes(sourceNode)[0]
+        def yayDeclaration = new SimpleNameFilter("yay").getFilteredNodes(sourceNode)[0]
+        assertNotNull(arrayListDeclaration)
+        assertNotNull(yayDeclaration)
 
-        def contextualArrayList = visitor.getContextualNode(arrayListVar.underlyingNode)
-        def contextualYay = visitor.getContextualNode(yayVar.underlyingNode)
-        assertNotNull(contextualArrayList)
-        assertNotNull(contextualYay)
+        def arrayListUsage = new SimpleNameFilter("arrayList").getFilteredNodes(sourceNode)[1]
+        def yayUsage = new SimpleNameFilter("yay").getFilteredNodes(sourceNode)[1]
+        assertNotNull(arrayListUsage)
+        assertNotNull(yayUsage)
 
-        def arrayListAccessTo = contextualArrayList.relationships.get(new ContextualNode.NodeRelationship("identifier_access"))
-        def yayAccessTo = contextualYay.relationships.get(new ContextualNode.NodeRelationship("identifier_access"))
-        assertEquals(arrayListArg.underlyingNode, arrayListAccessTo.underlyingNode)
-        assertEquals(yayArg.underlyingNode, yayAccessTo.underlyingNode)
+        def contextualArrayListUsage = visitor.getContextualNode(arrayListUsage.underlyingNode)
+        def contextualYayUsage = visitor.getContextualNode(yayUsage.underlyingNode)
+        assertNotNull(contextualArrayListUsage)
+        assertNotNull(contextualYayUsage)
+
+        def arrayListAccessTo = contextualArrayListUsage.relationships.get(
+                new ContextualNode.NodeRelationship("identifier_access"))
+        def yayAccessTo = contextualYayUsage.relationships.get(
+                new ContextualNode.NodeRelationship("identifier_access"))
+        assertEquals(arrayListDeclaration.underlyingNode, arrayListAccessTo.underlyingNode)
+        assertEquals(yayDeclaration.underlyingNode, yayAccessTo.underlyingNode)
         phenomena.close()
     }
 
@@ -68,11 +70,11 @@ class JavaIdentifierAccessObserverTest extends PhenomenaTest {
         visitor.addObserver(new JavaIdentifierAccessObserver(new JavaParserIntegration(phenomena)))
         phenomena.setupVisitor(visitor)
         phenomena.connectToBabelfish()
-
         def processedFile = phenomena.processScanPath().findAny().get()
         def sourceNode = new SourceNode(SourceLanguage.Java, processedFile.parseResponse.uast)
-        def xArg = new NameFilter("x").getFilteredNodes(sourceNode)[0]
-        def yArg = new NameFilter("y").getFilteredNodes(sourceNode)[0]
+
+        def xArg = new SimpleNameFilter("x").getFilteredNodes(sourceNode)[0]
+        def yArg = new SimpleNameFilter("y").getFilteredNodes(sourceNode)[0]
         assertNotNull(xArg)
         assertNotNull(yArg)
 

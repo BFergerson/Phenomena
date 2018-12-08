@@ -2,10 +2,7 @@ package com.codebrig.phenomena.code.analysis.language.java.dependence
 
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNodeFilter
-import com.codebrig.omnisrc.observe.filter.LanguageFilter
-import com.codebrig.omnisrc.observe.filter.MultiFilter
-import com.codebrig.omnisrc.observe.filter.RoleFilter
-import com.codebrig.omnisrc.observe.filter.TypeFilter
+import com.codebrig.omnisrc.observe.filter.*
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.dependence.IdentifierAccessObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -14,10 +11,10 @@ import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.body.VariableDeclarator
 import com.github.javaparser.ast.expr.SimpleName
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName
+import com.github.javaparser.resolution.UnsolvedSymbolException
+import com.github.javaparser.resolution.declarations.ResolvedFieldDeclaration
 import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade
-import com.github.javaparser.symbolsolver.javaparsermodel.declarations.JavaParserFieldDeclaration
-import com.github.javaparser.symbolsolver.javaparsermodel.declarations.JavaParserParameterDeclaration
-import com.github.javaparser.symbolsolver.javaparsermodel.declarations.JavaParserSymbolDeclaration
+import com.github.javaparser.symbolsolver.javaparsermodel.declarations.*
 import com.github.javaparser.symbolsolver.model.resolution.SymbolReference
 import com.google.common.base.Charsets
 import com.google.common.io.Resources
@@ -33,8 +30,7 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
 
     private static final MultiFilter variableDeclarationFilter = MultiFilter.matchAll(
             new LanguageFilter(SourceLanguage.Java),
-            new RoleFilter("DECLARATION"), new RoleFilter("VARIABLE"),
-            new TypeFilter().reject("VariableDeclarationFragment")
+            new RoleFilter("DECLARATION"), new RoleFilter("VARIABLE")
     )
     private static final MultiFilter identifierFilter = MultiFilter.matchAll(
             new LanguageFilter(SourceLanguage.Java),
@@ -42,7 +38,8 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
     )
     private static final TypeFilter variableDeclarationFragmentFilter =
             new TypeFilter("VariableDeclarationFragment")
-    private static final Map<Node, ContextualNode> contextualDeclarations = new IdentityHashMap<>()
+    private final Map<Node, ContextualNode> contextualDeclarations = new IdentityHashMap<>()
+    private final Map<Node, ContextualNode> contextualIdentifiers = new IdentityHashMap<>()
     private final JavaParserIntegration integration
 
     JavaIdentifierAccessObserver(JavaParserIntegration integration) {
@@ -56,45 +53,70 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
             applyObservation(codeObserverVisitor.getOrCreateContextualNode(it, node.sourceFile), node)
         }
 
-        def unit = integration.parseFile(node.sourceFile)
-        def javaParserNode = JavaParserIntegration.getEquivalentNode(unit, node)
-        if (variableDeclarationFilter.evaluate(node) || variableDeclarationFragmentFilter.evaluate(node)) {
-            contextualDeclarations.put(JavaParserIntegration.getNameNode(javaParserNode), node)
-        } else if (javaParserNode instanceof SimpleName) {
-            addRelationship(node, JavaParserFacade.get(integration.typeSolver).solve(javaParserNode))
-        } else if (javaParserNode instanceof NodeWithSimpleName) {
-            addRelationship(node, JavaParserFacade.get(integration.typeSolver).solve(javaParserNode.name))
+        try {
+            Node solvedNode = null
+            def unit = integration.parseFile(node.sourceFile)
+            def javaParserNode = JavaParserIntegration.getEquivalentNode(unit, node)
+            if (variableDeclarationFilter.evaluate(node) || variableDeclarationFragmentFilter.evaluate(node)) {
+                solvedNode = JavaParserIntegration.getNameNode(javaParserNode)
+                def declarationNameNode = codeObserverVisitor.getOrCreateContextualNode(
+                        new SimpleNameFilter(solvedNode.toString()).getFilteredNodes(node).next(), node.sourceFile)
+                contextualDeclarations.put(solvedNode, declarationNameNode)
+            } else if (javaParserNode instanceof SimpleName) {
+                solvedNode = solveNodeType(JavaParserFacade.get(integration.typeSolver).solve(javaParserNode))
+                if (solvedNode != null) {
+                    contextualIdentifiers.put(solvedNode, node)
+                }
+            } else if (javaParserNode instanceof NodeWithSimpleName) {
+                solvedNode = solveNodeType(JavaParserFacade.get(integration.typeSolver).solve(javaParserNode.name))
+                if (solvedNode != null) {
+                    contextualIdentifiers.put(solvedNode, node)
+                }
+            }
+
+            if (solvedNode != null && contextualDeclarations.containsKey(solvedNode)
+                    && contextualIdentifiers.containsKey(solvedNode)) {
+                def declarationNode = contextualDeclarations.get(solvedNode)
+                def usageNode = contextualIdentifiers.get(solvedNode)
+                usageNode.addRelationshipTo(declarationNode, "identifier_access")
+            }
+        } catch (UnsolvedSymbolException | UnsupportedOperationException ex) {
+            //ignore; can't be solved
         }
     }
 
-    private static void addRelationship(ContextualNode node, SymbolReference nodeType) {
+    private static Node solveNodeType(SymbolReference nodeType) {
         if (nodeType.isSolved()) {
             def declaration = nodeType.correspondingDeclaration
             if (declaration instanceof JavaParserSymbolDeclaration) {
                 def wrappedNode = declaration.wrappedNode
                 if (wrappedNode instanceof VariableDeclarator) {
-                    def contextualDeclaration = contextualDeclarations.get(wrappedNode.name)
-                    node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                    return wrappedNode.name
                 } else {
-                    def contextualDeclaration = contextualDeclarations.get(wrappedNode)
-                    node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                    return wrappedNode
                 }
             } else if (declaration instanceof JavaParserParameterDeclaration) {
                 def wrappedNode = declaration.wrappedNode
                 if (wrappedNode instanceof Parameter) {
-                    def contextualDeclaration = contextualDeclarations.get(wrappedNode.name)
-                    node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                    return wrappedNode.name
                 } else {
-                    def contextualDeclaration = contextualDeclarations.get(wrappedNode)
-                    node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                    return wrappedNode
                 }
             } else if (declaration instanceof JavaParserFieldDeclaration) {
-                def contextualDeclaration = contextualDeclarations.get(declaration.wrappedNode.variables.get(0).name)
-                node.addRelationshipTo(contextualDeclaration, "identifier_access")
+                return declaration.wrappedNode.variables.get(0).name
+            } else if (declaration instanceof JavaParserEnumConstantDeclaration) {
+                return declaration.wrappedNode.name
+            } else if ((ResolvedFieldDeclaration) declaration) {
+                if (declaration.isField()
+                        && declaration.asField().declaringType() instanceof JavaParserClassDeclaration) {
+                    return ((JavaParserClassDeclaration) declaration.asField().declaringType()).wrappedNode.name
+                }
+                throw new UnsupportedOperationException("Unsupported declaration type: " + declaration)
             } else {
                 throw new UnsupportedOperationException("Unsupported declaration type: " + declaration)
             }
         }
+        return null
     }
 
     @Override

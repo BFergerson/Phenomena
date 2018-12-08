@@ -13,6 +13,7 @@ import com.github.javaparser.ast.expr.*
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName
 import com.github.javaparser.ast.stmt.ExpressionStmt
 import com.github.javaparser.ast.type.ArrayType
+import com.github.javaparser.ast.type.ClassOrInterfaceType
 import com.github.javaparser.ast.type.Type
 import com.github.javaparser.symbolsolver.resolution.typesolvers.CombinedTypeSolver
 import com.github.javaparser.symbolsolver.resolution.typesolvers.JavaParserTypeSolver
@@ -129,6 +130,7 @@ class JavaParserIntegration {
     }
 
     static Node getNameNode(Node node) {
+        Objects.requireNonNull(node)
         if (node instanceof SimpleName) {
             return node
         } else if (node instanceof NameExpr) {
@@ -211,6 +213,10 @@ class JavaParserIntegration {
                     return node.name
                 } else if (node instanceof Name) {
                     return node
+                } else if (node instanceof TypeExpr) {
+                    if (node.type instanceof ClassOrInterfaceType) {
+                        return ((ClassOrInterfaceType) node.type).name
+                    }
                 }
                 break
             case "QualifiedName":
@@ -228,6 +234,8 @@ class JavaParserIntegration {
             case "VariableDeclarationFragment":
                 if (node instanceof VariableDeclarator) {
                     return node
+                } else if (node instanceof Parameter) {
+                    return node
                 }
                 break
             case "VariableDeclarationStatement":
@@ -236,12 +244,13 @@ class JavaParserIntegration {
                 }
                 break
         }
-        throw new UnsupportedOperationException(contextualNode.internalType)
+        return null
     }
 
     static Range toRange(gopkg.in.bblfsh.sdk.v1.uast.generated.Position startPosition,
                          gopkg.in.bblfsh.sdk.v1.uast.generated.Position endPosition) {
-        return new Range(toJavaParserPosition(startPosition), toJavaParserPosition(endPosition))
+        def javaParserEnd = toJavaParserPosition(endPosition)
+        return new Range(toJavaParserPosition(startPosition), javaParserEnd.withColumn(javaParserEnd.column - 1))
     }
 
     static Position toJavaParserPosition(gopkg.in.bblfsh.sdk.v1.uast.generated.Position position) {
