@@ -39,8 +39,8 @@ class Phenomena implements Closeable {
     private String babelfishHost = "localhost"
     private int babelfishPort = 9432
     private CodeObserverVisitor visitor
-    private BblfshClient parser
-    private Grakn.Session session
+    private BblfshClient babelfishClient
+    private Grakn.Session graknSession
 
     void init() {
         init(new CodeStructureObserver())
@@ -64,15 +64,15 @@ class Phenomena implements Closeable {
 
     void connectToBabelfish() {
         println "Connecting to Babelfish"
-        parser = new BblfshClient(babelfishHost, babelfishPort, Integer.MAX_VALUE)
+        babelfishClient = new BblfshClient(babelfishHost, babelfishPort, Integer.MAX_VALUE)
     }
 
     void connectToGrakn() {
         println "Connecting to Grakn"
-        session = new Grakn(new SimpleURI(graknURI)).session(Keyspace.of(graknKeyspace))
+        graknSession = new Grakn(new SimpleURI(graknURI)).session(Keyspace.of(graknKeyspace))
 
         //test connection
-        def testTx = session.transaction(GraknTxType.READ)
+        def testTx = graknSession.transaction(GraknTxType.READ)
         testTx.close()
     }
 
@@ -81,11 +81,11 @@ class Phenomena implements Closeable {
     }
 
     void setupVisitor(CodeObserver... codeObservers) {
-        if (session == null) {
+        if (graknSession == null) {
             throw new IllegalStateException("Phenomena must be connected to Grakn before setting up the visitor")
         }
 
-        visitor = new CodeObserverVisitor(session)
+        visitor = new CodeObserverVisitor(graknSession)
         codeObservers.each {
             visitor.addObserver(it)
         }
@@ -104,11 +104,11 @@ class Phenomena implements Closeable {
     }
 
     void setupOntology(String schemaDefinition) {
-        if (session == null) {
+        if (graknSession == null) {
             throw new IllegalStateException("Phenomena must be connected to Grakn before setting up the ontology")
         }
 
-        def tx = session.transaction(GraknTxType.WRITE)
+        def tx = graknSession.transaction(GraknTxType.WRITE)
         def graql = tx.graql()
         def query = graql.parse(schemaDefinition.replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", ""))
         query.execute()
@@ -146,19 +146,19 @@ class Phenomena implements Closeable {
     }
 
     Stream<ParseResponse> parseScanPath() {
-        if (parser == null) {
+        if (babelfishClient == null) {
             throw new IllegalStateException("Phenomena must be connected to Babelfish before parsing source code")
         }
         return Streams.stream(new TransformIterator(sourceFilesInScanPath.iterator(), new ParseSourceFileTransformer()))
     }
 
     ParseResponse parseSourceFile(File sourceFile, SourceLanguage language) {
-        if (parser == null) {
+        if (babelfishClient == null) {
             throw new IllegalStateException("Phenomena must be connected to Babelfish before parsing source code")
         }
 
         println "Parsing $language file: " + sourceFile
-        return parser.parse(sourceFile.name, sourceFile.text, language.key, Encoding.UTF8$.MODULE$)
+        return babelfishClient.parse(sourceFile.name, sourceFile.text, language.key, Encoding.UTF8$.MODULE$)
     }
 
     List<File> getSourceFilesInScanPath() {
@@ -180,13 +180,21 @@ class Phenomena implements Closeable {
         return rtnList
     }
 
+    BblfshClient getBabelfishClient() {
+        return babelfishClient
+    }
+
+    Grakn.Session getGraknSession() {
+        return graknSession
+    }
+
     @Override
     void close() {
         visitor?.observers?.each {
             it.reset()
         }
-        parser?.close()
-        session?.close()
+        babelfishClient?.close()
+        graknSession?.close()
     }
 
     void addCodeObserver(CodeObserver codeObserver) {

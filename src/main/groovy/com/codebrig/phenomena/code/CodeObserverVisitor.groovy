@@ -18,21 +18,21 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class CodeObserverVisitor {
 
-    private final Grakn.Session session
+    private final Grakn.Session graknSession
     private final List<CodeObserver> observers
     private final Map<Integer, ContextualNode> contextualNodes
     private final boolean saveToGrakn
 
     CodeObserverVisitor() {
         this.saveToGrakn = false
-        this.session = null
+        this.graknSession = null
         this.observers = new ArrayList<>()
         this.contextualNodes = new ConcurrentHashMap<>()
     }
 
-    CodeObserverVisitor(Grakn.Session session) {
+    CodeObserverVisitor(Grakn.Session graknSession) {
         this.saveToGrakn = true
-        this.session = Objects.requireNonNull(session)
+        this.graknSession = Objects.requireNonNull(graknSession)
         this.observers = new ArrayList<>()
         this.contextualNodes = new ConcurrentHashMap<>()
     }
@@ -71,7 +71,7 @@ class CodeObserverVisitor {
         def transaction = null
         def queryBuilder = null
         if (saveToGrakn) {
-            transaction = session.transaction(GraknTxType.WRITE)
+            transaction = graknSession.transaction(GraknTxType.WRITE)
             queryBuilder = transaction.graql()
             if (observed) {
                 contextualRootNode.save(queryBuilder)

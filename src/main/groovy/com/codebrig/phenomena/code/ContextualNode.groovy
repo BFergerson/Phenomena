@@ -86,22 +86,26 @@ class ContextualNode extends SourceNode {
         def selfId = getData(CodeStructureObserver.SELF_ID)
         def patterns = new ArrayList<VarPattern>()
         def nodePattern = var("self")
-
         if (selfId != null) {
             nodePattern = nodePattern.id(ConceptId.of(selfId))
         } else {
             nodePattern = nodePattern.isa(entityType)
         }
+
+        boolean hasAttributes = false
         attributes.each {
+            hasAttributes = true
             nodePattern = nodePattern.has(it.key, it.value)
         }
         patterns.add(nodePattern)
+        boolean hasRoles = false
         roles.each {
+            hasRoles = true
             patterns.add(var().isa(it)
                     .rel("IS_" + it, "self"))
         }
 
-        if (!patterns.isEmpty()) {
+        if (hasAttributes || hasRoles) {
             def result = qb.insert(patterns).execute()
             def savedNode = result.get(0)
             setData(CodeStructureObserver.SELF_ID, selfId = savedNode.get("self").id().value)
