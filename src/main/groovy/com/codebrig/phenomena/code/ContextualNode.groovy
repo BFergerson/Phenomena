@@ -85,11 +85,9 @@ class ContextualNode extends SourceNode {
     void save(QueryBuilder qb) {
         def selfId = getData(CodeStructureObserver.SELF_ID)
         def patterns = new ArrayList<VarPattern>()
-        def nodePattern = var("self")
+        def nodePattern = var("self").isa(entityType)
         if (selfId != null) {
             nodePattern = nodePattern.id(ConceptId.of(selfId))
-        } else {
-            nodePattern = nodePattern.isa(entityType)
         }
 
         boolean hasAttributes = false
@@ -105,7 +103,7 @@ class ContextualNode extends SourceNode {
                     .rel("IS_" + it, "self"))
         }
 
-        if (hasAttributes || hasRoles) {
+        if (hasAttributes || hasRoles || selfId == null) {
             def result = qb.insert(patterns).execute()
             def savedNode = result.get(0)
             setData(CodeStructureObserver.SELF_ID, selfId = savedNode.get("self").id().value)
