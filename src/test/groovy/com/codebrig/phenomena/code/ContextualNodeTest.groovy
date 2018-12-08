@@ -27,9 +27,12 @@ class ContextualNodeTest extends PhenomenaTest {
         def contextualNode = visitor.getOrCreateContextualNode(sourceNode, sourceFile)
 
         def session = phenomena.getGraknSession()
-        def graql = session.transaction(GraknTxType.WRITE).graql()
+        def tx = session.transaction(GraknTxType.WRITE)
+        def graql = tx.graql()
         contextualNode.save(graql)
         contextualNode.save(graql)
+        tx.commit()
+        tx.close()
         phenomena.close()
     }
 }
