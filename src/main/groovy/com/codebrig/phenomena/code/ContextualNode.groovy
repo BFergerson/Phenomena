@@ -31,7 +31,6 @@ class ContextualNode extends SourceNode {
     private final Map<NodeRelationship, ContextualNode> relationships = new ConcurrentHashMap<>()
     private final Set<String> roles = Sets.newConcurrentHashSet()
     private File sourceFile
-    private String entityType
 
     ContextualNode(CodeObserverVisitor context, Node rootNode, File sourceFile, SourceLanguage language, Node node) {
         super(language, rootNode, node)
@@ -50,7 +49,10 @@ class ContextualNode extends SourceNode {
     }
 
     String getEntityType() {
-        return entityType
+        if (underlyingNode.internalType().isEmpty()) {
+            return underlyingNode.internalType() //todo: understand this
+        }
+        return language.qualifiedName + ObservedLanguage.toValidEntity(underlyingNode.internalType())
     }
 
     Map<String, Object> getAttributes() {
@@ -59,10 +61,6 @@ class ContextualNode extends SourceNode {
 
     Map<NodeRelationship, ContextualNode> getRelationships() {
         return relationships
-    }
-
-    void setEntityType(String entityType) {
-        this.entityType = entityType
     }
 
     void hasAttribute(String key, Object value) {
@@ -81,49 +79,54 @@ class ContextualNode extends SourceNode {
     void addRelationshipTo(ContextualNode otherNode, String relationshipType, String rel1, String rel2) {
         Objects.requireNonNull(otherNode)
         Objects.requireNonNull(relationshipType)
-
-        //todo: ensure no dupes
         relationships.put(new NodeRelationship(relationshipType, rel1, rel2), otherNode)
     }
 
     void save(QueryBuilder qb) {
+        def selfId = getData(CodeStructureObserver.SELF_ID)
         def patterns = new ArrayList<VarPattern>()
-        if (entityType != null) {
-            def nodePattern = var("self").isa(entityType)
-            attributes.each {
-                nodePattern = nodePattern.has(it.key, it.value)
-            }
-            patterns.add(nodePattern)
+        def nodePattern = var("self")
 
-            roles.each {
-                patterns.add(var().isa(it)
-                        .rel("IS_" + it, "self"))
-            }
+        if (selfId != null) {
+            nodePattern = nodePattern.id(ConceptId.of(selfId))
+        } else {
+            nodePattern = nodePattern.isa(entityType)
         }
+        attributes.each {
+            nodePattern = nodePattern.has(it.key, it.value)
+        }
+        patterns.add(nodePattern)
+        roles.each {
+            patterns.add(var().isa(it)
+                    .rel("IS_" + it, "self"))
+        }
+
         if (!patterns.isEmpty()) {
             def result = qb.insert(patterns).execute()
             def savedNode = result.get(0)
-            def selfId = savedNode.get("self").id().value
-            setData(CodeStructureObserver.SELF_ID, selfId)
+            setData(CodeStructureObserver.SELF_ID, selfId = savedNode.get("self").id().value)
         }
 
         relationships.each {
-            def selfId = getData(CodeStructureObserver.SELF_ID)
-            def parentId = it.value.getData(CodeStructureObserver.SELF_ID)
-            if (parentId != null) {
+            def otherSelfId = it.value.getData(CodeStructureObserver.SELF_ID)
+            if (otherSelfId == null) {
+                it.value.save(qb)
+                otherSelfId = it.value.getData(CodeStructureObserver.SELF_ID)
+            }
+
+            if (otherSelfId != null) {
                 qb.match(
                         var("self").id(ConceptId.of(selfId)),
-                        var("parent").id(ConceptId.of(parentId))
+                        var("other").id(ConceptId.of(otherSelfId))
                 ).insert(
                         var().isa(it.key.relationshipType)
                                 .rel(it.key.selfRole, "self")
-                                .rel(it.key.parentRole, "parent")
+                                .rel(it.key.otherRole, "other")
                 ).execute()
             }
         }
 
         //reset data
-        entityType = null
         attributes.clear()
         roles.clear()
         relationships.clear()
@@ -141,18 +144,18 @@ class ContextualNode extends SourceNode {
     static class NodeRelationship {
         String relationshipType
         String selfRole
-        String parentRole
+        String otherRole
 
         NodeRelationship(String relationshipType) {
             this.relationshipType = relationshipType
             this.selfRole = "is_$relationshipType"
-            this.parentRole = "has_$relationshipType"
+            this.otherRole = "has_$relationshipType"
         }
 
-        NodeRelationship(String relationshipType, String selfRole, String parentRole) {
+        NodeRelationship(String relationshipType, String selfRole, String otherRole) {
             this.relationshipType = relationshipType
             this.selfRole = selfRole
-            this.parentRole = parentRole
+            this.otherRole = otherRole
         }
     }
 }

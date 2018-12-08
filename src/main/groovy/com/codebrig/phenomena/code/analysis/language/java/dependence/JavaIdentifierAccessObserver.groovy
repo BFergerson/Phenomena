@@ -1,8 +1,10 @@
 package com.codebrig.phenomena.code.analysis.language.java.dependence
 
-import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNodeFilter
-import com.codebrig.omnisrc.observe.filter.*
+import com.codebrig.omnisrc.observe.filter.MultiFilter
+import com.codebrig.omnisrc.observe.filter.RoleFilter
+import com.codebrig.omnisrc.observe.filter.SimpleNameFilter
+import com.codebrig.omnisrc.observe.filter.TypeFilter
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.dependence.IdentifierAccessObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -29,17 +31,17 @@ import com.google.common.io.Resources
 class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
 
     private static final MultiFilter variableDeclarationFilter = MultiFilter.matchAll(
-            new LanguageFilter(SourceLanguage.Java),
             new RoleFilter("DECLARATION"), new RoleFilter("VARIABLE")
     )
-    private static final MultiFilter identifierFilter = MultiFilter.matchAll(
-            new LanguageFilter(SourceLanguage.Java),
-            new RoleFilter("IDENTIFIER")
+    private static final MultiFilter functionArgumentFilter = MultiFilter.matchAll(
+            new RoleFilter("FUNCTION"), new RoleFilter("ARGUMENT")
     )
+    private static final RoleFilter identifierFilter =
+            new RoleFilter("IDENTIFIER")
     private static final TypeFilter variableDeclarationFragmentFilter =
             new TypeFilter("VariableDeclarationFragment")
     private final Map<Node, ContextualNode> contextualDeclarations = new IdentityHashMap<>()
-    private final Map<Node, ContextualNode> contextualIdentifiers = new IdentityHashMap<>()
+    private final Map<Node, List<ContextualNode>> contextualIdentifiers = new IdentityHashMap<>()
     private final JavaParserIntegration integration
 
     JavaIdentifierAccessObserver(JavaParserIntegration integration) {
@@ -54,38 +56,47 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
         }
 
         try {
-            Node solvedNode = null
+            Node javaParserDeclaration = null
             def unit = integration.parseFile(node.sourceFile)
             def javaParserNode = JavaParserIntegration.getEquivalentNode(unit, node)
-            if (variableDeclarationFilter.evaluate(node) || variableDeclarationFragmentFilter.evaluate(node)) {
-                solvedNode = JavaParserIntegration.getNameNode(javaParserNode)
-                def declarationNameNode = codeObserverVisitor.getOrCreateContextualNode(
-                        new SimpleNameFilter(solvedNode.toString()).getFilteredNodes(node).next(), node.sourceFile)
-                contextualDeclarations.put(solvedNode, declarationNameNode)
+
+            if (variableDeclarationFilter.evaluate(node)
+                    || functionArgumentFilter.evaluate(node)
+                    || variableDeclarationFragmentFilter.evaluate(node)) {
+                javaParserDeclaration = JavaParserIntegration.getNameNode(javaParserNode)
+                def contextualDeclarationName = codeObserverVisitor.getOrCreateContextualNode(
+                        new SimpleNameFilter(javaParserDeclaration.toString()).getFilteredNodes(node).next(), node.sourceFile)
+                contextualDeclarations.put(javaParserDeclaration, contextualDeclarationName)
             } else if (javaParserNode instanceof SimpleName) {
-                solvedNode = solveNodeType(JavaParserFacade.get(integration.typeSolver).solve(javaParserNode))
-                if (solvedNode != null) {
-                    contextualIdentifiers.put(solvedNode, node)
+                javaParserDeclaration = getDeclarationName(JavaParserFacade.get(integration.typeSolver).solve(javaParserNode))
+                if (javaParserDeclaration != null) {
+                    contextualIdentifiers.putIfAbsent(javaParserDeclaration, new ArrayList<>())
+                    contextualIdentifiers.get(javaParserDeclaration).add(node)
                 }
             } else if (javaParserNode instanceof NodeWithSimpleName) {
-                solvedNode = solveNodeType(JavaParserFacade.get(integration.typeSolver).solve(javaParserNode.name))
-                if (solvedNode != null) {
-                    contextualIdentifiers.put(solvedNode, node)
+                javaParserDeclaration = getDeclarationName(JavaParserFacade.get(integration.typeSolver).solve(javaParserNode.name))
+                if (javaParserDeclaration != null) {
+                    contextualIdentifiers.putIfAbsent(javaParserDeclaration, new ArrayList<>())
+                    contextualIdentifiers.get(javaParserDeclaration).add(node)
                 }
             }
 
-            if (solvedNode != null && contextualDeclarations.containsKey(solvedNode)
-                    && contextualIdentifiers.containsKey(solvedNode)) {
-                def declarationNode = contextualDeclarations.get(solvedNode)
-                def usageNode = contextualIdentifiers.get(solvedNode)
-                usageNode.addRelationshipTo(declarationNode, "identifier_access")
+            if (javaParserDeclaration != null && contextualDeclarations.containsKey(javaParserDeclaration)
+                    && contextualIdentifiers.containsKey(javaParserDeclaration)) {
+                def declarationNode = contextualDeclarations.get(javaParserDeclaration)
+                contextualIdentifiers.get(javaParserDeclaration).removeIf({
+                    if (it != declarationNode) {
+                        it.addRelationshipTo(declarationNode, "identifier_access")
+                    }
+                    return true
+                })
             }
         } catch (UnsolvedSymbolException | UnsupportedOperationException ex) {
             //ignore; can't be solved
         }
     }
 
-    private static Node solveNodeType(SymbolReference nodeType) {
+    private static Node getDeclarationName(SymbolReference nodeType) {
         if (nodeType.isSolved()) {
             def declaration = nodeType.correspondingDeclaration
             if (declaration instanceof JavaParserSymbolDeclaration) {

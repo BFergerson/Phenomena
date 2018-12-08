@@ -9,6 +9,7 @@ import com.github.javaparser.Range
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.*
+import com.github.javaparser.ast.comments.JavadocComment
 import com.github.javaparser.ast.expr.*
 import com.github.javaparser.ast.nodeTypes.NodeWithSimpleName
 import com.github.javaparser.ast.stmt.ExpressionStmt
@@ -160,7 +161,7 @@ class JavaParserIntegration {
         while (!stack.isEmpty() && equivalentNode == null) {
             def it = stack.pop()
             if (it.range.isPresent()) {
-                def nodeRange = it.range.get()
+                def nodeRange = removeArrayFromRange(it, it.range.get())
                 if (nodeRange.contains(range) || pastCallableDeclaration) {
                     it.childNodes.each {
                         stack.push(it)
@@ -176,6 +177,21 @@ class JavaParserIntegration {
             }
         }
         return equivalentNode
+    }
+
+    private static Range removeArrayFromRange(Node node, Range range) {
+        if (node instanceof JavadocComment) {
+            return range
+        }
+
+        if (node.childNodes.isEmpty() && node.tokenRange.isPresent()
+                && node.tokenRange.get().toString().contains("[")) {
+            def fullArrayStr = node.tokenRange.get().toString()
+            return new Range(range.begin, new Position(range.end.line,
+                    range.end.column - (fullArrayStr.length() - (fullArrayStr.indexOf("[")))))
+        } else {
+            return range
+        }
     }
 
     private static Node checkNodeType(ContextualNode contextualNode, Node node) {
@@ -217,6 +233,8 @@ class JavaParserIntegration {
                     if (node.type instanceof ClassOrInterfaceType) {
                         return ((ClassOrInterfaceType) node.type).name
                     }
+                } else if (node instanceof ExpressionStmt && node.expression instanceof NameExpr) {
+                    return node.expression
                 }
                 break
             case "QualifiedName":

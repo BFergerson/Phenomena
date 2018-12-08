@@ -41,7 +41,6 @@ class CodeStructureObserver extends CodeObserver {
 
     @Override
     void applyObservation(ContextualNode node, ContextualNode parentNode) {
-        node.setEntityType(getEntityType(node))
         if (!node.token.isEmpty()) {
             if (node.isLiteralNode()) {
                 def literalAttribute = node.getLiteralAttribute()
@@ -139,13 +138,6 @@ class CodeStructureObserver extends CodeObserver {
 
     void setIncludeActualSemanticRoles(boolean includeActualSemanticRoles) {
         this.includeActualSemanticRoles = includeActualSemanticRoles
-    }
-
-    private static String getEntityType(ContextualNode n) {
-        if (n.underlyingNode.internalType().isEmpty()) {
-            return n.underlyingNode.internalType() //todo: understand this
-        }
-        return n.language.qualifiedName + ObservedLanguage.toValidEntity(n.underlyingNode.internalType())
     }
 
     private static List<Role> getRoles(ContextualNode n) {
