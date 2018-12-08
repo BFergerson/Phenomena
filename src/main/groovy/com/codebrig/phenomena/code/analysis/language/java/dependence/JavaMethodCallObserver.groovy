@@ -11,6 +11,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr
 import com.github.javaparser.ast.stmt.ExpressionStmt
 import com.github.javaparser.resolution.UnsolvedSymbolException
 import com.github.javaparser.symbolsolver.javaparsermodel.JavaParserFacade
+import com.github.javaparser.symbolsolver.javaparsermodel.declarations.JavaParserEnumDeclaration
 import com.github.javaparser.symbolsolver.javaparsermodel.declarations.JavaParserMethodDeclaration
 import com.github.javaparser.symbolsolver.reflectionmodel.ReflectionMethodDeclaration
 import com.google.common.base.Charsets
@@ -62,7 +63,8 @@ class JavaMethodCallObserver extends MethodCallObserver {
                     } else {
                         methodInvocations.put(method, node)
                     }
-                } else if (declaration instanceof ReflectionMethodDeclaration) {
+                } else if (declaration instanceof ReflectionMethodDeclaration
+                        || declaration instanceof JavaParserEnumDeclaration.ValuesMethod) {
                     //can't solve these
                 } else {
                     throw new IllegalArgumentException("Unsupported declaration: " + declaration.qualifiedName)
