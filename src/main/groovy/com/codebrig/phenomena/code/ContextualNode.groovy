@@ -26,7 +26,7 @@ import static ai.grakn.graql.Graql.var
 class ContextualNode extends SourceNode {
 
     private final CodeObserverVisitor context
-    private final Map<DataKey<?>, Object> data = new IdentityHashMap<>()
+    private final Map<Integer, Object> data = new ConcurrentHashMap<>()
     private final Map<String, Object> attributes = new ConcurrentHashMap<>()
     private final Map<NodeRelationship, ContextualNode> relationships = new ConcurrentHashMap<>()
     private final Set<String> roles = Sets.newConcurrentHashSet()
@@ -85,9 +85,11 @@ class ContextualNode extends SourceNode {
     void save(QueryBuilder qb) {
         def selfId = getData(CodeStructureObserver.SELF_ID)
         def patterns = new ArrayList<VarPattern>()
-        def nodePattern = var("self").isa(entityType)
+        def nodePattern = var("self")
         if (selfId != null) {
             nodePattern = nodePattern.id(ConceptId.of(selfId))
+        } else {
+            nodePattern = nodePattern.isa(entityType)
         }
 
         boolean hasAttributes = false
@@ -104,8 +106,7 @@ class ContextualNode extends SourceNode {
         }
 
         if (hasAttributes || hasRoles || selfId == null) {
-            def result = qb.insert(patterns).execute()
-            def savedNode = result.get(0)
+            def savedNode = qb.insert(patterns).execute().get(0)
             setData(CodeStructureObserver.SELF_ID, selfId = savedNode.get("self").id().value)
         }
 
@@ -135,11 +136,11 @@ class ContextualNode extends SourceNode {
     }
 
     def <M> M getData(final DataKey<M> key) {
-        return (M) data.get(key)
+        return (M) data.get(System.identityHashCode(key))
     }
 
     def <M> void setData(DataKey<M> key, M object) {
-        data.put(key, object)
+        data.put(System.identityHashCode(key), object)
     }
 
     @Canonical
