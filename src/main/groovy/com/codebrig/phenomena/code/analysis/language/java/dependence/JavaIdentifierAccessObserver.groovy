@@ -1,10 +1,8 @@
 package com.codebrig.phenomena.code.analysis.language.java.dependence
 
+import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNodeFilter
-import com.codebrig.omnisrc.observe.filter.MultiFilter
-import com.codebrig.omnisrc.observe.filter.RoleFilter
-import com.codebrig.omnisrc.observe.filter.SimpleNameFilter
-import com.codebrig.omnisrc.observe.filter.TypeFilter
+import com.codebrig.omnisrc.observe.filter.*
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.dependence.IdentifierAccessObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -138,7 +136,8 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
 
     @Override
     SourceNodeFilter getFilter() {
-        return MultiFilter.matchAny(variableDeclarationFilter, identifierFilter)
+        return MultiFilter.matchAll(new LanguageFilter(SourceLanguage.Java),
+                MultiFilter.matchAny(variableDeclarationFilter, identifierFilter))
     }
 
     @Override
