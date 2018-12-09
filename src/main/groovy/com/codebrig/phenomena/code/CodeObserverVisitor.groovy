@@ -86,22 +86,22 @@ class CodeObserverVisitor {
             visitCompletely(queryBuilder, sourceFile, contextualRootNode)
         }
 
-        if (saveToGrakn) {
-            contextualNodes.forEach({ key, node ->
-                node.save(queryBuilder)
-                if (rootObservedNode == null) {
-                    rootObservedNode = node
-                }
-
-                if (node.underlyingNode != node.rootNode) {
-                    contextualNodes.remove(key)
-                }
-            })
-        }
-        observers.each {
-            //todo: https://github.com/CodeBrig/Phenomena/issues/17
-            //it.reset()
-        }
+//        if (saveToGrakn) {
+//            contextualNodes.forEach({ key, node ->
+//                node.save(queryBuilder)
+//                if (rootObservedNode == null) {
+//                    rootObservedNode = node
+//                }
+//
+//                if (node.underlyingNode != node.rootNode) {
+//                    contextualNodes.remove(key)
+//                }
+//            })
+//        }
+//        observers.each {
+//            //todo: https://github.com/CodeBrig/Phenomena/issues/17
+//            //it.reset()
+//        }
         transaction?.commit()
         transaction?.close()
         return rootObservedNode
