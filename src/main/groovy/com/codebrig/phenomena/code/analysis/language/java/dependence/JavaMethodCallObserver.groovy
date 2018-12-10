@@ -95,8 +95,7 @@ class JavaMethodCallObserver extends MethodCallObserver {
 
     @Override
     String getSchema() {
-        return super.getSchema() + " " +
-                Resources.toString(Resources.getResource(
-                        "schema/dependence/language/java/method-call-schema.gql"), Charsets.UTF_8)
+        return super.getSchema() + " " + Resources.toString(Resources.getResource(
+                "schema/dependence/language/java/method-call-schema.gql"), Charsets.UTF_8)
     }
 }
