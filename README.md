@@ -1,4 +1,7 @@
-## Phenomena: Contextual source code behavior integration 
+## Phenomena: Contextual source code behavior integration
+
+[![Build Status](https://travis-ci.com/CodeBrig/Phenomena.svg?branch=master)](https://travis-ci.com/CodeBrig/Phenomena)
+
 Phenomena is designed to support any type of graph-based representation of source code.
 Phenomena's base structure uses the omnilingual source code schema provided by [OmniSRC](https://github.com/CodeBrig/OmniSRC).
 This schema can be extended with custom definitions and inference rules which are introduced by using a CodeObserver.
