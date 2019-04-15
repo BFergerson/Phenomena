@@ -3,8 +3,6 @@ package com.codebrig.phenomena.code
 import com.codebrig.omnisrc.SourceNodeFilter
 import com.codebrig.omnisrc.observe.filter.WildcardFilter
 
-import javax.validation.constraints.NotNull
-
 /**
  * Represents an entity which observers the properties of source code nodes
  * in order to extract/calculate additional source code properties.
@@ -30,12 +28,10 @@ abstract class CodeObserver {
     void reset() {
     }
 
-    @NotNull
     SourceNodeFilter getFilter() {
         return new WildcardFilter()
     }
 
-    @NotNull
     String getSchema() {
         return ""
     }

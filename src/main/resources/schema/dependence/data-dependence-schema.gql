@@ -1,10 +1,8 @@
 define
 
 ##########---------- Relationships ----------##########
-data_dependence sub relationship
+data_dependence sub relation,
     relates has_data_dependence, relates is_data_dependence;
-has_data_dependence sub role;
-is_data_dependence sub role;
 
 VariableDeclarator plays has_data_dependence;
 Parameter plays has_data_dependence, plays is_data_dependence;

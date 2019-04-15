@@ -1,6 +1,5 @@
 package com.codebrig.phenomena.code
 
-import ai.grakn.GraknTxType
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
 import com.codebrig.phenomena.Phenomena
@@ -27,10 +26,9 @@ class ContextualNodeTest extends PhenomenaTest {
         def contextualNode = visitor.getOrCreateContextualNode(sourceNode, sourceFile)
 
         def session = phenomena.getGraknSession()
-        def tx = session.transaction(GraknTxType.WRITE)
-        def graql = tx.graql()
-        contextualNode.save(graql)
-        contextualNode.save(graql)
+        def tx = session.transaction().write()
+        contextualNode.save(tx)
+        contextualNode.save(tx)
         tx.commit()
         tx.close()
         phenomena.close()

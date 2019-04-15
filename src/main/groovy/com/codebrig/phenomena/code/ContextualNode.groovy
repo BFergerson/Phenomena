@@ -1,19 +1,19 @@
 package com.codebrig.phenomena.code
 
-import ai.grakn.concept.ConceptId
-import ai.grakn.graql.QueryBuilder
-import ai.grakn.graql.VarPattern
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
 import com.codebrig.omnisrc.observe.ObservedLanguage
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import com.google.common.collect.Sets
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
+import grakn.client.GraknClient
+import graql.lang.Graql
+import graql.lang.statement.Statement
 import groovy.transform.Canonical
 
 import java.util.concurrent.ConcurrentHashMap
 
-import static ai.grakn.graql.Graql.var
+import static graql.lang.Graql.var
 
 /**
  * Represents a source code node (AST node) which
@@ -82,12 +82,12 @@ class ContextualNode extends SourceNode {
         relationships.put(new NodeRelationship(relationshipType, rel1, rel2), otherNode)
     }
 
-    void save(QueryBuilder qb) {
+    void save(GraknClient.Transaction qb) {
         def selfId = getData(CodeStructureObserver.SELF_ID)
-        def patterns = new ArrayList<VarPattern>()
+        def patterns = new ArrayList<Statement>()
         def nodePattern = var("self")
         if (selfId != null) {
-            nodePattern = nodePattern.id(ConceptId.of(selfId))
+            nodePattern = nodePattern.id(selfId)
         } else {
             nodePattern = nodePattern.isa(entityType)
         }
@@ -106,7 +106,7 @@ class ContextualNode extends SourceNode {
         }
 
         if (hasAttributes || hasRoles || selfId == null) {
-            def savedNode = qb.insert(patterns).execute().get(0)
+            def savedNode = qb.execute(Graql.insert(patterns)).get(0)
             setData(CodeStructureObserver.SELF_ID, selfId = savedNode.get("self").id().value)
         }
 
@@ -118,14 +118,14 @@ class ContextualNode extends SourceNode {
             }
 
             if (otherSelfId != null) {
-                qb.match(
-                        var("self").id(ConceptId.of(selfId)),
-                        var("other").id(ConceptId.of(otherSelfId))
+                qb.execute(Graql.match(
+                        var("self").id(selfId),
+                        var("other").id(otherSelfId)
                 ).insert(
                         var().isa(it.key.relationshipType)
                                 .rel(it.key.selfRole, "self")
                                 .rel(it.key.otherRole, "other")
-                ).execute()
+                ))
             }
         }
 

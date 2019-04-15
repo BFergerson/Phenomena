@@ -1,2 +1,0 @@
-FROM bfergerson/grakn-docker-toolbox
-ADD ./cassandra.yaml /opt/grakn-dist-1.2.0/services/cassandra/

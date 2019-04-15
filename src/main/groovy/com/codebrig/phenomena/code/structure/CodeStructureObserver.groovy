@@ -58,7 +58,11 @@ class CodeStructureObserver extends CodeObserver {
                         throw new UnsupportedOperationException(literalAttribute)
                 }
             } else {
-                node.hasAttribute("token", node.token)
+                def token = node.token
+                if (token.length() >= 2 && token[0] == '"' && token[token.length() - 1] == '"') {
+                    token = token.substring(1, token.length() - 1)
+                }
+                node.hasAttribute("token", token.replaceAll("\"", "\\\\\""))
             }
         }
         if (node.language.structureNaming.isNamedNodeType(node)) {

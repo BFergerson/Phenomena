@@ -1,6 +1,4 @@
 define
 
-identifier_access sub relationship
+identifier_access sub relation,
     relates has_identifier_access, relates is_identifier_access;
-has_identifier_access sub role;
-is_identifier_access sub role;

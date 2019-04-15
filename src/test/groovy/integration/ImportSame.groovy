@@ -14,6 +14,7 @@ class ImportSame {
     @Test
     void importSame_fullSchema() {
         def phenomena = new Phenomena()
+        phenomena.setGraknKeyspace("full_schema")
         phenomena.scanPath = new ArrayList<>()
         phenomena.scanPath.add(new File(".", "/src/test/resources/same").absolutePath)
         phenomena.init()
@@ -25,6 +26,7 @@ class ImportSame {
     @Test
     void importSame_necessarySchema() {
         def phenomena = new Phenomena()
+        phenomena.setGraknKeyspace("necessary_schema")
         phenomena.scanPath = new ArrayList<>()
         phenomena.scanPath.add(new File(".", "/src/test/resources/same").absolutePath)
 

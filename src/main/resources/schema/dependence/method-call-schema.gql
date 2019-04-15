@@ -1,6 +1,4 @@
 define
 
-method_call sub relationship
+method_call sub relation,
     relates has_method_call, relates is_method_call;
-has_method_call sub role;
-is_method_call sub role;

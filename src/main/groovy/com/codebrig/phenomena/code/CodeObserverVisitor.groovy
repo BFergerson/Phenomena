@@ -1,11 +1,9 @@
 package com.codebrig.phenomena.code
 
-import ai.grakn.GraknTxType
-import ai.grakn.client.Grakn
-import ai.grakn.graql.QueryBuilder
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
+import grakn.client.GraknClient
 
 import java.util.concurrent.ConcurrentHashMap
 
@@ -18,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class CodeObserverVisitor {
 
-    private final Grakn.Session graknSession
+    private final GraknClient.Session graknSession
     private final List<CodeObserver> observers
     private final Map<Integer, ContextualNode> contextualNodes
     private final boolean saveToGrakn
@@ -30,7 +28,7 @@ class CodeObserverVisitor {
         this.contextualNodes = new ConcurrentHashMap<>()
     }
 
-    CodeObserverVisitor(Grakn.Session graknSession) {
+    CodeObserverVisitor(GraknClient.Session graknSession) {
         this.saveToGrakn = true
         this.graknSession = Objects.requireNonNull(graknSession)
         this.observers = new ArrayList<>()
@@ -69,21 +67,19 @@ class CodeObserverVisitor {
 
         ContextualNode rootObservedNode
         def transaction = null
-        def queryBuilder = null
         if (saveToGrakn) {
-            transaction = graknSession.transaction(GraknTxType.WRITE)
-            queryBuilder = transaction.graql()
+            transaction = graknSession.transaction().write()
             if (observed) {
-                contextualRootNode.save(queryBuilder)
+                contextualRootNode.save(transaction)
                 if (rootObservedNode == null) {
                     rootObservedNode = contextualRootNode
                 }
             }
         }
         if (rootObservedNode == null) {
-            rootObservedNode = visitCompletely(queryBuilder, sourceFile, contextualRootNode)
+            rootObservedNode = visitCompletely(transaction, sourceFile, contextualRootNode)
         } else {
-            visitCompletely(queryBuilder, sourceFile, contextualRootNode)
+            visitCompletely(transaction, sourceFile, contextualRootNode)
         }
 
 //        if (saveToGrakn) {
@@ -107,7 +103,7 @@ class CodeObserverVisitor {
         return rootObservedNode
     }
 
-    private ContextualNode visitCompletely(QueryBuilder qb, File sourceFile, ContextualNode rootSourceNode) {
+    private ContextualNode visitCompletely(GraknClient.Transaction qb, File sourceFile, ContextualNode rootSourceNode) {
         ContextualNode rootObservedNode = null
         Stack<ContextualNode> parentStack = new Stack<>()
         Stack<Iterator<SourceNode>> childrenStack = new Stack<>()

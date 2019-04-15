@@ -1,6 +1,6 @@
 define
 
-cyclomaticComplexity sub attribute datatype long;
+cyclomaticComplexity sub attribute, datatype long;
 
 GoFuncDeclArtifact has cyclomaticComplexity;
 JavaMethodDeclarationArtifact has cyclomaticComplexity;
