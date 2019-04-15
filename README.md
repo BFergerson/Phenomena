@@ -16,8 +16,8 @@ This observer creates nodes and edges which contain the structure of the source 
 
 | Structure                   | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Abstract syntax tree        | [Go, Java, JavaScript, Python](https://github.com/CodeBrig/Phenomena/blob/v0.2-alpha/src/main/groovy/com/codebrig/phenomena/code/structure/CodeStructureObserver.groovy) |
-| Semantic roles              | [Go, Java, JavaScript, Python](https://github.com/CodeBrig/Phenomena/blob/v0.2-alpha/src/main/groovy/com/codebrig/phenomena/code/structure/CodeStructureObserver.groovy) |
+| Abstract syntax tree        | [Go, Java, JavaScript, Python](https://github.com/CodeBrig/Phenomena/blob/v0.3.1-alpha/src/main/groovy/com/codebrig/phenomena/code/structure/CodeStructureObserver.groovy) |
+| Semantic roles              | [Go, Java, JavaScript, Python](https://github.com/CodeBrig/Phenomena/blob/v0.3.1-alpha/src/main/groovy/com/codebrig/phenomena/code/structure/CodeStructureObserver.groovy) |
 
 #### Schema
 [OmniSRC_Omnilingual_Base_Structure (v0.3-alpha)](https://github.com/CodeBrig/OmniSRC/blob/v0.3-alpha/src/main/resources/schema/omnilingual/OmniSRC_Omnilingual_Base_Structure.gql)
@@ -32,8 +32,8 @@ The dependence observers create edges between program statements and the precedi
 
 | Metric                      | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Identifier access           | [Java](https://github.com/CodeBrig/Phenomena/blob/v0.2-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/language/java/dependence/JavaIdentifierAccess.groovy) |
-| Method call                 | [Java](https://github.com/CodeBrig/Phenomena/blob/v0.2-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/language/java/dependence/JavaMethodCallObserver.groovy) |
+| Identifier access           | [Java](https://github.com/CodeBrig/Phenomena/blob/v0.3.1-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/language/java/dependence/JavaIdentifierAccess.groovy) |
+| Method call                 | [Java](https://github.com/CodeBrig/Phenomena/blob/v0.3.1-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/language/java/dependence/JavaMethodCallObserver.groovy) |
 
 ### Metric
 
@@ -45,4 +45,4 @@ The metric observers create attributes on correlating source code nodes with cal
 
 | Metric                      | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Cyclomatic complexity       | [Go, Java, JavaScript, Python](https://github.com/CodeBrig/Phenomena/blob/v0.2-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/metric/CyclomaticComplexity.groovy) |
+| Cyclomatic complexity       | [Go, Java, JavaScript, Python](https://github.com/CodeBrig/Phenomena/blob/v0.3.1-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/metric/CyclomaticComplexity.groovy) |
