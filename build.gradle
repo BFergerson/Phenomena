@@ -22,7 +22,7 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.5'
     implementation group: 'io.grakn.client', name: 'api', version: "1.5.0"
     implementation 'org.bblfsh:bblfsh-client:1.10.1'
-    implementation 'com.github.codebrig:omnisrc:31801f7658'
+    implementation 'com.github.codebrig:omnisrc:v0.3.1-alpha'
 }
 
 test {
