@@ -1,14 +1,12 @@
 define
 
 ##########---------- Attributes ----------##########
-control_value sub attribute datatype boolean;
+control_value sub attribute, datatype boolean;
 
 ##########---------- Relationships ----------##########
-control_flow sub relationship
+control_flow sub relations,
     relates has_control_flow, relates is_control_flow
     has control_value;
-has_control_flow sub role;
-is_control_flow sub role;
 
 #todo: use CallableDeclaration instead
 ConstructorDeclaration plays has_control_flow, plays is_control_flow;

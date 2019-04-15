@@ -1,9 +1,10 @@
 package com.codebrig.phenomena.code
 
 /**
- * todo: description
+ * Used as an identity key for storing and
+ * retrieving custom transient data to a ContextualNode
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
@@ -18,5 +19,4 @@ abstract class DataKey<T> {
     boolean equals(Object obj) {
         return obj != null && getClass() == obj.getClass()
     }
-
 }

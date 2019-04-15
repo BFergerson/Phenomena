@@ -1,24 +1,38 @@
 package com.codebrig.phenomena.code
 
-import ai.grakn.graql.QueryBuilder
-
-import javax.validation.constraints.NotNull
+import com.codebrig.omnisrc.SourceNodeFilter
+import com.codebrig.omnisrc.observe.filter.WildcardFilter
 
 /**
- * todo: description
+ * Represents an entity which observers the properties of source code nodes
+ * in order to extract/calculate additional source code properties.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
-trait CodeObserver {
+abstract class CodeObserver {
 
-    void applyObservation(ContextualNode n, QueryBuilder qb) {
+    abstract void applyObservation(ContextualNode node, ContextualNode parentNode)
+
+    private CodeObserverVisitor codeObserverVisitor
+
+    void setCodeObserverVisitor(CodeObserverVisitor codeObserverVisitor) {
+        this.codeObserverVisitor = codeObserverVisitor
     }
 
-    @NotNull
+    CodeObserverVisitor getCodeObserverVisitor() {
+        return codeObserverVisitor
+    }
+
+    void reset() {
+    }
+
+    SourceNodeFilter getFilter() {
+        return new WildcardFilter()
+    }
+
     String getSchema() {
         return ""
     }
-
 }

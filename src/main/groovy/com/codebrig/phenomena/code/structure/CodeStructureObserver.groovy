@@ -1,9 +1,10 @@
 package com.codebrig.phenomena.code.structure
 
-import ai.grakn.concept.ConceptId
-import ai.grakn.graql.QueryBuilder
 import com.codebrig.omnisrc.SourceLanguage
-import com.codebrig.omnisrc.observations.ObservedLanguage
+import com.codebrig.omnisrc.SourceNodeFilter
+import com.codebrig.omnisrc.observe.ObservedLanguage
+import com.codebrig.omnisrc.observe.filter.WildcardFilter
+import com.codebrig.omnisrc.observe.structure.StructureLiteral
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.structure.key.SelfIdKey
@@ -12,62 +13,104 @@ import scala.collection.JavaConverters
 
 import java.util.stream.Collectors
 
-import static ai.grakn.graql.Graql.var
-
 /**
- * todo: description
+ * The code structure observer creates nodes and edges which contain
+ * the structure of the source code in the form of an abstract syntax graph.
  *
- * @version 0.1
+ * @version 0.2
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
-class CodeStructureObserver implements CodeObserver {
+class CodeStructureObserver extends CodeObserver {
 
+    static final Set<String> literalAttributes = StructureLiteral.allLiteralAttributes.keySet()
     static final SelfIdKey SELF_ID = new SelfIdKey()
+    private final SourceNodeFilter filter
+    private boolean includeIndividualSemanticRoles
+    private boolean includeActualSemanticRoles
+
+    CodeStructureObserver() {
+        this(new WildcardFilter())
+    }
+
+    CodeStructureObserver(SourceNodeFilter filter) {
+        this.filter = Objects.requireNonNull(filter)
+        this.includeIndividualSemanticRoles = false
+        this.includeActualSemanticRoles = false
+    }
 
     @Override
-    void applyObservation(ContextualNode n, QueryBuilder qb) {
-        def nodePattern = var("node").isa(getEntityType(n))
-        if (!getToken(n).isEmpty()) {
-            nodePattern = nodePattern.has("token", getToken(n))
+    void applyObservation(ContextualNode node, ContextualNode parentNode) {
+        if (!node.token.isEmpty()) {
+            if (node.isLiteralNode()) {
+                def literalAttribute = node.getLiteralAttribute()
+                switch (literalAttribute) {
+                    case StructureLiteral.booleanValueLiteral():
+                        node.hasAttribute(literalAttribute, Boolean.valueOf(node.token))
+                        break
+                    case StructureLiteral.numberValueLiteral():
+                        node.hasAttribute(literalAttribute, node.language.structureLiteral.toLong(node.token))
+                        break
+                    case StructureLiteral.doubleValueLiteral():
+                        node.hasAttribute(literalAttribute, node.language.structureLiteral.toDouble(node.token))
+                        break
+                    default:
+                        throw new UnsupportedOperationException(literalAttribute)
+                }
+            } else {
+                def token = node.token
+                if (token.length() >= 2 && token[0] == '"' && token[token.length() - 1] == '"') {
+                    token = token.substring(1, token.length() - 1)
+                }
+                node.hasAttribute("token", token.replaceAll("\"", "\\\\\""))
+            }
         }
-        def attributes = asJavaMap(n.underlyingNode.properties())
+        if (node.language.structureNaming.isNamedNodeType(node)) {
+            node.hasAttribute("name", node.getName())
+        }
+
+        def attributes = asJavaMap(node.underlyingNode.properties())
         attributes.keySet().stream().filter({ it != "internalRole" && it != "token" }).each {
             def attrName = ObservedLanguage.toValidAttribute(it)
-            attrName = attrName.substring(0, 1).toUpperCase() + attrName.substring(1)
-            nodePattern = nodePattern.has(n.language.key() + attrName, attributes.get(it))
-        }
-        def savedNode = qb.insert(nodePattern).execute().get(0)
-        n.setData(SELF_ID, savedNode.get("node").id().value)
-
-        def selfId = n.getData(SELF_ID)
-        getChildren(n).each {
-            if (it.underlyingNode.properties().get("internalRole").isDefined()) {
-                def childId = it.getData(SELF_ID)
-                def relation = ObservedLanguage.toValidRelation(it.underlyingNode.properties().get("internalRole").get())
-                qb.match(
-                        var("parent").id(ConceptId.of(selfId)),
-                        var("child").id(ConceptId.of(childId))
-                ).insert(
-                        var().isa(n.language.key() + "_" + relation)
-                                .rel("has_" + n.language.key() + "_$relation", "parent")
-                                .rel("is_" + n.language.key() + "_$relation", "child")
-                ).execute()
+            if (literalAttributes.contains(attrName)) {
+                switch (attrName) {
+                    case StructureLiteral.booleanValueLiteral():
+                        node.hasAttribute(attrName, Boolean.valueOf(attributes.get(it)))
+                        break
+                    case StructureLiteral.numberValueLiteral():
+                        node.hasAttribute(attrName, Long.valueOf(attributes.get(it)))
+                        break
+                    case StructureLiteral.doubleValueLiteral():
+                        node.hasAttribute(attrName, Float.valueOf(attributes.get(it)))
+                        break
+                    default:
+                        throw new UnsupportedOperationException(attrName)
+                }
+            } else {
+                attrName = attrName.substring(0, 1).toUpperCase() + attrName.substring(1)
+                node.hasAttribute(node.language.key + attrName, attributes.get(it))
             }
         }
 
-        def roleList = getRoles(n)
-        roleList.each {
-            qb.match(
-                    var("self").id(ConceptId.of(selfId))
-            ).insert(
-                    var().isa(it.name())
-                            .rel("IS_" + it.name(), "self")
-            ).execute()
+        if (parentNode != null) {
+            if (!parentNode.underlyingNode.children().contains(node.underlyingNode)) {
+                //parent and child don't relate in any way besides parent/child
+                node.addRelationshipTo(parentNode, "parent_child_relation", "is_child", "is_parent")
+            } else {
+                def relation = node.language.key + "_" + ObservedLanguage.toValidRelation(node.underlyingNode.properties().get("internalRole").get())
+                def selfRole = "is_" + relation.substring(0, relation.length() - 8) + "role"
+                def otherRole = "has_" + relation.substring(0, relation.length() - 8) + "role"
+                node.addRelationshipTo(parentNode, relation, selfRole, otherRole)
+            }
         }
 
-        if (roleList.size() > 1) {
-            //add merged super role
+        def roleList = getRoles(node)
+        if (includeIndividualSemanticRoles) {
+            roleList.each {
+                node.playsRole(it.name())
+            }
+        }
+        if (includeActualSemanticRoles && roleList.size() > 1) {
             def sb = new StringBuilder()
             def alphaSortRoles = new ArrayList<String>(roleList.stream().map({
                 it.name()
@@ -80,38 +123,29 @@ class CodeStructureObserver implements CodeObserver {
                 }
             }
 
-            def superRole = sb.toString()
-            qb.match(
-                    var("self").id(ConceptId.of(selfId))
-            ).insert(
-                    var().isa(superRole)
-                            .rel("IS_" + superRole, "self")
-            ).execute()
+            def actualRole = sb.toString()
+            node.playsRole(actualRole)
         }
     }
 
-    private static String getEntityType(ContextualNode n) {
-        if (n.underlyingNode.internalType().isEmpty()) {
-            return n.underlyingNode.internalType() //todo: understand this
-        }
-        return n.language.qualifiedName + ObservedLanguage.toValidEntity(n.underlyingNode.internalType())
+    boolean getIncludeIndividualSemanticRoles() {
+        return includeIndividualSemanticRoles
     }
 
-    private static String getToken(ContextualNode n) {
-        if (n.underlyingNode.properties().contains("token")) {
-            return n.underlyingNode.properties().get("token").get()
-        }
-        return n.underlyingNode.token()
+    void setIncludeIndividualSemanticRoles(boolean includeIndividualSemanticRoles) {
+        this.includeIndividualSemanticRoles = includeIndividualSemanticRoles
+    }
+
+    boolean getIncludeActualSemanticRoles() {
+        return includeActualSemanticRoles
+    }
+
+    void setIncludeActualSemanticRoles(boolean includeActualSemanticRoles) {
+        this.includeActualSemanticRoles = includeActualSemanticRoles
     }
 
     private static List<Role> getRoles(ContextualNode n) {
         return asJavaCollection(n.underlyingNode.roles()).stream()
-                .collect(Collectors.toList())
-    }
-
-    private static List<ContextualNode> getChildren(ContextualNode n) {
-        return asJavaCollection(n.underlyingNode.children()).stream()
-                .map({ ContextualNode.getContextualNode(n.language, it) })
                 .collect(Collectors.toList())
     }
 
@@ -124,8 +158,19 @@ class CodeStructureObserver implements CodeObserver {
     }
 
     @Override
-    String getSchema() {
-        return SourceLanguage.OmniSRC.getFullSchemaDefinition("1.0")
+    SourceNodeFilter getFilter() {
+        return filter
     }
 
+    @Override
+    String getSchema() {
+        def structureSchema = SourceLanguage.OmniSRC.getBaseStructureSchemaDefinition()
+        if (includeIndividualSemanticRoles) {
+            structureSchema += "\n" + SourceLanguage.OmniSRC.getIndividualSemanticRolesSchemaDefinition()
+        }
+        if (includeActualSemanticRoles) {
+            structureSchema += "\n" + SourceLanguage.OmniSRC.getActualSemanticRolesSchemaDefinition()
+        }
+        return structureSchema
+    }
 }

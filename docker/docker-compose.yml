@@ -1,13 +1,7 @@
 version: '2.1'
 services:
   grakn:
-    stdin_open: true
-    tty: true
-    hostname: grakn
-    build:
-      context: .
-      dockerfile: Dockerfile-grakn
+    image: graknlabs/grakn:1.5.1
+    container_name: grakn
     ports:
-      - "4567:4567"
-      - "9042:9042"
-      - "9160:9160"
+      - "48555:48555"

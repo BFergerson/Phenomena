@@ -1,8 +1,8 @@
 define
 
-##########---------- Attributes ----------##########
-cyclomatic_complexity sub attribute datatype long;
+cyclomaticComplexity sub attribute, datatype long;
 
-#todo: use CallableDeclaration instead
-ConstructorDeclaration has cyclomatic_complexity;
-MethodDeclaration has cyclomatic_complexity;
+GoFuncDeclArtifact has cyclomaticComplexity;
+JavaMethodDeclarationArtifact has cyclomaticComplexity;
+JavascriptFunctionDeclarationArtifact has cyclomaticComplexity;
+PythonFunctionDefArtifact has cyclomaticComplexity;
