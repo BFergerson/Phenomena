@@ -19,8 +19,8 @@ This observer creates nodes and edges which contain the structure of the source 
 
 | Structure                   | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Abstract syntax tree        | [Go, Java, JavaScript, Php, Python, Ruby](https://github.com/CodeBrig/OmniSRC/tree/v0.3.1-alpha/src/main/resources/schema/omnilingual) |
-| Semantic roles              | [Go, Java, JavaScript, Php, Python, Ruby](https://github.com/CodeBrig/OmniSRC/tree/v0.3.1-alpha/src/main/resources/schema/omnilingual) |
+| Abstract syntax tree        | [Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/OmniSRC/tree/v0.3.1-alpha/src/main/resources/schema/omnilingual) |
+| Semantic roles              | [Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/OmniSRC/tree/v0.3.1-alpha/src/main/resources/schema/omnilingual) |
 
 ### Dependence
 
