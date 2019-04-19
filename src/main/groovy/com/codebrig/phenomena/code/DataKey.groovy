@@ -4,7 +4,7 @@ package com.codebrig.phenomena.code
  * Used as an identity key for storing and
  * retrieving custom transient data to a ContextualNode
  *
- * @version 0.2
+ * @version 0.2.1
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */

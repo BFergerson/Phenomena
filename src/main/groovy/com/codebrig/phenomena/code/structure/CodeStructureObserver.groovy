@@ -14,7 +14,7 @@ import scala.collection.JavaConverters
  * The code structure observer creates nodes and edges which contain
  * the structure of the source code in the form of an abstract syntax graph.
  *
- * @version 0.2
+ * @version 0.2.1
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
