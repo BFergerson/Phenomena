@@ -35,4 +35,8 @@ abstract class CodeObserver {
     String getSchema() {
         return ""
     }
+
+    String[] getRules() {
+        return new String[0]
+    }
 }

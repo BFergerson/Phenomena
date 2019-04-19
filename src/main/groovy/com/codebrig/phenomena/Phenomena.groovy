@@ -98,6 +98,9 @@ class Phenomena implements Closeable {
         def stringBuilder = new StringBuilder()
         codeObservers.each {
             stringBuilder.append(it.getSchema().trim()).append(" ")
+            it.getRules().each {
+                stringBuilder.append(it.trim()).append(" ")
+            }
         }
         setupOntology(stringBuilder.toString())
     }

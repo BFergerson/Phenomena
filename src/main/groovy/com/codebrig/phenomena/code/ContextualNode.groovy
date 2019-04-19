@@ -72,6 +72,10 @@ class ContextualNode extends SourceNode {
         roles.add(Objects.requireNonNull(role))
     }
 
+    List<String> getPlayedRoles() {
+        return new ArrayList<>(roles)
+    }
+
     void addRelationshipTo(ContextualNode otherNode, String relationshipType) {
         addRelationshipTo(otherNode, relationshipType, "is_$relationshipType", "has_$relationshipType")
     }
