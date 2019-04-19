@@ -1,6 +1,6 @@
 define
 
-variable-declaration-fragment-hierarchy sub rule,
+variable-declaration-fragment-child-hierarchy sub rule,
 when {
     $fragment isa JavaVariableDeclarationFragmentArtifact;
     (is_child: $fragment, $fragmentParent) isa parent_child_relation;
@@ -8,4 +8,14 @@ when {
     $fragmentChild != $fragmentParent;
 }, then {
     (is_child: $fragmentChild, is_parent: $fragmentParent) isa parent_child_relation;
+};
+
+variable-declaration-fragment-parent-hierarchy sub rule,
+when {
+    $fragment isa JavaVariableDeclarationFragmentArtifact;
+    (is_parent: $fragment, $fragmentParent) isa parent_child_relation;
+    (is_parent: $fragmentChild, $fragment) isa parent_child_relation;
+    $fragmentChild != $fragmentParent;
+}, then {
+    (is_parent: $fragmentChild, is_child: $fragmentParent) isa parent_child_relation;
 };
