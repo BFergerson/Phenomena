@@ -40,16 +40,16 @@ class Phenomena implements Closeable {
     private BblfshClient babelfishClient
     private GraknClient.Session graknSession
 
-    void init() {
+    void init() throws ConnectException {
         init(new CodeStructureObserver())
     }
 
-    void init(List<CodeObserver> codeObservers) {
+    void init(List<CodeObserver> codeObservers) throws ConnectException {
         Objects.requireNonNull(codeObservers)
         init(codeObservers.toArray(new CodeObserver[0]))
     }
 
-    void init(CodeObserver... codeObservers) {
+    void init(CodeObserver... codeObservers) throws ConnectException {
         if (codeObservers.length == 0) {
             throw new IllegalArgumentException("Missing code observers")
         }
@@ -60,19 +60,24 @@ class Phenomena implements Closeable {
         setupVisitor(codeObservers)
     }
 
-    void connectToBabelfish() {
+    void connectToBabelfish() throws ConnectException {
         println "Connecting to Babelfish"
         babelfishClient = new BblfshClient(babelfishHost, babelfishPort, Integer.MAX_VALUE)
+        try {
+            babelfishClient.supportedLanguages()
+        } catch (all) {
+            throw new ConnectException("Connection refused: $babelfishHost:$babelfishPort")
+        }
     }
 
-    void connectToGrakn() {
+    void connectToGrakn() throws ConnectException {
         println "Connecting to Grakn"
         def client = new GraknClient("$graknURI")
-        graknSession = client.session(graknKeyspace)
-
-        //test connection
-        def testTx = graknSession.transaction().read()
-        testTx.close()
+        try {
+            graknSession = client.session(graknKeyspace)
+        } catch (all) {
+            throw new ConnectException("Connection refused: $graknURI")
+        }
     }
 
     void setupVisitor(CodeObserverVisitor visitor) {
