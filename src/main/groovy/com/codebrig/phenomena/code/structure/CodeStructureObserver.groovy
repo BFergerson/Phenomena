@@ -8,16 +8,13 @@ import com.codebrig.omnisrc.observe.structure.StructureLiteral
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.structure.key.SelfIdKey
-import gopkg.in.bblfsh.sdk.v1.uast.generated.Role
 import scala.collection.JavaConverters
-
-import java.util.stream.Collectors
 
 /**
  * The code structure observer creates nodes and edges which contain
  * the structure of the source code in the form of an abstract syntax graph.
  *
- * @version 0.2
+ * @version 0.2.1
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
@@ -26,8 +23,6 @@ class CodeStructureObserver extends CodeObserver {
     static final Set<String> literalAttributes = StructureLiteral.allLiteralAttributes.keySet()
     static final SelfIdKey SELF_ID = new SelfIdKey()
     private final SourceNodeFilter filter
-    private boolean includeIndividualSemanticRoles
-    private boolean includeActualSemanticRoles
 
     CodeStructureObserver() {
         this(new WildcardFilter())
@@ -35,8 +30,6 @@ class CodeStructureObserver extends CodeObserver {
 
     CodeStructureObserver(SourceNodeFilter filter) {
         this.filter = Objects.requireNonNull(filter)
-        this.includeIndividualSemanticRoles = false
-        this.includeActualSemanticRoles = false
     }
 
     @Override
@@ -69,7 +62,7 @@ class CodeStructureObserver extends CodeObserver {
             node.hasAttribute("name", node.getName())
         }
 
-        def attributes = asJavaMap(node.underlyingNode.properties())
+        def attributes = JavaConverters.mapAsJavaMapConverter(node.underlyingNode.properties()).asJava()
         attributes.keySet().stream().filter({ it != "internalRole" && it != "token" }).each {
             def attrName = ObservedLanguage.toValidAttribute(it)
             if (literalAttributes.contains(attrName)) {
@@ -97,64 +90,13 @@ class CodeStructureObserver extends CodeObserver {
                 //parent and child don't relate in any way besides parent/child
                 node.addRelationshipTo(parentNode, "parent_child_relation", "is_child", "is_parent")
             } else {
-                def relation = node.language.key + "_" + ObservedLanguage.toValidRelation(node.underlyingNode.properties().get("internalRole").get())
+                def relation = node.language.key + "_" + ObservedLanguage.toValidRelation(
+                        node.underlyingNode.properties().get("internalRole").get())
                 def selfRole = "is_" + relation.substring(0, relation.length() - 8) + "role"
                 def otherRole = "has_" + relation.substring(0, relation.length() - 8) + "role"
                 node.addRelationshipTo(parentNode, relation, selfRole, otherRole)
             }
         }
-
-        def roleList = getRoles(node)
-        if (includeIndividualSemanticRoles) {
-            roleList.each {
-                node.playsRole(it.name())
-            }
-        }
-        if (includeActualSemanticRoles && roleList.size() > 1) {
-            def sb = new StringBuilder()
-            def alphaSortRoles = new ArrayList<String>(roleList.stream().map({
-                it.name()
-            }).collect(Collectors.toList()))
-            alphaSortRoles.sort(String.CASE_INSENSITIVE_ORDER)
-            for (int i = 0; i < alphaSortRoles.size(); i++) {
-                sb.append(alphaSortRoles.get(i))
-                if ((i + 1) < alphaSortRoles.size()) {
-                    sb.append("_")
-                }
-            }
-
-            def actualRole = sb.toString()
-            node.playsRole(actualRole)
-        }
-    }
-
-    boolean getIncludeIndividualSemanticRoles() {
-        return includeIndividualSemanticRoles
-    }
-
-    void setIncludeIndividualSemanticRoles(boolean includeIndividualSemanticRoles) {
-        this.includeIndividualSemanticRoles = includeIndividualSemanticRoles
-    }
-
-    boolean getIncludeActualSemanticRoles() {
-        return includeActualSemanticRoles
-    }
-
-    void setIncludeActualSemanticRoles(boolean includeActualSemanticRoles) {
-        this.includeActualSemanticRoles = includeActualSemanticRoles
-    }
-
-    private static List<Role> getRoles(ContextualNode n) {
-        return asJavaCollection(n.underlyingNode.roles()).stream()
-                .collect(Collectors.toList())
-    }
-
-    private static <T> Collection<T> asJavaCollection(scala.collection.Iterable<T> scalaIterator) {
-        return JavaConverters.asJavaCollectionConverter(scalaIterator).asJavaCollection()
-    }
-
-    private static Map<String, String> asJavaMap(scala.collection.Map<String, String> scalaMap) {
-        return JavaConverters.mapAsJavaMapConverter(scalaMap).asJava()
     }
 
     @Override
@@ -164,13 +106,6 @@ class CodeStructureObserver extends CodeObserver {
 
     @Override
     String getSchema() {
-        def structureSchema = SourceLanguage.OmniSRC.getBaseStructureSchemaDefinition()
-        if (includeIndividualSemanticRoles) {
-            structureSchema += "\n" + SourceLanguage.OmniSRC.getIndividualSemanticRolesSchemaDefinition()
-        }
-        if (includeActualSemanticRoles) {
-            structureSchema += "\n" + SourceLanguage.OmniSRC.getActualSemanticRolesSchemaDefinition()
-        }
-        return structureSchema
+        return SourceLanguage.OmniSRC.getBaseStructureSchemaDefinition()
     }
 }

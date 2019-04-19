@@ -21,7 +21,7 @@ import static groovy.io.FileType.FILES
 /**
  * Main entry-point used to parse, process, and store source code files
  *
- * @version 0.2
+ * @version 0.2.1
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
@@ -98,6 +98,9 @@ class Phenomena implements Closeable {
         def stringBuilder = new StringBuilder()
         codeObservers.each {
             stringBuilder.append(it.getSchema().trim()).append(" ")
+            it.getRules().each {
+                stringBuilder.append(it.trim()).append(" ")
+            }
         }
         setupOntology(stringBuilder.toString())
     }
