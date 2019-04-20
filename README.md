@@ -45,4 +45,4 @@ The metric observers create attributes on correlating source code nodes with cal
 
 | Metric                      | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Cyclomatic complexity       | [Go, Java, JavaScript, Php, Python, Ruby](https://github.com/CodeBrig/Phenomena/blob/v0.2.1-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/metric/CyclomaticComplexityObserver.groovy) |
+| Cyclomatic complexity       | [Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Phenomena/blob/v0.2.1-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/metric/CyclomaticComplexityObserver.groovy) |
