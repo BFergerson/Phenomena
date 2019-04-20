@@ -12,6 +12,15 @@ public class Complex{
     private double real;
     private double imaginary;
 
+    /**
+     * <pre>{@code
+     *   a
+     *  / \
+     * b   c
+     *  \ /
+     *   d
+     * }</pre>
+     */
     public static void main(String[] args) {
 
         ArrayList<Equation> memory = new ArrayList<Equation>();

@@ -10,6 +10,7 @@ import grakn.client.GraknClient
 import graql.lang.Graql
 import graql.lang.statement.Statement
 import groovy.transform.Canonical
+import org.apache.commons.lang.StringEscapeUtils
 
 import java.util.concurrent.ConcurrentHashMap
 
@@ -100,7 +101,7 @@ class ContextualNode extends SourceNode {
         attributes.each {
             hasAttributes = true
             if (it.value instanceof String) {
-                nodePattern = nodePattern.has(it.key, it.value.toString().replaceAll("\"", "\\\\\""))
+                nodePattern = nodePattern.has(it.key, StringEscapeUtils.escapeJava(it.value.toString()))
             } else {
                 nodePattern = nodePattern.has(it.key, it.value)
             }
