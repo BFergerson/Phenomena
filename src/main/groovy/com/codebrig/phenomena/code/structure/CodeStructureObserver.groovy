@@ -55,7 +55,7 @@ class CodeStructureObserver extends CodeObserver {
                 if (token.length() >= 2 && token[0] == '"' && token[token.length() - 1] == '"') {
                     token = token.substring(1, token.length() - 1)
                 }
-                node.hasAttribute("token", token.replaceAll("\"", "\\\\\""))
+                node.hasAttribute("token", token)
             }
         }
         if (node.language.structureNaming.isNamedNodeType(node)) {

@@ -2,6 +2,11 @@ import java.util.*;
 import java.io.*;
 import java.text.*;
 import java.util.regex.*;
+
+/**
+ * Blah blah <a href="http://en.wikipedia.org/wiki/Arithmetic_mean">link</a>.
+ * {@code values}.
+ */
 public class Complex{
 
     private double real;

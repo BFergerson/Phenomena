@@ -99,7 +99,11 @@ class ContextualNode extends SourceNode {
         boolean hasAttributes = false
         attributes.each {
             hasAttributes = true
-            nodePattern = nodePattern.has(it.key, it.value)
+            if (it.value instanceof String) {
+                nodePattern = nodePattern.has(it.key, it.value.toString().replaceAll("\"", "\\\\\""))
+            } else {
+                nodePattern = nodePattern.has(it.key, it.value)
+            }
         }
         patterns.add(nodePattern)
         boolean hasRoles = false
