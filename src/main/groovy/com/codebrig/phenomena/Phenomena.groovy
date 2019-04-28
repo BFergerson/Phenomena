@@ -38,6 +38,7 @@ class Phenomena implements Closeable {
     private int babelfishPort = 9432
     private CodeObserverVisitor visitor
     private BblfshClient babelfishClient
+    private GraknClient graknClient
     private GraknClient.Session graknSession
 
     void init() throws ConnectException {
@@ -72,9 +73,9 @@ class Phenomena implements Closeable {
 
     void connectToGrakn() throws ConnectException {
         println "Connecting to Grakn"
-        def client = new GraknClient("$graknURI")
+        graknClient = new GraknClient("$graknURI")
         try {
-            graknSession = client.session(graknKeyspace)
+            graknSession = graknClient.session(graknKeyspace)
         } catch (all) {
             throw new ConnectException("Connection refused: $graknURI")
         }
@@ -205,6 +206,7 @@ class Phenomena implements Closeable {
         }
         babelfishClient?.close()
         graknSession?.close()
+        graknClient?.close()
     }
 
     void addCodeObserver(CodeObserver codeObserver) {
