@@ -38,7 +38,7 @@ class ImportSame {
         multiFilter.accept(roleFilter)
         multiFilter.accept(new TypeFilter("MethodDeclaration"))
         phenomena.init(new CodeStructureObserver(multiFilter))
-        phenomena.setupOntology(new File(".", "/src/test/resources/schema/Same_Schema.gql").text)
+        phenomena.setupOntology()
         println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }

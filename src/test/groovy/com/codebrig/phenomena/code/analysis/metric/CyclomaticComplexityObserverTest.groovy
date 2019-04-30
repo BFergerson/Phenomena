@@ -5,14 +5,13 @@ import com.codebrig.omnisrc.observe.filter.FunctionFilter
 import com.codebrig.omnisrc.observe.filter.MultiFilter
 import com.codebrig.omnisrc.observe.filter.NameFilter
 import com.codebrig.phenomena.Phenomena
-import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import org.junit.Test
 
 import static org.junit.Assert.*
 
-class CyclomaticComplexityObserverTest extends PhenomenaTest {
+class CyclomaticComplexityObserverTest {
 
     @Test
     void pythonInnerMethod_noSave() {

@@ -3,14 +3,13 @@ package com.codebrig.phenomena.code.analysis.semantic
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.observe.filter.TypeFilter
 import com.codebrig.phenomena.Phenomena
-import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import org.junit.Test
 
 import static org.junit.Assert.*
 
-class CodeSemanticObserverTest extends PhenomenaTest {
+class CodeSemanticObserverTest {
 
     @Test
     void skipVariableDeclarationFragment_noSave() {

@@ -3,11 +3,9 @@ package com.codebrig.phenomena.code.analysis.language.java.dependence
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
 import com.codebrig.omnisrc.observe.filter.MultiFilter
-import com.codebrig.omnisrc.observe.filter.NameFilter
 import com.codebrig.omnisrc.observe.filter.RoleFilter
 import com.codebrig.omnisrc.observe.filter.SimpleNameFilter
 import com.codebrig.phenomena.Phenomena
-import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -19,7 +17,7 @@ import java.util.stream.Collectors
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertNotNull
 
-class JavaIdentifierAccessObserverTest extends PhenomenaTest {
+class JavaIdentifierAccessObserverTest {
 
     @Test
     void innerMethodIdentifierAccess_noSave() {

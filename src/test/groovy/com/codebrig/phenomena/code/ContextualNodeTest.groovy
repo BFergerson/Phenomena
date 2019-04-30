@@ -3,11 +3,10 @@ package com.codebrig.phenomena.code
 import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
 import com.codebrig.phenomena.Phenomena
-import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import org.junit.Test
 
-class ContextualNodeTest extends PhenomenaTest {
+class ContextualNodeTest {
 
     @Test
     void "double save node"() {
