@@ -8,6 +8,7 @@ import com.codebrig.omnisrc.observe.structure.StructureLiteral
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.structure.key.SelfIdKey
+import org.apache.commons.lang.StringEscapeUtils
 import scala.collection.JavaConverters
 
 /**
@@ -48,7 +49,7 @@ class CodeStructureObserver extends CodeObserver {
                         node.hasAttribute(literalAttribute, node.language.structureLiteral.toDouble(node.token))
                         break
                     default:
-                        throw new UnsupportedOperationException(literalAttribute)
+                        node.hasAttribute(literalAttribute, StringEscapeUtils.escapeJava(node.token)) //treat as string
                 }
             } else {
                 def token = node.token
@@ -77,7 +78,7 @@ class CodeStructureObserver extends CodeObserver {
                         node.hasAttribute(attrName, Float.valueOf(attributes.get(it)))
                         break
                     default:
-                        throw new UnsupportedOperationException(attrName)
+                        node.hasAttribute(attrName, StringEscapeUtils.escapeJava(attributes.get(it))) //treat as string
                 }
             } else {
                 attrName = attrName.substring(0, 1).toUpperCase() + attrName.substring(1)

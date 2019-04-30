@@ -4,6 +4,9 @@ import com.codebrig.omnisrc.observe.filter.MultiFilter
 import com.codebrig.omnisrc.observe.filter.RoleFilter
 import com.codebrig.omnisrc.observe.filter.TypeFilter
 import com.codebrig.phenomena.Phenomena
+import com.codebrig.phenomena.code.CodeObserver
+import com.codebrig.phenomena.code.analysis.DependenceAnalysis
+import com.codebrig.phenomena.code.analysis.MetricAnalysis
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import org.junit.Test
 
@@ -36,6 +39,21 @@ class ImportSame {
         multiFilter.accept(new TypeFilter("MethodDeclaration"))
         phenomena.init(new CodeStructureObserver(multiFilter))
         phenomena.setupOntology(new File(".", "/src/test/resources/schema/Same_Schema.gql").text)
+        println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        phenomena.close()
+    }
+
+    @Test
+    void importSame_withAllObservers() {
+        def phenomena = new Phenomena()
+        phenomena.scanPath = new ArrayList<>()
+        phenomena.scanPath.add(new File(".", "/src/test/resources/same").absolutePath)
+        def observers = new ArrayList<CodeObserver>()
+        observers.add(new CodeStructureObserver())
+        observers.addAll(DependenceAnalysis.getAllCodeObservers(phenomena))
+        observers.addAll(MetricAnalysis.getAllCodeObservers(phenomena))
+        phenomena.init(observers)
+        phenomena.setupOntology()
         println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }

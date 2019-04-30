@@ -4,6 +4,8 @@ import com.codebrig.omnisrc.SourceLanguage
 import com.codebrig.omnisrc.SourceNode
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
 import grakn.client.GraknClient
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 import java.util.concurrent.ConcurrentHashMap
 
@@ -16,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap
  */
 class CodeObserverVisitor {
 
+    private static final Logger log = LoggerFactory.getLogger(this.name)
     private final GraknClient.Session graknSession
     private final List<CodeObserver> observers
     private final Map<Integer, ContextualNode> contextualNodes
@@ -115,28 +118,33 @@ class CodeObserverVisitor {
             def children = childrenStack.pop()
 
             children.each {
-                def contextualChildNode = getOrCreateContextualNode(it, sourceFile)
-                def observed = false
+                if (it.internalType.isEmpty()) {
+                    //https://github.com/CodeBrig/Phenomena/issues/27
+                    log.warn("Skipped visiting node with missing internal type (issue #27)")
+                } else {
+                    def contextualChildNode = getOrCreateContextualNode(it, sourceFile)
+                    def observed = false
 
-                observers.each {
-                    if (it.filter.evaluate(contextualChildNode)) {
-                        observed = true
-                        it.applyObservation(contextualChildNode, parent)
-                    }
-                }
-                if (observed) {
-                    if (saveToGrakn) {
-                        contextualChildNode.save(qb)
-                        if (rootObservedNode == null) {
-                            rootObservedNode = contextualChildNode
+                    observers.each {
+                        if (it.filter.evaluate(contextualChildNode)) {
+                            observed = true
+                            it.applyObservation(contextualChildNode, parent)
                         }
                     }
+                    if (observed) {
+                        if (saveToGrakn) {
+                            contextualChildNode.save(qb)
+                            if (rootObservedNode == null) {
+                                rootObservedNode = contextualChildNode
+                            }
+                        }
 
-                    parentStack.push(contextualChildNode)
-                    childrenStack.push(contextualChildNode.children)
-                } else {
-                    parentStack.push(parent)
-                    childrenStack.push(contextualChildNode.children)
+                        parentStack.push(contextualChildNode)
+                        childrenStack.push(contextualChildNode.children)
+                    } else {
+                        parentStack.push(parent)
+                        childrenStack.push(contextualChildNode.children)
+                    }
                 }
             }
         }
