@@ -30,7 +30,7 @@ import java.util.stream.Collectors
  *
  *  The actual semantic roles provide more specificity at the cost of disk space.
  *
- * @version 0.2.1
+ * @version 0.2.2
  * @since 0.2.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */

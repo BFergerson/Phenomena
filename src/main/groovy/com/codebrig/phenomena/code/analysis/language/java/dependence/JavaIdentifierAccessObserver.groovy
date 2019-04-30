@@ -22,7 +22,7 @@ import com.google.common.io.Resources
 /**
  * Creates edges between Java variable usages and their declarations
  *
- * @version 0.2.1
+ * @version 0.2.2
  * @since 0.2
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */

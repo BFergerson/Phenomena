@@ -20,7 +20,7 @@ import static graql.lang.Graql.var
  * Represents a source code node (AST node) which
  * has additional contextual data associated to it.
  *
- * @version 0.2.1
+ * @version 0.2.2
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
