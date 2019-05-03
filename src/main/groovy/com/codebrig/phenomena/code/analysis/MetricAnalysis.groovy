@@ -35,7 +35,7 @@ enum MetricAnalysis {
         def schemaDefinition = Resources.toString(Resources.getResource(
                 "schema/metric/$analysisType-schema.gql"), Charsets.UTF_8) + " "
         supportedLanguages.each {
-            if (it != SourceLanguage.OmniSRC) {
+            if (it != Omnilingual) {
                 schemaDefinition += Resources.toString(Resources.getResource(
                         "schema/metric/language/" + it.key + "/$analysisType-schema.gql"), Charsets.UTF_8)
             }

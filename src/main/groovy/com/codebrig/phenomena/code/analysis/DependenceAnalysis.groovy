@@ -10,6 +10,7 @@ import com.google.common.base.Charsets
 import com.google.common.io.Resources
 
 import static com.codebrig.arthur.SourceLanguage.Java
+import static com.codebrig.arthur.SourceLanguage.Omnilingual
 
 /**
  * todo: description
@@ -38,7 +39,7 @@ enum DependenceAnalysis {
         def schemaDefinition = Resources.toString(Resources.getResource(
                 "schema/dependence/$analysisType-schema.gql"), Charsets.UTF_8) + " "
         supportedLanguages.each {
-            if (it != SourceLanguage.OmniSRC) {
+            if (it != Omnilingual) {
                 schemaDefinition += Resources.toString(Resources.getResource(
                         "schema/dependence/language/" + it.key + "/$analysisType-schema.gql"), Charsets.UTF_8)
             }
