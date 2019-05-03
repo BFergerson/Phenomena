@@ -1,6 +1,6 @@
 package com.codebrig.phenomena.code.analysis
 
-import com.codebrig.omnisrc.SourceLanguage
+import com.codebrig.arthur.SourceLanguage
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -9,12 +9,13 @@ import com.codebrig.phenomena.code.analysis.language.java.dependence.JavaMethodC
 import com.google.common.base.Charsets
 import com.google.common.io.Resources
 
-import static com.codebrig.omnisrc.SourceLanguage.Java
+import static com.codebrig.arthur.SourceLanguage.Java
+import static com.codebrig.arthur.SourceLanguage.Omnilingual
 
 /**
  * todo: description
  *
- * @version 0.2.2
+ * @version 0.2.3
  * @since 0.2
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
@@ -38,7 +39,7 @@ enum DependenceAnalysis {
         def schemaDefinition = Resources.toString(Resources.getResource(
                 "schema/dependence/$analysisType-schema.gql"), Charsets.UTF_8) + " "
         supportedLanguages.each {
-            if (it != SourceLanguage.OmniSRC) {
+            if (it != Omnilingual) {
                 schemaDefinition += Resources.toString(Resources.getResource(
                         "schema/dependence/language/" + it.key + "/$analysisType-schema.gql"), Charsets.UTF_8)
             }

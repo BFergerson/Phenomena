@@ -1,8 +1,12 @@
 package com.codebrig.phenomena.code.analysis.language.java.dependence
 
-import com.codebrig.omnisrc.SourceLanguage
-import com.codebrig.omnisrc.SourceNodeFilter
-import com.codebrig.omnisrc.observe.filter.*
+import com.codebrig.arthur.SourceLanguage
+import com.codebrig.arthur.observe.structure.StructureFilter
+import com.codebrig.arthur.observe.structure.filter.LanguageFilter
+import com.codebrig.arthur.observe.structure.filter.MultiFilter
+import com.codebrig.arthur.observe.structure.filter.RoleFilter
+import com.codebrig.arthur.observe.structure.filter.SimpleNameFilter
+import com.codebrig.arthur.observe.structure.filter.TypeFilter
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.dependence.IdentifierAccessObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -22,7 +26,7 @@ import com.google.common.io.Resources
 /**
  * Creates edges between Java variable usages and their declarations
  *
- * @version 0.2.2
+ * @version 0.2.3
  * @since 0.2
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
@@ -135,7 +139,7 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
     }
 
     @Override
-    SourceNodeFilter getFilter() {
+    StructureFilter getFilter() {
         return MultiFilter.matchAll(new LanguageFilter(SourceLanguage.Java),
                 MultiFilter.matchAny(variableDeclarationFilter, identifierFilter))
     }

@@ -1,9 +1,9 @@
 package com.codebrig.phenomena.code.analysis.metric
 
-import com.codebrig.omnisrc.SourceLanguage
-import com.codebrig.omnisrc.observe.filter.FunctionFilter
-import com.codebrig.omnisrc.observe.filter.MultiFilter
-import com.codebrig.omnisrc.observe.filter.NameFilter
+import com.codebrig.arthur.SourceLanguage
+import com.codebrig.arthur.observe.structure.filter.FunctionFilter
+import com.codebrig.arthur.observe.structure.filter.MultiFilter
+import com.codebrig.arthur.observe.structure.filter.NameFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
@@ -38,7 +38,7 @@ class CyclomaticComplexityObserverTest {
             foundInner = true
             def contextualNode = visitor.getContextualNode(it.underlyingNode)
             def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomaticComplexity")
-            assertEquals(2, cyclomaticComplexity)
+            assertEquals(3, cyclomaticComplexity)
         }
         assertTrue(foundOuter)
         assertTrue(foundInner)

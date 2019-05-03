@@ -6,3 +6,5 @@ GoFuncDeclArtifact has cyclomaticComplexity;
 JavaMethodDeclarationArtifact has cyclomaticComplexity;
 JavascriptFunctionDeclarationArtifact has cyclomaticComplexity;
 PythonFunctionDefArtifact has cyclomaticComplexity;
+RubyDefArtifact has cyclomaticComplexity;
+PhpStmtFunctionArtifact has cyclomaticComplexity;

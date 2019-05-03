@@ -1,6 +1,6 @@
 package com.codebrig.phenomena
 
-import com.codebrig.omnisrc.SourceLanguage
+import com.codebrig.arthur.SourceLanguage
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.ProcessedSourceFile
@@ -21,7 +21,7 @@ import static groovy.io.FileType.FILES
 /**
  * Main entry-point used to parse, process, and store source code files
  *
- * @version 0.2.2
+ * @version 0.2.3
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */

@@ -5,7 +5,7 @@ import com.codebrig.phenomena.code.DataKey
 /**
  * Holds the Grakn Id of the stored source code node
  *
- * @version 0.2.2
+ * @version 0.2.3
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */

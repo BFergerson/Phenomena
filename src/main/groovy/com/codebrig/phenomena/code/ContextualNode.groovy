@@ -1,8 +1,8 @@
 package com.codebrig.phenomena.code
 
-import com.codebrig.omnisrc.SourceLanguage
-import com.codebrig.omnisrc.SourceNode
-import com.codebrig.omnisrc.observe.ObservedLanguage
+import com.codebrig.arthur.SourceLanguage
+import com.codebrig.arthur.SourceNode
+import com.codebrig.arthur.observe.ObservedLanguage
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import com.google.common.collect.Sets
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
@@ -20,7 +20,7 @@ import static graql.lang.Graql.var
  * Represents a source code node (AST node) which
  * has additional contextual data associated to it.
  *
- * @version 0.2.2
+ * @version 0.2.3
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */

@@ -1,8 +1,8 @@
 package integration
 
-import com.codebrig.omnisrc.observe.filter.MultiFilter
-import com.codebrig.omnisrc.observe.filter.RoleFilter
-import com.codebrig.omnisrc.observe.filter.TypeFilter
+import com.codebrig.arthur.observe.structure.filter.MultiFilter
+import com.codebrig.arthur.observe.structure.filter.RoleFilter
+import com.codebrig.arthur.observe.structure.filter.TypeFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.analysis.DependenceAnalysis

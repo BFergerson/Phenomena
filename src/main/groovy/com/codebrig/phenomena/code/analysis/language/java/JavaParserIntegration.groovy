@@ -1,6 +1,6 @@
 package com.codebrig.phenomena.code.analysis.language.java
 
-import com.codebrig.omnisrc.observe.structure.naming.JavaNaming
+import com.codebrig.arthur.observe.structure.naming.JavaNaming
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.ContextualNode
 import com.github.javaparser.JavaParser
@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * Used to integrate JavaParser AST nodes
  *
- * @version 0.2.2
+ * @version 0.2.3
  * @since 0.2
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */

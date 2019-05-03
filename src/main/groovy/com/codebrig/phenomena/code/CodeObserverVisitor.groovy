@@ -1,7 +1,7 @@
 package com.codebrig.phenomena.code
 
-import com.codebrig.omnisrc.SourceLanguage
-import com.codebrig.omnisrc.SourceNode
+import com.codebrig.arthur.SourceLanguage
+import com.codebrig.arthur.SourceNode
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
 import grakn.client.GraknClient
 import org.slf4j.Logger
@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * Used to execute source code observers over source code files
  *
- * @version 0.2.2
+ * @version 0.2.3
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */

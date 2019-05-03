@@ -1,10 +1,10 @@
 package com.codebrig.phenomena.code.structure
 
-import com.codebrig.omnisrc.SourceLanguage
-import com.codebrig.omnisrc.SourceNodeFilter
-import com.codebrig.omnisrc.observe.ObservedLanguage
-import com.codebrig.omnisrc.observe.filter.WildcardFilter
-import com.codebrig.omnisrc.observe.structure.StructureLiteral
+import com.codebrig.arthur.SourceLanguage
+import com.codebrig.arthur.observe.ObservedLanguage
+import com.codebrig.arthur.observe.structure.StructureFilter
+import com.codebrig.arthur.observe.structure.StructureLiteral
+import com.codebrig.arthur.observe.structure.filter.WildcardFilter
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.structure.key.SelfIdKey
@@ -15,7 +15,7 @@ import scala.collection.JavaConverters
  * The code structure observer creates nodes and edges which contain
  * the structure of the source code in the form of an abstract syntax graph.
  *
- * @version 0.2.2
+ * @version 0.2.3
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
@@ -23,13 +23,13 @@ class CodeStructureObserver extends CodeObserver {
 
     static final Set<String> literalAttributes = StructureLiteral.allLiteralAttributes.keySet()
     static final SelfIdKey SELF_ID = new SelfIdKey()
-    private final SourceNodeFilter filter
+    private final StructureFilter filter
 
     CodeStructureObserver() {
         this(new WildcardFilter())
     }
 
-    CodeStructureObserver(SourceNodeFilter filter) {
+    CodeStructureObserver(StructureFilter filter) {
         this.filter = Objects.requireNonNull(filter)
     }
 
@@ -101,12 +101,12 @@ class CodeStructureObserver extends CodeObserver {
     }
 
     @Override
-    SourceNodeFilter getFilter() {
+    StructureFilter getFilter() {
         return filter
     }
 
     @Override
     String getSchema() {
-        return SourceLanguage.OmniSRC.getBaseStructureSchemaDefinition()
+        return SourceLanguage.Omnilingual.getBaseStructureSchemaDefinition()
     }
 }

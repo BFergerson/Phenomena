@@ -1,20 +1,20 @@
 package com.codebrig.phenomena.code.analysis.metric
 
-import com.codebrig.omnisrc.SourceNode
-import com.codebrig.omnisrc.SourceNodeFilter
-import com.codebrig.omnisrc.observe.filter.FunctionFilter
-import com.codebrig.omnisrc.observe.filter.MultiFilter
-import com.codebrig.omnisrc.observe.filter.conditional.ElseIfConditionalFilter
-import com.codebrig.omnisrc.observe.filter.conditional.IfConditionalFilter
-import com.codebrig.omnisrc.observe.filter.conditional.SwitchCaseConditionalFilter
-import com.codebrig.omnisrc.observe.filter.exception.CatchFilter
-import com.codebrig.omnisrc.observe.filter.loop.DoWhileLoopFilter
-import com.codebrig.omnisrc.observe.filter.loop.ForEachLoopFilter
-import com.codebrig.omnisrc.observe.filter.loop.ForLoopFilter
-import com.codebrig.omnisrc.observe.filter.loop.WhileLoopFilter
-import com.codebrig.omnisrc.observe.filter.operator.logical.AndOperatorFilter
-import com.codebrig.omnisrc.observe.filter.operator.logical.OrOperatorFilter
-import com.codebrig.omnisrc.observe.filter.operator.misc.TernaryOperatorFilter
+import com.codebrig.arthur.SourceNode
+import com.codebrig.arthur.observe.structure.StructureFilter
+import com.codebrig.arthur.observe.structure.filter.FunctionFilter
+import com.codebrig.arthur.observe.structure.filter.MultiFilter
+import com.codebrig.arthur.observe.structure.filter.conditional.ElseIfConditionalFilter
+import com.codebrig.arthur.observe.structure.filter.conditional.IfConditionalFilter
+import com.codebrig.arthur.observe.structure.filter.conditional.SwitchCaseConditionalFilter
+import com.codebrig.arthur.observe.structure.filter.exception.CatchFilter
+import com.codebrig.arthur.observe.structure.filter.loop.DoWhileLoopFilter
+import com.codebrig.arthur.observe.structure.filter.loop.ForEachLoopFilter
+import com.codebrig.arthur.observe.structure.filter.loop.ForLoopFilter
+import com.codebrig.arthur.observe.structure.filter.loop.WhileLoopFilter
+import com.codebrig.arthur.observe.structure.filter.operator.logical.AndOperatorFilter
+import com.codebrig.arthur.observe.structure.filter.operator.logical.OrOperatorFilter
+import com.codebrig.arthur.observe.structure.filter.operator.misc.TernaryOperatorFilter
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.ContextualNode
 import com.google.common.base.Charsets
@@ -24,7 +24,7 @@ import com.google.common.io.Resources
  * Creates an additional attribute on function declarations
  * with the function's cyclomatic complexity.
  *
- * @version 0.2.2
+ * @version 0.2.3
  * @since 0.2
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
@@ -72,7 +72,7 @@ class CyclomaticComplexityObserver extends CodeObserver {
     }
 
     @Override
-    SourceNodeFilter getFilter() {
+    StructureFilter getFilter() {
         return functionFilter
     }
 
