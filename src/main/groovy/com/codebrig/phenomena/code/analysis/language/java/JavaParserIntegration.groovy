@@ -25,7 +25,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * Used to integrate JavaParser AST nodes
  *
- * @version 0.2.2
+ * @version 0.2.3
  * @since 0.2
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */

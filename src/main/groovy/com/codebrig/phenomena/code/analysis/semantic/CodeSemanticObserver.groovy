@@ -24,7 +24,7 @@ import java.util.stream.Collectors
  *  - IS_ARGUMENT
  *  - IS_DECLARATION
  *
- * @version 0.2.2
+ * @version 0.2.3
  * @since 0.2.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
