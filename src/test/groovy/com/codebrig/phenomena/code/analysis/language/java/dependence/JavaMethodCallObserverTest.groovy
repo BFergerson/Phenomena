@@ -1,8 +1,8 @@
 package com.codebrig.phenomena.code.analysis.language.java.dependence
 
-import com.codebrig.omnisrc.SourceLanguage
-import com.codebrig.omnisrc.SourceNode
-import com.codebrig.omnisrc.observe.filter.TypeFilter
+import com.codebrig.arthur.SourceLanguage
+import com.codebrig.arthur.SourceNode
+import com.codebrig.arthur.observe.structure.filter.TypeFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.ContextualNode

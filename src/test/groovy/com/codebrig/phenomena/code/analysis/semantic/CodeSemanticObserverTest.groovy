@@ -1,7 +1,7 @@
 package com.codebrig.phenomena.code.analysis.semantic
 
-import com.codebrig.omnisrc.SourceLanguage
-import com.codebrig.omnisrc.observe.filter.TypeFilter
+import com.codebrig.arthur.SourceLanguage
+import com.codebrig.arthur.observe.structure.filter.TypeFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.structure.CodeStructureObserver

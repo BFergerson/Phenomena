@@ -1,11 +1,13 @@
 package com.codebrig.phenomena.code.analysis
 
-import com.codebrig.omnisrc.SourceLanguage
+import com.codebrig.arthur.SourceLanguage
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.analysis.metric.CyclomaticComplexityObserver
 import com.google.common.base.Charsets
 import com.google.common.io.Resources
+
+import static com.codebrig.arthur.SourceLanguage.Omnilingual
 
 /**
  * todo: description
@@ -16,7 +18,7 @@ import com.google.common.io.Resources
  */
 enum MetricAnalysis {
 
-    Cyclomatic_Complexity(SourceLanguage.OmniSRC)
+    Cyclomatic_Complexity(Omnilingual)
 
     private final List<SourceLanguage> supportedLanguages
 

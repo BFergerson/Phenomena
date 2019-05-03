@@ -1,6 +1,6 @@
 package integration
 
-import com.codebrig.omnisrc.SourceLanguage
+import com.codebrig.arthur.SourceLanguage
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.analysis.DependenceAnalysis

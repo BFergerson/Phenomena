@@ -1,6 +1,6 @@
 package com.codebrig.phenomena.code.analysis
 
-import com.codebrig.omnisrc.SourceLanguage
+import com.codebrig.arthur.SourceLanguage
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -9,7 +9,7 @@ import com.codebrig.phenomena.code.analysis.language.java.dependence.JavaMethodC
 import com.google.common.base.Charsets
 import com.google.common.io.Resources
 
-import static com.codebrig.omnisrc.SourceLanguage.Java
+import static com.codebrig.arthur.SourceLanguage.Java
 
 /**
  * todo: description

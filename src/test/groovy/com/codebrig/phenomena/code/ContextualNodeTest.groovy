@@ -1,7 +1,7 @@
 package com.codebrig.phenomena.code
 
-import com.codebrig.omnisrc.SourceLanguage
-import com.codebrig.omnisrc.SourceNode
+import com.codebrig.arthur.SourceLanguage
+import com.codebrig.arthur.SourceNode
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import org.junit.Test

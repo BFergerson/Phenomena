@@ -1,6 +1,6 @@
 package com.codebrig.phenomena.code.analysis.language.java
 
-import com.codebrig.omnisrc.observe.structure.naming.JavaNaming
+import com.codebrig.arthur.observe.structure.naming.JavaNaming
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.ContextualNode
 import com.github.javaparser.JavaParser

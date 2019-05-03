@@ -1,10 +1,10 @@
 package com.codebrig.phenomena.code.analysis.language.java.dependence
 
-import com.codebrig.omnisrc.SourceLanguage
-import com.codebrig.omnisrc.SourceNodeFilter
-import com.codebrig.omnisrc.observe.filter.LanguageFilter
-import com.codebrig.omnisrc.observe.filter.MultiFilter
-import com.codebrig.omnisrc.observe.filter.TypeFilter
+import com.codebrig.arthur.SourceLanguage
+import com.codebrig.arthur.observe.structure.StructureFilter
+import com.codebrig.arthur.observe.structure.filter.LanguageFilter
+import com.codebrig.arthur.observe.structure.filter.MultiFilter
+import com.codebrig.arthur.observe.structure.filter.TypeFilter
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.dependence.MethodCallObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -88,7 +88,7 @@ class JavaMethodCallObserver extends MethodCallObserver {
     }
 
     @Override
-    SourceNodeFilter getFilter() {
+    StructureFilter getFilter() {
         return MultiFilter.matchAll(new LanguageFilter(SourceLanguage.Java),
                 new TypeFilter("MethodDeclaration", "MethodInvocation"))
     }

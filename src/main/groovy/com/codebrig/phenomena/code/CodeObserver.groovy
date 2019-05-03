@@ -1,7 +1,7 @@
 package com.codebrig.phenomena.code
 
-import com.codebrig.omnisrc.SourceNodeFilter
-import com.codebrig.omnisrc.observe.filter.WildcardFilter
+import com.codebrig.arthur.observe.structure.StructureFilter
+import com.codebrig.arthur.observe.structure.filter.WildcardFilter
 
 /**
  * Represents an entity which observers the properties of source code nodes
@@ -28,7 +28,7 @@ abstract class CodeObserver {
     void reset() {
     }
 
-    SourceNodeFilter getFilter() {
+    StructureFilter getFilter() {
         return new WildcardFilter()
     }
 

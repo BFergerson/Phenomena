@@ -1,7 +1,7 @@
 package com.codebrig.phenomena.code
 
-import com.codebrig.omnisrc.SourceLanguage
-import com.codebrig.omnisrc.SourceNode
+import com.codebrig.arthur.SourceLanguage
+import com.codebrig.arthur.SourceNode
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
 import grakn.client.GraknClient
 import org.slf4j.Logger
