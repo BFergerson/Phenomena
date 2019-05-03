@@ -4,7 +4,7 @@
 
 Phenomena is designed to support any type of graph-based representation of source code.
 Phenomena's base structure uses the omnilingual source code schema provided by [Arthur](https://github.com/CodeBrig/Arthur).
-This schema can be extended with custom definitions and inference rules which are introduced by using a CodeObserver.
+This schema can be extended with custom definitions and inference rules which are introduced by using a [CodeObserver](https://github.com/CodeBrig/Phenomena/blob/v0.2.3-alpha/src/main/groovy/com/codebrig/phenomena/code/CodeObserver.groovy).
 
 Phenomena currently supports the following types of code observers:
 
