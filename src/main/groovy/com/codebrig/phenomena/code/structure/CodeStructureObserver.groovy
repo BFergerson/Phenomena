@@ -64,7 +64,9 @@ class CodeStructureObserver extends CodeObserver {
         }
 
         def attributes = JavaConverters.mapAsJavaMapConverter(node.underlyingNode.properties()).asJava()
-        attributes.keySet().stream().filter({ it != "internalRole" && it != "token" }).each {
+        attributes.keySet().stream().filter({
+            it != "internalRole" && it != "token" && it != "unescapedValue"
+        }).each {
             def attrName = ObservedLanguage.toValidAttribute(it)
             if (literalAttributes.contains(attrName)) {
                 switch (attrName) {
