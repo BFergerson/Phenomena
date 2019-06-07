@@ -20,7 +20,7 @@ dependencies {
     implementation 'org.codehaus.groovy:groovy-all:2.4.15'
     implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.7.0'
     implementation group: 'commons-io', name: 'commons-io', version: '2.5'
-    implementation group: 'io.grakn.client', name: 'api', version: "1.5.3"
+    implementation group: 'io.grakn.client', name: 'api', version: "1.5.2"
     implementation 'org.bblfsh:bblfsh-client:1.11.0'
     implementation 'com.github.codebrig:arthur:e10b35a5c8'
 }
