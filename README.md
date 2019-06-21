@@ -26,7 +26,7 @@ This observer creates nodes and edges which contain the structure of the source 
 
 #### Description
 
-The dependence observers create edges between program statements and the preceding statements of which they depend on.
+The dependence observers create edges between program statements and the preceding statements which they depend on.
 
 #### Observers
 
