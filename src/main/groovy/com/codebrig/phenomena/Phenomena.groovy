@@ -113,6 +113,10 @@ class Phenomena implements Closeable {
         setupOntology(stringBuilder.toString())
     }
 
+    void setupOntology(File schemaDefinition) {
+        setupOntology(Objects.requireNonNull(schemaDefinition).text)
+    }
+
     void setupOntology(String schemaDefinition) {
         if (graknSession == null) {
             throw new IllegalStateException("Phenomena must be connected to Grakn before setting up the ontology")
