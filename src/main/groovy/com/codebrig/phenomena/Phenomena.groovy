@@ -9,6 +9,7 @@ import gopkg.in.bblfsh.sdk.v1.protocol.generated.Encoding
 import gopkg.in.bblfsh.sdk.v1.protocol.generated.ParseResponse
 import grakn.client.GraknClient
 import graql.lang.Graql
+import groovy.util.logging.Slf4j
 import org.apache.commons.collections4.Transformer
 import org.apache.commons.collections4.iterators.TransformIterator
 import org.bblfsh.client.BblfshClient
@@ -25,6 +26,7 @@ import static groovy.io.FileType.FILES
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
+@Slf4j
 class Phenomena implements Closeable {
 
     private static ResourceBundle buildBundle = ResourceBundle.getBundle("phenomena_build")
@@ -55,14 +57,14 @@ class Phenomena implements Closeable {
             throw new IllegalArgumentException("Missing code observers")
         }
 
-        println "Initializing Phenomena (ver.$PHENOMENA_VERSION)"
+        log.info "Initializing Phenomena (ver.$PHENOMENA_VERSION)"
         connectToBabelfish()
         connectToGrakn()
         setupVisitor(codeObservers)
     }
 
     void connectToBabelfish() throws ConnectException {
-        println "Connecting to Babelfish"
+        log.info "Connecting to Babelfish"
         babelfishClient = new BblfshClient(babelfishHost, babelfishPort, Integer.MAX_VALUE)
         try {
             babelfishClient.supportedLanguages()
@@ -72,7 +74,7 @@ class Phenomena implements Closeable {
     }
 
     void connectToGrakn() throws ConnectException {
-        println "Connecting to Grakn"
+        log.info "Connecting to Grakn"
         graknClient = new GraknClient("$graknURI")
         try {
             graknSession = graknClient.session(graknKeyspace)
@@ -142,7 +144,7 @@ class Phenomena implements Closeable {
                     resp, sourceFile)
         }
 
-        println "Processing $language file: " + sourceFile
+        log.info "Processing $language file: " + sourceFile
         def rootObservedNode = visitor.visit(language, resp.uast, sourceFile)
 
         def processedFile = new ProcessedSourceFile()
@@ -168,7 +170,7 @@ class Phenomena implements Closeable {
             throw new IllegalStateException("Phenomena must be connected to Babelfish before parsing source code")
         }
 
-        println "Parsing $language file: " + sourceFile
+        log.info "Parsing $language file: " + sourceFile
         return babelfishClient.parse(sourceFile.name, sourceFile.text, language.key, Encoding.UTF8$.MODULE$)
     }
 

@@ -7,10 +7,12 @@ import com.codebrig.arthur.observe.structure.filter.NameFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import groovy.util.logging.Slf4j
 import org.junit.Test
 
 import static org.junit.Assert.*
 
+@Slf4j
 class CyclomaticComplexityObserverTest {
 
     @Test
@@ -56,7 +58,7 @@ class CyclomaticComplexityObserverTest {
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
-        println processedFile.rootNodeId
+        log.info processedFile.rootNodeId
         phenomena.close()
     }
 
@@ -103,7 +105,7 @@ class CyclomaticComplexityObserverTest {
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
-        println processedFile.rootNodeId
+        log.info processedFile.rootNodeId
         phenomena.close()
     }
 
@@ -141,7 +143,7 @@ class CyclomaticComplexityObserverTest {
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
-        println processedFile.rootNodeId
+        log.info processedFile.rootNodeId
         phenomena.close()
     }
 
@@ -179,7 +181,7 @@ class CyclomaticComplexityObserverTest {
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
-        println processedFile.rootNodeId
+        log.info processedFile.rootNodeId
         phenomena.close()
     }
 }

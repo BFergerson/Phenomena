@@ -10,6 +10,7 @@ import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import groovy.util.logging.Slf4j
 import org.junit.Test
 
 import java.util.stream.Collectors
@@ -17,6 +18,7 @@ import java.util.stream.Collectors
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertNotNull
 
+@Slf4j
 class JavaIdentifierAccessObserverTest {
 
     @Test
@@ -103,7 +105,7 @@ class JavaIdentifierAccessObserverTest {
         phenomena.connectToGrakn()
         phenomena.setupVisitor(new CodeStructureObserver(), new JavaIdentifierAccessObserver(new JavaParserIntegration(phenomena)))
         phenomena.setupOntology()
-        println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }
 }
