@@ -2,11 +2,7 @@ package com.codebrig.phenomena.code.analysis.language.java.dependence
 
 import com.codebrig.arthur.SourceLanguage
 import com.codebrig.arthur.observe.structure.StructureFilter
-import com.codebrig.arthur.observe.structure.filter.LanguageFilter
-import com.codebrig.arthur.observe.structure.filter.MultiFilter
-import com.codebrig.arthur.observe.structure.filter.RoleFilter
-import com.codebrig.arthur.observe.structure.filter.SimpleNameFilter
-import com.codebrig.arthur.observe.structure.filter.TypeFilter
+import com.codebrig.arthur.observe.structure.filter.*
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.dependence.IdentifierAccessObserver
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -65,9 +61,10 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
             if (variableDeclarationFilter.evaluate(node)
                     || functionArgumentFilter.evaluate(node)
                     || variableDeclarationFragmentFilter.evaluate(node)) {
-                javaParserDeclaration = JavaParserIntegration.getNameNode(javaParserNode)
-                def contextualDeclarationName = codeObserverVisitor.getOrCreateContextualNode(
-                        new SimpleNameFilter(javaParserDeclaration.toString()).getFilteredNodes(node).next(), node.sourceFile)
+                javaParserDeclaration = JavaParserIntegration.getNameNode(javaParserNode) //todo: could probably replace with TypeFilter("SimpleName")
+                def contextualDeclarationName = codeObserverVisitor.getOrCreateContextualNode(MultiFilter.matchAll(
+                        new TypeFilter("SimpleName"), new NameFilter(javaParserDeclaration.toString())
+                ).getFilteredNodes(node).next(), node.sourceFile)
                 contextualDeclarations.put(javaParserDeclaration, contextualDeclarationName)
             } else if (javaParserNode instanceof SimpleName) {
                 javaParserDeclaration = getDeclarationName(JavaParserFacade.get(integration.typeSolver).solve(javaParserNode))

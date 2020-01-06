@@ -75,14 +75,15 @@ class CyclomaticComplexityObserverTest {
 
         def foundCheckForError = false
         def foundIsReady = false
-        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("checkForError"))
+        //todo: should be able to do name filter without using qualified name
+        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("CyclomaticComplexity.checkForError"))
                 .getFilteredNodes(language, processedFile.parseResponse.uast).each {
             foundCheckForError = true
             def contextualNode = visitor.getContextualNode(it.underlyingNode)
             def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomaticComplexity")
             assertEquals(4, cyclomaticComplexity)
         }
-        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("isReady"))
+        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("CyclomaticComplexity.isReady"))
                 .getFilteredNodes(language, processedFile.parseResponse.uast).each {
             foundIsReady = true
             def contextualNode = visitor.getContextualNode(it.underlyingNode)

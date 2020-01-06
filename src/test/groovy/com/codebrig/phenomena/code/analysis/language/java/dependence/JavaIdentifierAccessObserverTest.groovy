@@ -3,8 +3,9 @@ package com.codebrig.phenomena.code.analysis.language.java.dependence
 import com.codebrig.arthur.SourceLanguage
 import com.codebrig.arthur.SourceNode
 import com.codebrig.arthur.observe.structure.filter.MultiFilter
+import com.codebrig.arthur.observe.structure.filter.NameFilter
 import com.codebrig.arthur.observe.structure.filter.RoleFilter
-import com.codebrig.arthur.observe.structure.filter.SimpleNameFilter
+import com.codebrig.arthur.observe.structure.filter.TypeFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.ContextualNode
@@ -35,13 +36,13 @@ class JavaIdentifierAccessObserverTest {
         def processedFile = phenomena.processScanPath().findAny().get()
         def sourceNode = new SourceNode(SourceLanguage.Java, processedFile.parseResponse.uast)
 
-        def arrayListDeclaration = new SimpleNameFilter("arrayList").getFilteredNodes(sourceNode)[0]
-        def yayDeclaration = new SimpleNameFilter("yay").getFilteredNodes(sourceNode)[0]
+        def arrayListDeclaration = new NameFilter("arrayList").getFilteredNodes(sourceNode)[0]
+        def yayDeclaration = new NameFilter("yay").getFilteredNodes(sourceNode)[0]
         assertNotNull(arrayListDeclaration)
         assertNotNull(yayDeclaration)
 
-        def arrayListUsage = new SimpleNameFilter("arrayList").getFilteredNodes(sourceNode)[1]
-        def yayUsage = new SimpleNameFilter("yay").getFilteredNodes(sourceNode)[1]
+        def arrayListUsage = new NameFilter("arrayList").getFilteredNodes(sourceNode)[1]
+        def yayUsage = new NameFilter("yay").getFilteredNodes(sourceNode)[1]
         assertNotNull(arrayListUsage)
         assertNotNull(yayUsage)
 
@@ -73,14 +74,15 @@ class JavaIdentifierAccessObserverTest {
         def processedFile = phenomena.processScanPath().findAny().get()
         def sourceNode = new SourceNode(SourceLanguage.Java, processedFile.parseResponse.uast)
 
-        def xArg = new SimpleNameFilter("x").getFilteredNodes(sourceNode)[0]
-        def yArg = new SimpleNameFilter("y").getFilteredNodes(sourceNode)[0]
+        def simpleNameFilter = new TypeFilter("SimpleName")
+        def xArg = MultiFilter.matchAll(simpleNameFilter, new NameFilter("x")).getFilteredNodes(sourceNode)[0]
+        def yArg = MultiFilter.matchAll(simpleNameFilter, new NameFilter("y")).getFilteredNodes(sourceNode)[0]
         assertNotNull(xArg)
         assertNotNull(yArg)
 
         def notNameFilter = new RoleFilter().reject("NAME")
-        def xVar = MultiFilter.matchAll(notNameFilter, new SimpleNameFilter("x")).getFilteredNodes(sourceNode)[0]
-        def yVar = MultiFilter.matchAll(notNameFilter, new SimpleNameFilter("y")).getFilteredNodes(sourceNode)[0]
+        def xVar = MultiFilter.matchAll(simpleNameFilter, notNameFilter, new NameFilter("x")).getFilteredNodes(sourceNode)[0]
+        def yVar = MultiFilter.matchAll(simpleNameFilter, notNameFilter, new NameFilter("y")).getFilteredNodes(sourceNode)[0]
         assertNotNull(xVar)
         assertNotNull(yVar)
 
