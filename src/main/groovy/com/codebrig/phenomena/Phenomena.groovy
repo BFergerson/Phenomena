@@ -175,7 +175,7 @@ class Phenomena implements Closeable {
         }
 
         log.info "Parsing $language file: " + sourceFile
-        return babelfishClient.parse(sourceFile.name, sourceFile.text, language.key, Encoding.UTF8$.MODULE$)
+        return babelfishClient.parse(sourceFile.name, sourceFile.text, language.babelfishName, Encoding.UTF8$.MODULE$)
     }
 
     List<File> getSourceFilesInScanPath() {
