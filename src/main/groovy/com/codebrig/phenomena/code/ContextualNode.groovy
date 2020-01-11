@@ -10,7 +10,7 @@ import grakn.client.GraknClient
 import graql.lang.Graql
 import graql.lang.statement.Statement
 import groovy.transform.Canonical
-import org.apache.commons.lang.StringEscapeUtils
+import org.apache.commons.text.StringEscapeUtils
 
 import java.util.concurrent.ConcurrentHashMap
 
