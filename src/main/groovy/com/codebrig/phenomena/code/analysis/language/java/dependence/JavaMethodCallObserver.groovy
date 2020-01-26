@@ -23,7 +23,7 @@ import com.google.common.io.Resources
 /**
  * Creates edges between Java method call statements and the methods they call
  *
- * @version 0.2.3
+ * @version 0.2.4
  * @since 0.2
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
