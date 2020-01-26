@@ -19,8 +19,8 @@ This observer creates nodes and edges which contain the structure of the source 
 
 | Structure                   | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Abstract syntax tree        | [Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Arthur/blob/v0.3.2-alpha/src/main/resources/schema/omnilingual/Arthur_Omnilingual_Base_Structure.gql) |
-| Semantic roles              | [Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Arthur/blob/v0.3.2-alpha/src/main/resources/schema/omnilingual/Arthur_Omnilingual_Semantic_Roles.gql) |
+| Abstract syntax tree        | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Arthur/blob/v0.3.2-alpha/src/main/resources/schema/omnilingual/Arthur_Omnilingual_Base_Structure.gql) |
+| Semantic roles              | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Arthur/blob/v0.3.2-alpha/src/main/resources/schema/omnilingual/Arthur_Omnilingual_Semantic_Roles.gql) |
 
 ### Dependence
 
@@ -45,4 +45,4 @@ The metric observers create attributes on correlating source code nodes with cal
 
 | Metric                      | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Cyclomatic complexity       | [Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Phenomena/blob/v0.2.3-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/metric/CyclomaticComplexityObserver.groovy) |
+| Cyclomatic complexity       | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Phenomena/blob/v0.2.3-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/metric/CyclomaticComplexityObserver.groovy) |

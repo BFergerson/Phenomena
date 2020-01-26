@@ -11,3 +11,4 @@ PhpStmtFunctionArtifact has cyclomaticComplexity;
 CsharpMethodDeclarationArtifact has cyclomaticComplexity;
 CplusplusCPPASTFunctionDefinitionArtifact has cyclomaticComplexity;
 CplusplusCPPASTFunctionDeclaratorArtifact has cyclomaticComplexity;
+BashFunctionDefElementArtifact has cyclomaticComplexity;
