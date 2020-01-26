@@ -1,0 +1,24 @@
+define
+
+function-name-identifier sub rule,
+when {
+    $function isa SourceArtifact;
+    ($function) isa DECLARATION;
+    ($function) isa FUNCTION;
+    not {
+    	($function) isa ARGUMENT;
+    };
+    not {
+    	($function) isa RETURN;
+    };
+    not {
+    	($function) isa INCOMPLETE;
+    };
+    not {
+    	($function) isa BODY;
+    };
+    (is_parent: $function, is_child: $functionName);
+    ($functionName) isa IDENTIFIER;
+}, then {
+    (is_child: $fragmentChild, is_parent: $fragmentParent) isa parent_child_relation;
+};

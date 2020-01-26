@@ -7,10 +7,12 @@ import com.codebrig.arthur.observe.structure.filter.NameFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import groovy.util.logging.Slf4j
 import org.junit.Test
 
 import static org.junit.Assert.*
 
+@Slf4j
 class CyclomaticComplexityObserverTest {
 
     @Test
@@ -56,7 +58,7 @@ class CyclomaticComplexityObserverTest {
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
-        println processedFile.rootNodeId
+        log.info processedFile.rootNodeId
         phenomena.close()
     }
 
@@ -73,14 +75,15 @@ class CyclomaticComplexityObserverTest {
 
         def foundCheckForError = false
         def foundIsReady = false
-        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("checkForError"))
+        //todo: should be able to do name filter without using qualified name
+        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("CyclomaticComplexity.checkForError"))
                 .getFilteredNodes(language, processedFile.parseResponse.uast).each {
             foundCheckForError = true
             def contextualNode = visitor.getContextualNode(it.underlyingNode)
             def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomaticComplexity")
             assertEquals(4, cyclomaticComplexity)
         }
-        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("isReady"))
+        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("CyclomaticComplexity.isReady"))
                 .getFilteredNodes(language, processedFile.parseResponse.uast).each {
             foundIsReady = true
             def contextualNode = visitor.getContextualNode(it.underlyingNode)
@@ -103,7 +106,7 @@ class CyclomaticComplexityObserverTest {
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
-        println processedFile.rootNodeId
+        log.info processedFile.rootNodeId
         phenomena.close()
     }
 
@@ -141,7 +144,7 @@ class CyclomaticComplexityObserverTest {
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
-        println processedFile.rootNodeId
+        log.info processedFile.rootNodeId
         phenomena.close()
     }
 
@@ -179,7 +182,121 @@ class CyclomaticComplexityObserverTest {
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
-        println processedFile.rootNodeId
+        log.info processedFile.rootNodeId
+        phenomena.close()
+    }
+
+    @Test
+    void csharpCyclomaticComplexity_noSave() {
+        def file = new File(".", "/src/test/resources/csharp/CyclomaticComplexity.cs")
+        def language = SourceLanguage.getSourceLanguage(file)
+        def phenomena = new Phenomena()
+        def visitor = new CodeObserverVisitor()
+        visitor.addObserver(new CyclomaticComplexityObserver())
+        phenomena.setupVisitor(visitor)
+        phenomena.connectToBabelfish()
+        def processedFile = phenomena.processSourceFile(file, language)
+
+        def foundSortaComplex = false
+        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("sortaComplex"))
+                .getFilteredNodes(language, processedFile.parseResponse.uast).each {
+            foundSortaComplex = true
+            def contextualNode = visitor.getContextualNode(it.underlyingNode)
+            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomaticComplexity")
+            assertEquals(7, cyclomaticComplexity)
+        }
+        assertTrue(foundSortaComplex)
+        phenomena.close()
+    }
+
+    @Test
+    void csharpCyclomaticComplexity_withSave() {
+        def file = new File(".", "/src/test/resources/csharp/CyclomaticComplexity.cs")
+        def language = SourceLanguage.getSourceLanguage(file)
+        def phenomena = new Phenomena()
+        phenomena.connectToBabelfish()
+        phenomena.connectToGrakn()
+        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
+        phenomena.setupOntology()
+        def processedFile = phenomena.processSourceFile(file, language)
+        assertNotNull(processedFile.rootNodeId)
+        log.info processedFile.rootNodeId
+        phenomena.close()
+    }
+
+    @Test
+    void bashCyclomaticComplexity_noSave() {
+        def file = new File(".", "/src/test/resources/bash/CyclomaticComplexity.sh")
+        def language = SourceLanguage.getSourceLanguage(file)
+        def phenomena = new Phenomena()
+        def visitor = new CodeObserverVisitor()
+        visitor.addObserver(new CyclomaticComplexityObserver())
+        phenomena.setupVisitor(visitor)
+        phenomena.connectToBabelfish()
+        def processedFile = phenomena.processSourceFile(file, language)
+
+        def foundSortaComplex = false
+        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("sortaComplex"))
+                .getFilteredNodes(language, processedFile.parseResponse.uast).each {
+            foundSortaComplex = true
+            def contextualNode = visitor.getContextualNode(it.underlyingNode)
+            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomaticComplexity")
+            assertEquals(7, cyclomaticComplexity)
+        }
+        assertTrue(foundSortaComplex)
+        phenomena.close()
+    }
+
+    @Test
+    void bashCyclomaticComplexity_withSave() {
+        def file = new File(".", "/src/test/resources/bash/CyclomaticComplexity.sh")
+        def language = SourceLanguage.getSourceLanguage(file)
+        def phenomena = new Phenomena()
+        phenomena.connectToBabelfish()
+        phenomena.connectToGrakn()
+        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
+        phenomena.setupOntology()
+        def processedFile = phenomena.processSourceFile(file, language)
+        assertNotNull(processedFile.rootNodeId)
+        log.info processedFile.rootNodeId
+        phenomena.close()
+    }
+
+    @Test
+    void cplusplusCyclomaticComplexity_noSave() {
+        def file = new File(".", "/src/test/resources/cplusplus/CyclomaticComplexity.cpp")
+        def language = SourceLanguage.getSourceLanguage(file)
+        def phenomena = new Phenomena()
+        def visitor = new CodeObserverVisitor()
+        visitor.addObserver(new CyclomaticComplexityObserver())
+        phenomena.setupVisitor(visitor)
+        phenomena.connectToBabelfish()
+        def processedFile = phenomena.processSourceFile(file, language)
+
+        def foundSortaComplex = false
+        MultiFilter.matchAll(new FunctionFilter(), new NameFilter("sortaComplex"))
+                .getFilteredNodes(language, processedFile.parseResponse.uast).each {
+            foundSortaComplex = true
+            def contextualNode = visitor.getContextualNode(it.underlyingNode)
+            def cyclomaticComplexity = contextualNode.getAttributes().get("cyclomaticComplexity")
+            assertEquals(7, cyclomaticComplexity)
+        }
+        assertTrue(foundSortaComplex)
+        phenomena.close()
+    }
+
+    @Test
+    void cplusplusCyclomaticComplexity_withSave() {
+        def file = new File(".", "/src/test/resources/cplusplus/CyclomaticComplexity.cpp")
+        def language = SourceLanguage.getSourceLanguage(file)
+        def phenomena = new Phenomena()
+        phenomena.connectToBabelfish()
+        phenomena.connectToGrakn()
+        phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
+        phenomena.setupOntology()
+        def processedFile = phenomena.processSourceFile(file, language)
+        assertNotNull(processedFile.rootNodeId)
+        log.info processedFile.rootNodeId
         phenomena.close()
     }
 }

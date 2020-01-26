@@ -6,10 +6,12 @@ import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.analysis.DependenceAnalysis
 import com.codebrig.phenomena.code.analysis.MetricAnalysis
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import groovy.util.logging.Slf4j
 import org.junit.Test
 
 import java.util.stream.Collectors
 
+@Slf4j
 class ImportJava {
 
     @Test
@@ -19,7 +21,7 @@ class ImportJava {
         phenomena.scanPath.add(new File(".", "/src/test/resources/java").absolutePath)
         phenomena.init()
         phenomena.setupOntology()
-        println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }
 
@@ -34,7 +36,7 @@ class ImportJava {
         observers.addAll(MetricAnalysis.getAllCodeObservers(phenomena, SourceLanguage.Java))
         phenomena.init(observers)
         phenomena.setupOntology()
-        println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }
 }

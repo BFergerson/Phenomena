@@ -8,10 +8,12 @@ import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.analysis.DependenceAnalysis
 import com.codebrig.phenomena.code.analysis.MetricAnalysis
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import groovy.util.logging.Slf4j
 import org.junit.Test
 
 import java.util.stream.Collectors
 
+@Slf4j
 class ImportSame {
 
     @Test
@@ -22,7 +24,7 @@ class ImportSame {
         phenomena.scanPath.add(new File(".", "/src/test/resources/same").absolutePath)
         phenomena.init()
         phenomena.setupOntology()
-        println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }
 
@@ -39,7 +41,7 @@ class ImportSame {
         multiFilter.accept(new TypeFilter("MethodDeclaration"))
         phenomena.init(new CodeStructureObserver(multiFilter))
         phenomena.setupOntology()
-        println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }
 
@@ -54,7 +56,7 @@ class ImportSame {
         observers.addAll(MetricAnalysis.getAllCodeObservers(phenomena))
         phenomena.init(observers)
         phenomena.setupOntology()
-        println phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
+        log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }
 }

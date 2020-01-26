@@ -4,8 +4,7 @@ import com.codebrig.arthur.SourceLanguage
 import com.codebrig.arthur.SourceNode
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
 import grakn.client.GraknClient
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
+import groovy.util.logging.Slf4j
 
 import java.util.concurrent.ConcurrentHashMap
 
@@ -16,9 +15,9 @@ import java.util.concurrent.ConcurrentHashMap
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
+@Slf4j
 class CodeObserverVisitor {
 
-    private static final Logger log = LoggerFactory.getLogger(this.name)
     private final GraknClient.Session graknSession
     private final List<CodeObserver> observers
     private final Map<Integer, ContextualNode> contextualNodes
@@ -120,7 +119,7 @@ class CodeObserverVisitor {
             children.each {
                 if (it.internalType.isEmpty()) {
                     //https://github.com/CodeBrig/Phenomena/issues/27
-                    log.warn("Skipped visiting node with missing internal type (issue #27)")
+                    log.warn "Skipped visiting node with missing internal type (issue codebrig/phenomena#27)"
                 } else {
                     def contextualChildNode = getOrCreateContextualNode(it, sourceFile)
                     def observed = false

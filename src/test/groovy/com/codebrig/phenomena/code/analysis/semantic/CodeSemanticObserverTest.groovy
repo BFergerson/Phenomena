@@ -5,10 +5,12 @@ import com.codebrig.arthur.observe.structure.filter.TypeFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import groovy.util.logging.Slf4j
 import org.junit.Test
 
 import static org.junit.Assert.*
 
+@Slf4j
 class CodeSemanticObserverTest {
 
     @Test
@@ -53,7 +55,7 @@ class CodeSemanticObserverTest {
         phenomena.setupOntology()
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
-        println processedFile.rootNodeId
+        log.info processedFile.rootNodeId
         phenomena.close()
     }
 }
