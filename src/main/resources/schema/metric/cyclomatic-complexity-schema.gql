@@ -8,3 +8,6 @@ JavascriptFunctionDeclarationArtifact has cyclomaticComplexity;
 PythonFunctionDefArtifact has cyclomaticComplexity;
 RubyDefArtifact has cyclomaticComplexity;
 PhpStmtFunctionArtifact has cyclomaticComplexity;
+CsharpMethodDeclarationArtifact has cyclomaticComplexity;
+CplusplusCPPASTFunctionDefinitionArtifact has cyclomaticComplexity;
+CplusplusCPPASTFunctionDeclaratorArtifact has cyclomaticComplexity;
