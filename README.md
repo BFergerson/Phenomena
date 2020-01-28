@@ -11,7 +11,7 @@ Phenomena currently supports the following types of code observers:
 ### Structure
 
 #### Description
-[CodeStructureObserver](https://github.com/CodeBrig/Phenomena/blob/v0.2.4-alpha/src/main/groovy/com/codebrig/phenomena/code/structure/CodeStructureObserver.groovy)
+[CodeStructureObserver](https://github.com/CodeBrig/Phenomena/blob/master/src/main/groovy/com/codebrig/phenomena/code/structure/CodeStructureObserver.groovy)
 is the base observer which is required to use Phenomena.
 This observer creates nodes and edges which contain the structure of the source code in the form of an abstract syntax graph.
 
