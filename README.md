@@ -32,8 +32,8 @@ The dependence observers create edges between program statements and the precedi
 
 | Metric                      | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Identifier access           | [Java](https://github.com/CodeBrig/Phenomena/blob/v0.2.4-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/language/java/dependence/JavaIdentifierAccessObserver.groovy) |
-| Method call                 | [Java](https://github.com/CodeBrig/Phenomena/blob/v0.2.4-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/language/java/dependence/JavaMethodCallObserver.groovy) |
+| Identifier access           | [Java](https://github.com/CodeBrig/Phenomena/blob/master/src/main/groovy/com/codebrig/phenomena/code/analysis/language/java/dependence/JavaIdentifierAccessObserver.groovy) |
+| Method call                 | [Java](https://github.com/CodeBrig/Phenomena/blob/master/src/main/groovy/com/codebrig/phenomena/code/analysis/language/java/dependence/JavaMethodCallObserver.groovy) |
 
 ### Metric
 
@@ -45,4 +45,4 @@ The metric observers create attributes on correlating source code nodes with cal
 
 | Metric                      | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Cyclomatic complexity       | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Phenomena/blob/v0.2.4-alpha/src/main/groovy/com/codebrig/phenomena/code/analysis/metric/CyclomaticComplexityObserver.groovy) |
+| Cyclomatic complexity       | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Phenomena/blob/master/src/main/groovy/com/codebrig/phenomena/code/analysis/metric/CyclomaticComplexityObserver.groovy) |
