@@ -4,7 +4,7 @@
 
 Phenomena is designed to support any type of graph-based representation of source code.
 Phenomena's base structure uses the omnilingual source code schema provided by [Arthur](https://github.com/CodeBrig/Arthur).
-This schema can be extended with custom definitions and inference rules which are introduced by using a [CodeObserver](https://github.com/CodeBrig/Phenomena/blob/v0.2.4-alpha/src/main/groovy/com/codebrig/phenomena/code/CodeObserver.groovy).
+This schema can be extended with custom definitions and inference rules which are introduced by using a [CodeObserver](https://github.com/CodeBrig/Phenomena/blob/master/src/main/groovy/com/codebrig/phenomena/code/CodeObserver.groovy).
 
 Phenomena currently supports the following types of code observers:
 
@@ -19,8 +19,8 @@ This observer creates nodes and edges which contain the structure of the source 
 
 | Structure                   | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Abstract syntax tree        | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Arthur/blob/v0.3.2-alpha/src/main/resources/schema/omnilingual/Arthur_Omnilingual_Base_Structure.gql) |
-| Semantic roles              | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Arthur/blob/v0.3.2-alpha/src/main/resources/schema/omnilingual/Arthur_Omnilingual_Semantic_Roles.gql) |
+| Abstract syntax tree        | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Arthur/blob/v0.4.0-alpha/src/main/resources/schema/omnilingual/Arthur_Omnilingual_Base_Structure.gql) |
+| Semantic roles              | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Arthur/blob/v0.4.0-alpha/src/main/resources/schema/omnilingual/Arthur_Omnilingual_Semantic_Roles.gql) |
 
 ### Dependence
 
