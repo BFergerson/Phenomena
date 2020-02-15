@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * Used to execute source code observers over source code files
  *
- * @version 0.2.3
+ * @version 0.2.4
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
@@ -119,7 +119,7 @@ class CodeObserverVisitor {
             children.each {
                 if (it.internalType.isEmpty()) {
                     //https://github.com/CodeBrig/Phenomena/issues/27
-                    log.warn "Skipped visiting node with missing internal type (issue #27)"
+                    log.warn "Skipped visiting node with missing internal type (issue codebrig/phenomena#27)"
                 } else {
                     def contextualChildNode = getOrCreateContextualNode(it, sourceFile)
                     def observed = false

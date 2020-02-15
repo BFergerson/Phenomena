@@ -3,7 +3,7 @@ plugins {
 }
 
 group 'com.codebrig.phenomena'
-version '0.2.3'
+version '0.2.4'
 
 apply plugin: 'groovy'
 
@@ -21,10 +21,10 @@ dependencies {
     implementation 'org.codehaus.groovy:groovy-all:2.4.15'
     implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.7.0'
     implementation group: 'commons-io', name: 'commons-io', version: '2.5'
-    implementation group: 'io.grakn.client', name: 'grakn-client', version: "1.6.1"
+    implementation group: 'io.grakn.client', name: 'grakn-client', version: "1.6.2"
     implementation group: 'io.graql', name: 'graql-lang', version: "1.0.5"
     implementation 'org.bblfsh:bblfsh-client:1.11.0'
-    implementation 'com.github.codebrig:arthur:c537343f5'
+    implementation 'com.github.codebrig:arthur:4c66a0b7ec'
 }
 
 test {
