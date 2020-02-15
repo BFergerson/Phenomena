@@ -19,6 +19,7 @@ class ContextualNodeTest {
         phenomena.setupVisitor(visitor)
         phenomena.connectToBabelfish()
         phenomena.connectToGrakn()
+        phenomena.setupOntology()
 
         def processedFile = phenomena.processScanPath().findAny().get()
         def sourceNode = new SourceNode(SourceLanguage.Java, processedFile.parseResponse.uast)

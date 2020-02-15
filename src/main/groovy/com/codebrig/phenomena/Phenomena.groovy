@@ -87,6 +87,10 @@ class Phenomena implements Closeable {
         this.visitor = Objects.requireNonNull(visitor)
     }
 
+    void setupVisitor(List<CodeObserver> codeObservers) {
+        setupVisitor(codeObservers as CodeObserver[])
+    }
+
     void setupVisitor(CodeObserver... codeObservers) {
         if (graknSession == null) {
             throw new IllegalStateException("Phenomena must be connected to Grakn before setting up the visitor")

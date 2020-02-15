@@ -40,7 +40,7 @@ class ContextualNode extends SourceNode {
     }
 
     ContextualNode(CodeObserverVisitor context, SourceNode sourceNode, File sourceFile) {
-        super(sourceNode.language, sourceNode.rootNode, sourceNode.underlyingNode)
+        super(sourceNode.language, sourceNode.rootNode, sourceNode.underlyingNode, sourceNode.parentSourceNode)
         this.context = Objects.requireNonNull(context)
         this.sourceFile = sourceFile
     }
