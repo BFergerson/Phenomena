@@ -45,6 +45,12 @@ class ContextualNode extends SourceNode {
         this.sourceFile = sourceFile
     }
 
+    ContextualNode(CodeObserverVisitor context, SourceNode sourceNode, SourceNode parentSourceNode, File sourceFile) {
+        super(sourceNode.language, sourceNode.rootNode, sourceNode.underlyingNode, parentSourceNode)
+        this.context = Objects.requireNonNull(context)
+        this.sourceFile = sourceFile
+    }
+
     File getSourceFile() {
         return sourceFile
     }

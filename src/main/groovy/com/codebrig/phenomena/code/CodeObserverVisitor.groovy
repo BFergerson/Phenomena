@@ -107,7 +107,7 @@ class CodeObserverVisitor {
                     //https://github.com/CodeBrig/Phenomena/issues/27
                     log.warn "Skipped visiting node with missing internal type (issue codebrig/phenomena#27)"
                 } else {
-                    ContextualNode contextualChildNode = new ContextualNode(this, it, sourceFile)
+                    ContextualNode contextualChildNode = new ContextualNode(this, it, parent, sourceFile)
                     def observed = false
 
                     observers.each {
