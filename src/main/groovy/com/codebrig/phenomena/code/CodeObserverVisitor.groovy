@@ -99,8 +99,8 @@ class CodeObserverVisitor {
         childrenStack.push(rootSourceNode.children)
 
         while (!parentStack.isEmpty() && !childrenStack.isEmpty()) {
-            def parent = parentStack.pop()
-            def children = childrenStack.pop()
+            ContextualNode parent = parentStack.pop()
+            Iterator<SourceNode> children = childrenStack.pop()
 
             children.each {
                 if (it.internalType.isEmpty()) {
@@ -145,10 +145,28 @@ class CodeObserverVisitor {
         return contextualNodes.get(System.identityHashCode(node))
     }
 
+    ContextualNode getContextualNode(SourceNode node) {
+        return contextualNodes.get(System.identityHashCode(node.underlyingNode))
+    }
+
     ContextualNode getOrCreateContextualNode(SourceNode node, File sourceFile) {
+        def existingContextualNode = getContextualNode(node)
+        if (existingContextualNode != null) {
+            return existingContextualNode
+        }
+
+        SourceNode nodeParent = null
+        for (observer in observers) {
+            def validParent = observer.filter.getFilteredNodes(node, false)
+            if (validParent.hasNext()) {
+                nodeParent = validParent.next()
+                break
+            }
+        }
+
         def nexContextualNode
-        def existingContextualNode = contextualNodes.putIfAbsent(System.identityHashCode(node.underlyingNode),
-                nexContextualNode = new ContextualNode(this, node, sourceFile))
+        existingContextualNode = contextualNodes.putIfAbsent(System.identityHashCode(node.underlyingNode),
+                nexContextualNode = new ContextualNode(this, node, nodeParent,  sourceFile))
         return existingContextualNode != null ? existingContextualNode : nexContextualNode
     }
 

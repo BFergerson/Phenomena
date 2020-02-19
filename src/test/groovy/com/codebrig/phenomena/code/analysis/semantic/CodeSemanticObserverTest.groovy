@@ -28,7 +28,7 @@ class CodeSemanticObserverTest {
         def foundCompilationUnit = false
         def foundVariableDeclarationFragment = false
         new TypeFilter("CompilationUnit")
-                .getFilteredNodes(language, processedFile.parseResponse.uast).each {
+                .getFilteredNodesIncludingCurrent(language, processedFile.parseResponse.uast).each {
             foundCompilationUnit = true
             def contextualNode = visitor.getContextualNode(it.underlyingNode)
             assertEquals(1, contextualNode.getPlayedRoles().size())
