@@ -19,6 +19,7 @@ class CodeSemanticObserverTest {
         def language = SourceLanguage.getSourceLanguage(file)
         def phenomena = new Phenomena()
         def visitor = new CodeObserverVisitor()
+        visitor.addObserver(new CodeStructureObserver())
         visitor.addObserver(new CodeSemanticObserver())
         phenomena.setupVisitor(visitor)
         phenomena.connectToBabelfish()

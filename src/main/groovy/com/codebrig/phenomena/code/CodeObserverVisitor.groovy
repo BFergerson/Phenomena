@@ -57,11 +57,13 @@ class CodeObserverVisitor {
         Objects.requireNonNull(rootNode)
 
         def observed = false
-        contextualNodes.putIfAbsent(System.identityHashCode(rootNode),
-                new ContextualNode(this, rootNode, sourceFile, language, rootNode))
-        def contextualRootNode = contextualNodes.get(System.identityHashCode(rootNode))
+        ContextualNode contextualRootNode = new ContextualNode(this, rootNode, sourceFile, language, rootNode)
         observers.each {
             if (it.filter.evaluate(contextualRootNode)) {
+                if (!observed) {
+                    contextualNodes.putIfAbsent(System.identityHashCode(rootNode), contextualRootNode)
+                }
+
                 observed = true
                 it.applyObservation(contextualRootNode, null)
             }
@@ -84,22 +86,6 @@ class CodeObserverVisitor {
             visitCompletely(transaction, sourceFile, contextualRootNode)
         }
 
-//        if (saveToGrakn) {
-//            contextualNodes.forEach({ key, node ->
-//                node.save(queryBuilder)
-//                if (rootObservedNode == null) {
-//                    rootObservedNode = node
-//                }
-//
-//                if (node.underlyingNode != node.rootNode) {
-//                    contextualNodes.remove(key)
-//                }
-//            })
-//        }
-//        observers.each {
-//            //todo: https://github.com/CodeBrig/Phenomena/issues/17
-//            //it.reset()
-//        }
         transaction?.commit()
         transaction?.close()
         return rootObservedNode
@@ -121,11 +107,16 @@ class CodeObserverVisitor {
                     //https://github.com/CodeBrig/Phenomena/issues/27
                     log.warn "Skipped visiting node with missing internal type (issue codebrig/phenomena#27)"
                 } else {
-                    def contextualChildNode = getOrCreateContextualNode(it, sourceFile)
+                    ContextualNode contextualChildNode = new ContextualNode(this, it, sourceFile)
                     def observed = false
 
                     observers.each {
                         if (it.filter.evaluate(contextualChildNode)) {
+                            if (!observed) {
+                                contextualNodes.putIfAbsent(System.identityHashCode(contextualChildNode.underlyingNode),
+                                        contextualChildNode)
+                            }
+
                             observed = true
                             it.applyObservation(contextualChildNode, parent)
                         }
@@ -163,5 +154,9 @@ class CodeObserverVisitor {
 
     boolean getSaveToGrakn() {
         return saveToGrakn
+    }
+
+    Collection<ContextualNode> getObservedContextualNodes() {
+        return contextualNodes.values()
     }
 }
