@@ -12,6 +12,7 @@ import org.junit.Test
 import java.util.stream.Collectors
 
 import static org.junit.Assert.assertFalse
+import static org.junit.Assert.assertNull
 import static org.junit.Assert.assertTrue
 
 class ContextualNodeTest {
@@ -68,6 +69,7 @@ class ContextualNodeTest {
 
         functionDeclarationFilter.getFilteredNodes(observedNodes).each { ContextualNode it ->
             assertTrue(compilationUnitFilter.evaluate(it.parentSourceNode))
+            assertNull(it.parentSourceNode.parentSourceNode)
         }
     }
 }
