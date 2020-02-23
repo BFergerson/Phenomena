@@ -166,7 +166,7 @@ class CodeObserverVisitor {
 
         def nexContextualNode
         existingContextualNode = contextualNodes.putIfAbsent(System.identityHashCode(node.underlyingNode),
-                nexContextualNode = new ContextualNode(this, node, nodeParent,  sourceFile))
+                nexContextualNode = new ContextualNode(this, node, nodeParent, sourceFile))
         return existingContextualNode != null ? existingContextualNode : nexContextualNode
     }
 

@@ -83,6 +83,15 @@ class ContextualNode extends SourceNode {
         return new ArrayList<>(roles)
     }
 
+    @Override
+    ContextualNode getParentSourceNode() {
+        def parentSourceNode = super.getParentSourceNode()
+        if (parentSourceNode == null) {
+            return null
+        }
+        return context.getContextualNode(parentSourceNode)
+    }
+
     void addRelationshipTo(ContextualNode otherNode, String relationshipType) {
         addRelationshipTo(otherNode, relationshipType, "is_$relationshipType", "has_$relationshipType")
     }
