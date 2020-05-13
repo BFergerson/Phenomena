@@ -49,7 +49,7 @@ class Phenomena implements Closeable {
 
     void init(List<CodeObserver> codeObservers) throws ConnectException {
         Objects.requireNonNull(codeObservers)
-        init(codeObservers.toArray(new CodeObserver[0]))
+        init(codeObservers.toArray(new CodeObserver[0]) as CodeObserver[])
     }
 
     void init(CodeObserver... codeObservers) throws ConnectException {
@@ -68,7 +68,7 @@ class Phenomena implements Closeable {
         babelfishClient = new BblfshClient(babelfishHost, babelfishPort, Integer.MAX_VALUE)
         try {
             babelfishClient.supportedLanguages()
-        } catch (all) {
+        } catch (ignored) {
             throw new ConnectException("Connection refused: $babelfishHost:$babelfishPort")
         }
     }
@@ -78,7 +78,7 @@ class Phenomena implements Closeable {
         graknClient = new GraknClient("$graknURI")
         try {
             graknSession = graknClient.session(graknKeyspace)
-        } catch (all) {
+        } catch (ignored) {
             throw new ConnectException("Connection refused: $graknURI")
         }
     }
@@ -103,7 +103,7 @@ class Phenomena implements Closeable {
     }
 
     void setupOntology() {
-        setupOntology(visitor.getObservers().toArray(new CodeObserver[0]))
+        setupOntology(visitor.getObservers().toArray(new CodeObserver[0]) as CodeObserver[])
     }
 
     void setupOntology(CodeObserver... codeObservers) {
