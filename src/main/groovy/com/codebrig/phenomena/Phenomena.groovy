@@ -35,10 +35,10 @@ class Phenomena implements Closeable {
     public static final String PHENOMENA_VERSION = buildBundle.getString("version")
     private List<String> scanPath
     private List<String> activeObservers = ["structure"]
-    private String graknHost = "localhost"
+    private String graknHost = "172.19.0.1"
     private int graknPort = 1729
     private String graknKeyspace = "grakn"
-    private String babelfishHost = "localhost"
+    private String babelfishHost = "172.19.0.1"
     private int babelfishPort = 9432
     private CodeObserverVisitor visitor
     private BblfshClient babelfishClient

@@ -23,7 +23,7 @@ class JavaMethodCallObserverTest {
 
     @Before
     void setupGrakn() {
-        try (def graknClient = new GraknClient("localhost:1729")) {
+        try (def graknClient = new GraknClient("172.19.0.1:1729")) {
             if (graknClient.databases().contains("grakn")) {
                 graknClient.databases().delete("grakn")
             }
