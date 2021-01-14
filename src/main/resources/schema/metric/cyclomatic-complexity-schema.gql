@@ -1,14 +1,14 @@
 define
 
-cyclomaticComplexity sub attribute, datatype long;
+cyclomaticComplexity sub attribute, value long;
 
-GoFuncDeclArtifact has cyclomaticComplexity;
-JavaMethodDeclarationArtifact has cyclomaticComplexity;
-JavascriptFunctionDeclarationArtifact has cyclomaticComplexity;
-PythonFunctionDefArtifact has cyclomaticComplexity;
-RubyDefArtifact has cyclomaticComplexity;
-PhpStmtFunctionArtifact has cyclomaticComplexity;
-CsharpMethodDeclarationArtifact has cyclomaticComplexity;
-CplusplusCPPASTFunctionDefinitionArtifact has cyclomaticComplexity;
-CplusplusCPPASTFunctionDeclaratorArtifact has cyclomaticComplexity;
-BashFunctionDefElementArtifact has cyclomaticComplexity;
+GoFuncDeclArtifact owns cyclomaticComplexity;
+JavaMethodDeclarationArtifact owns cyclomaticComplexity;
+JavascriptFunctionDeclarationArtifact owns cyclomaticComplexity;
+PythonFunctionDefArtifact owns cyclomaticComplexity;
+RubyDefArtifact owns cyclomaticComplexity;
+PhpStmtFunctionArtifact owns cyclomaticComplexity;
+CsharpMethodDeclarationArtifact owns cyclomaticComplexity;
+CplusplusCPPASTFunctionDefinitionArtifact owns cyclomaticComplexity;
+CplusplusCPPASTFunctionDeclaratorArtifact owns cyclomaticComplexity;
+BashFunctionDefElementArtifact owns cyclomaticComplexity;

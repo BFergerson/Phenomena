@@ -18,14 +18,14 @@ repositories {
 dependencies {
     testImplementation group: 'junit', name: 'junit', version: '4.13'
     implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.26'
-    implementation 'org.codehaus.groovy:groovy-all:2.4.15'
-    implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.7.0'
+    implementation 'org.codehaus.groovy:groovy-all:3.0.7'
+    implementation 'com.github.javaparser:javaparser-symbol-solver-core:3.17.0'
     implementation group: 'commons-io', name: 'commons-io', version: '2.5'
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
-    implementation group: 'io.grakn.client', name: 'grakn-client', version: "1.7.2"
-    implementation group: 'io.graql', name: 'graql-lang', version: "1.0.6"
-    implementation 'org.bblfsh:bblfsh-client:1.11.0'
-    implementation 'com.github.codebrig:arthur:3e855fddcd'
+    implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
+    implementation group: 'io.grakn.client', name: 'grakn-client', version: "2.0.0-alpha-4"
+    implementation files('lib/bblfsh-client-1.11.1.jar')
+    implementation 'com.github.codebrig:arthur:d7d66a073a'
 }
 
 test {

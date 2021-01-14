@@ -8,7 +8,9 @@ import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import grakn.client.GraknClient
 import groovy.util.logging.Slf4j
+import org.junit.Before
 import org.junit.Test
 
 import java.util.stream.Collectors
@@ -18,6 +20,14 @@ import static org.junit.Assert.assertNotNull
 
 @Slf4j
 class JavaMethodCallObserverTest {
+
+    @Before
+    void setupGrakn() {
+        try (def graknClient = new GraknClient("localhost:1729")) {
+            graknClient.databases().delete("grakn")
+            graknClient.databases().create("grakn")
+        }
+    }
 
     @Test
     void simpleMethodCall_noSave() {

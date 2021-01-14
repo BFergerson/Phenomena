@@ -7,13 +7,23 @@ import com.codebrig.arthur.observe.structure.filter.NameFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import grakn.client.GraknClient
 import groovy.util.logging.Slf4j
+import org.junit.Before
 import org.junit.Test
 
 import static org.junit.Assert.*
 
 @Slf4j
 class CyclomaticComplexityObserverTest {
+
+    @Before
+    void setupGrakn() {
+        try (def graknClient = new GraknClient("localhost:1729")) {
+            graknClient.databases().delete("grakn")
+            graknClient.databases().create("grakn")
+        }
+    }
 
     @Test
     void pythonInnerMethod_noSave() {

@@ -3,7 +3,9 @@ package com.codebrig.phenomena.code
 import com.codebrig.arthur.observe.structure.filter.FunctionFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import grakn.client.GraknClient
 import groovy.util.logging.Slf4j
+import org.junit.Before
 import org.junit.Test
 
 import java.util.stream.Collectors
@@ -13,10 +15,17 @@ import static org.junit.Assert.assertTrue
 @Slf4j
 class CodeObserverVisitorTest {
 
+    @Before
+    void setupGrakn() {
+        try (def graknClient = new GraknClient("localhost:1729")) {
+            graknClient.databases().delete("grakn")
+            graknClient.databases().create("grakn")
+        }
+    }
+
     @Test
     void onlyVisitFunctionDeclarations() {
         def phenomena = new Phenomena()
-        phenomena.setGraknKeyspace("function_declarations_only")
         phenomena.scanPath = new ArrayList<>()
         phenomena.scanPath.add(new File(".", "/src/test/resources/same").absolutePath)
 

@@ -8,7 +8,9 @@ import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.analysis.DependenceAnalysis
 import com.codebrig.phenomena.code.analysis.MetricAnalysis
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import grakn.client.GraknClient
 import groovy.util.logging.Slf4j
+import org.junit.Before
 import org.junit.Test
 
 import java.util.stream.Collectors
@@ -16,10 +18,17 @@ import java.util.stream.Collectors
 @Slf4j
 class ImportSame {
 
+    @Before
+    void setupGrakn() {
+        try (def graknClient = new GraknClient("localhost:1729")) {
+            graknClient.databases().delete("grakn")
+            graknClient.databases().create("grakn")
+        }
+    }
+
     @Test
     void importSame_fullSchema() {
         def phenomena = new Phenomena()
-        phenomena.setGraknKeyspace("full_schema")
         phenomena.scanPath = new ArrayList<>()
         phenomena.scanPath.add(new File(".", "/src/test/resources/same").absolutePath)
         phenomena.init()
@@ -31,7 +40,6 @@ class ImportSame {
     @Test
     void importSame_necessarySchema() {
         def phenomena = new Phenomena()
-        phenomena.setGraknKeyspace("necessary_schema")
         phenomena.scanPath = new ArrayList<>()
         phenomena.scanPath.add(new File(".", "/src/test/resources/same").absolutePath)
 

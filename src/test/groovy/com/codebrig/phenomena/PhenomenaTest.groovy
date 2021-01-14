@@ -13,8 +13,8 @@ class PhenomenaTest {
 
         try {
             phenomena.connectToBabelfish()
-            fail("Expected a ConnectException to be thrown")
-        } catch (ConnectException ex) {
+            fail("Expected a ConnectionException to be thrown")
+        } catch (ConnectionException ex) {
         }
     }
 
@@ -25,8 +25,8 @@ class PhenomenaTest {
 
         try {
             phenomena.connectToGrakn()
-            fail("Expected a ConnectException to be thrown")
-        } catch (ConnectException ex) {
+            fail("Expected a ConnectionException to be thrown")
+        } catch (ConnectionException ex) {
         }
     }
 }

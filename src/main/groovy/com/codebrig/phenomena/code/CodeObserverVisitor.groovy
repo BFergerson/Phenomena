@@ -3,6 +3,7 @@ package com.codebrig.phenomena.code
 import com.codebrig.arthur.SourceLanguage
 import com.codebrig.arthur.SourceNode
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
+import grakn.client.Grakn
 import grakn.client.GraknClient
 import groovy.util.logging.Slf4j
 
@@ -18,7 +19,8 @@ import java.util.concurrent.ConcurrentHashMap
 @Slf4j
 class CodeObserverVisitor {
 
-    private final GraknClient.Session graknSession
+    private final Grakn.Session graknSession
+    private final Grakn.Session dataSession
     private final List<CodeObserver> observers
     private final Map<Integer, ContextualNode> contextualNodes
     private final boolean saveToGrakn
@@ -26,13 +28,15 @@ class CodeObserverVisitor {
     CodeObserverVisitor() {
         this.saveToGrakn = false
         this.graknSession = null
+        this.dataSession = null
         this.observers = new ArrayList<>()
         this.contextualNodes = new ConcurrentHashMap<>()
     }
 
-    CodeObserverVisitor(GraknClient.Session graknSession) {
+    CodeObserverVisitor(GraknClient graknClient, String keyspace) {
         this.saveToGrakn = true
-        this.graknSession = Objects.requireNonNull(graknSession)
+        //this.graknSession = graknClient.session("grakn", Grakn.Session.Type.DATA)
+        this.dataSession = graknClient.session(keyspace, Grakn.Session.Type.DATA)
         this.observers = new ArrayList<>()
         this.contextualNodes = new ConcurrentHashMap<>()
     }
@@ -72,7 +76,7 @@ class CodeObserverVisitor {
         ContextualNode rootObservedNode
         def transaction = null
         if (saveToGrakn) {
-            transaction = graknSession.transaction().write()
+            transaction = dataSession.transaction(Grakn.Transaction.Type.WRITE)
             if (observed) {
                 contextualRootNode.save(transaction)
                 if (rootObservedNode == null) {
@@ -91,7 +95,7 @@ class CodeObserverVisitor {
         return rootObservedNode
     }
 
-    private ContextualNode visitCompletely(GraknClient.Transaction qb, File sourceFile, ContextualNode rootSourceNode) {
+    private ContextualNode visitCompletely(Grakn.Transaction qb, File sourceFile, ContextualNode rootSourceNode) {
         ContextualNode rootObservedNode = null
         Stack<ContextualNode> parentStack = new Stack<>()
         Stack<Iterator<SourceNode>> childrenStack = new Stack<>()
