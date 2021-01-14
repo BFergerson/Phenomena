@@ -5,7 +5,7 @@ when {
     $fragment isa JavaVariableDeclarationFragmentArtifact;
     (is_child: $fragment, $fragmentParent) isa parent_child_relation;
     (is_child: $fragmentChild, $fragment) isa parent_child_relation;
-    not { $fragmentChild is $fragmentParent; }
+    #not { $fragmentChild is $fragmentParent; };
 }, then {
     (is_child: $fragmentChild, is_parent: $fragmentParent) isa parent_child_relation;
 };
