@@ -8,6 +8,7 @@ import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import grakn.client.GraknClient
 import groovy.util.logging.Slf4j
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 
 import static org.junit.Assert.*
@@ -57,6 +58,7 @@ class CodeSemanticObserverTest {
         phenomena.close()
     }
 
+    @Ignore
     @Test
     void skipVariableDeclarationFragment_withSave() {
         def file = new File(".", "/src/test/resources/java/ForStmt.java")
