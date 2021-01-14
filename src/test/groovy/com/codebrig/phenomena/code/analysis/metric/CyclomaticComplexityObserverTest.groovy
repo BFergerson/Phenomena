@@ -20,7 +20,9 @@ class CyclomaticComplexityObserverTest {
     @Before
     void setupGrakn() {
         try (def graknClient = new GraknClient("localhost:1729")) {
-            graknClient.databases().delete("grakn")
+            if (graknClient.databases().contains("grakn")) {
+                graknClient.databases().delete("grakn")
+            }
             graknClient.databases().create("grakn")
         }
     }
