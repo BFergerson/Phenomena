@@ -236,8 +236,8 @@ class Phenomena implements Closeable {
         babelfishClient?.close()
         schemaSession?.close()
         dataSession?.close()
-        graknClient?.close()
         visitor?.dataSession?.close() //todo: better
+        graknClient?.close()
     }
 
     void addCodeObserver(CodeObserver codeObserver) {
