@@ -68,6 +68,7 @@ class CodeSemanticObserverTest {
         phenomena.connectToGrakn()
         phenomena.setupVisitor(new CodeStructureObserver(), new CodeSemanticObserver())
         phenomena.setupOntology()
+        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
         log.info processedFile.rootNodeId

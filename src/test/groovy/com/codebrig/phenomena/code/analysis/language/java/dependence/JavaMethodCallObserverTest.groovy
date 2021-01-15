@@ -64,6 +64,7 @@ class JavaMethodCallObserverTest {
         phenomena.connectToGrakn()
         phenomena.setupVisitor(new CodeStructureObserver(), new JavaMethodCallObserver(new JavaParserIntegration(phenomena)))
         phenomena.setupOntology()
+        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }
@@ -77,6 +78,7 @@ class JavaMethodCallObserverTest {
         phenomena.connectToGrakn()
         phenomena.setupVisitor(new CodeStructureObserver(), new JavaMethodCallObserver(new JavaParserIntegration(phenomena)))
         phenomena.setupOntology()
+        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }

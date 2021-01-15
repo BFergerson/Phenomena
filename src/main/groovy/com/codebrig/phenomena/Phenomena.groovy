@@ -141,8 +141,6 @@ class Phenomena implements Closeable {
                 .replace("textAttribute sub attribute, value string;", "textAttribute sub attribute, abstract, value string;"))
         tx.query().define(query as GraqlDefine)
         tx.commit()
-
-        schemaSession.close()
     }
 
     Stream<ProcessedSourceFile> processScanPath() throws ParseException {

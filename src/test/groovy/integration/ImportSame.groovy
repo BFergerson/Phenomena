@@ -35,6 +35,7 @@ class ImportSame {
         phenomena.scanPath.add(new File(".", "/src/test/resources/same").absolutePath)
         phenomena.init()
         phenomena.setupOntology()
+        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }
@@ -51,6 +52,7 @@ class ImportSame {
         multiFilter.accept(new TypeFilter("MethodDeclaration"))
         phenomena.init(new CodeStructureObserver(multiFilter))
         phenomena.setupOntology()
+        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }
@@ -66,6 +68,7 @@ class ImportSame {
         observers.addAll(MetricAnalysis.getAllCodeObservers(phenomena))
         phenomena.init(observers)
         phenomena.setupOntology()
+        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }

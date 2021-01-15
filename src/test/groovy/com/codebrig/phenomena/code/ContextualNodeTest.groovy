@@ -42,6 +42,7 @@ class ContextualNodeTest {
         phenomena.connectToBabelfish()
         phenomena.connectToGrakn()
         phenomena.setupOntology()
+        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
 
         def processedFile = phenomena.processScanPath().findAny().get()
         def sourceNode = new SourceNode(SourceLanguage.Java, processedFile.parseResponse.uast)
