@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentHashMap
 class CodeObserverVisitor {
 
     private final Grakn.Session graknSession
-    private final Grakn.Session dataSession
+    final Grakn.Session dataSession
     private final List<CodeObserver> observers
     private final Map<Integer, ContextualNode> contextualNodes
     private final boolean saveToGrakn

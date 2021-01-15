@@ -237,6 +237,7 @@ class Phenomena implements Closeable {
         schemaSession?.close()
         dataSession?.close()
         graknClient?.close()
+        visitor?.dataSession?.close() //todo: better
     }
 
     void addCodeObserver(CodeObserver codeObserver) {

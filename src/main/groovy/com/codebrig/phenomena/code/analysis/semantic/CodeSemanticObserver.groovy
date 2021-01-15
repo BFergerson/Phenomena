@@ -58,6 +58,7 @@ class CodeSemanticObserver extends CodeObserver {
     @Override
     String[] getRules() {
         return [Resources.toString(Resources.getResource(
+                //todo: there is nothing about below rule that is semantic
                 "rules/dependence/language/java/variable-declaration-fragment-hierarchy.gql"),
                 Charsets.UTF_8)]
     }
