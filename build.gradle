@@ -26,7 +26,7 @@ dependencies {
     implementation group: 'io.grakn.client', name: 'grakn-client', version: "2.0.0-alpha-5"
     implementation files('lib/bblfsh-client-1.11.1.jar')
     implementation 'org.bblfsh:bblfsh-client:1.11.0'
-    implementation 'com.github.codebrig:arthur:d7d66a073a'
+    implementation 'com.github.codebrig:arthur:443ec76bc7'
 }
 
 test {
