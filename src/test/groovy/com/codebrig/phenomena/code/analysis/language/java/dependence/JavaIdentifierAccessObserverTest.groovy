@@ -7,13 +7,12 @@ import com.codebrig.arthur.observe.structure.filter.NameFilter
 import com.codebrig.arthur.observe.structure.filter.RoleFilter
 import com.codebrig.arthur.observe.structure.filter.TypeFilter
 import com.codebrig.phenomena.Phenomena
+import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
-import grakn.client.GraknClient
 import groovy.util.logging.Slf4j
-import org.junit.Before
 import org.junit.Test
 
 import java.util.stream.Collectors
@@ -22,17 +21,7 @@ import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertNotNull
 
 @Slf4j
-class JavaIdentifierAccessObserverTest {
-
-    @Before
-    void setupGrakn() {
-        try (def graknClient = new GraknClient("172.19.0.1:1729")) {
-            if (graknClient.databases().contains("grakn")) {
-                graknClient.databases().delete("grakn")
-            }
-            graknClient.databases().create("grakn")
-        }
-    }
+class JavaIdentifierAccessObserverTest extends PhenomenaTest {
 
     @Test
     void innerMethodIdentifierAccess_noSave() {
@@ -119,7 +108,6 @@ class JavaIdentifierAccessObserverTest {
         phenomena.connectToGrakn()
         phenomena.setupVisitor(new CodeStructureObserver(), new JavaIdentifierAccessObserver(new JavaParserIntegration(phenomena)))
         phenomena.setupOntology()
-        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }

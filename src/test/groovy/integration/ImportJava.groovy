@@ -33,7 +33,6 @@ class ImportJava {
         phenomena.scanPath.add(new File(".", "/src/test/resources/java").absolutePath)
         phenomena.init()
         phenomena.setupOntology()
-        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }
@@ -49,7 +48,6 @@ class ImportJava {
         observers.addAll(MetricAnalysis.getAllCodeObservers(phenomena, SourceLanguage.Java))
         phenomena.init(observers)
         phenomena.setupOntology()
-        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         log.info phenomena.processScanPath().map({ it.rootNodeId }).collect(Collectors.toList()).toListString()
         phenomena.close()
     }

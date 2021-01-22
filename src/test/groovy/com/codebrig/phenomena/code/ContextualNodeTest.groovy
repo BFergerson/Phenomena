@@ -6,29 +6,16 @@ import com.codebrig.arthur.observe.structure.filter.CompilationUnitFilter
 import com.codebrig.arthur.observe.structure.filter.FunctionFilter
 import com.codebrig.arthur.observe.structure.filter.MultiFilter
 import com.codebrig.phenomena.Phenomena
+import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import grakn.client.Grakn
-import grakn.client.GraknClient
-import org.junit.Before
 import org.junit.Test
 
 import java.util.stream.Collectors
 
-import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertNull
-import static org.junit.Assert.assertTrue
+import static org.junit.Assert.*
 
-class ContextualNodeTest {
-
-    @Before
-    void setupGrakn() {
-        try (def graknClient = new GraknClient("172.19.0.1:1729")) {
-            if (graknClient.databases().contains("grakn")) {
-                graknClient.databases().delete("grakn")
-            }
-            graknClient.databases().create("grakn")
-        }
-    }
+class ContextualNodeTest extends PhenomenaTest {
 
     @Test
     void "double save node"() {
@@ -42,7 +29,6 @@ class ContextualNodeTest {
         phenomena.connectToBabelfish()
         phenomena.connectToGrakn()
         phenomena.setupOntology()
-        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
 
         def processedFile = phenomena.processScanPath().findAny().get()
         def sourceNode = new SourceNode(SourceLanguage.Java, processedFile.parseResponse.uast)

@@ -1,10 +1,22 @@
 package com.codebrig.phenomena
 
+import grakn.client.GraknClient
+import org.junit.Before
 import org.junit.Test
 
 import static org.junit.Assert.fail
 
 class PhenomenaTest {
+
+    @Before
+    void setupGrakn() {
+        try (def graknClient = GraknClient.core("172.19.0.1:1729")) {
+            if (graknClient.databases().contains("grakn")) {
+                graknClient.databases().delete("grakn")
+            }
+            graknClient.databases().create("grakn")
+        }
+    }
 
     @Test
     void testInvalidBabelfishConnection() {

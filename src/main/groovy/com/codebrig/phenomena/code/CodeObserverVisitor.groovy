@@ -9,6 +9,8 @@ import groovy.util.logging.Slf4j
 
 import java.util.concurrent.ConcurrentHashMap
 
+import static java.util.Objects.requireNonNull
+
 /**
  * Used to execute source code observers over source code files
  *
@@ -19,7 +21,6 @@ import java.util.concurrent.ConcurrentHashMap
 @Slf4j
 class CodeObserverVisitor {
 
-    private final Grakn.Session graknSession
     final Grakn.Session dataSession
     private final List<CodeObserver> observers
     private final Map<Integer, ContextualNode> contextualNodes
@@ -27,27 +28,25 @@ class CodeObserverVisitor {
 
     CodeObserverVisitor() {
         this.saveToGrakn = false
-        this.graknSession = null
         this.dataSession = null
         this.observers = new ArrayList<>()
         this.contextualNodes = new ConcurrentHashMap<>()
     }
 
-    CodeObserverVisitor(GraknClient graknClient, String keyspace) {
+    CodeObserverVisitor(GraknClient.Core graknClient, String keyspace) {
         this.saveToGrakn = true
-        //this.graknSession = graknClient.session("grakn", Grakn.Session.Type.DATA)
-        this.dataSession = graknClient.session(keyspace, Grakn.Session.Type.DATA)
+        this.dataSession = requireNonNull(graknClient).session(requireNonNull(keyspace), Grakn.Session.Type.DATA)
         this.observers = new ArrayList<>()
         this.contextualNodes = new ConcurrentHashMap<>()
     }
 
     void addObserver(CodeObserver observer) {
-        observers.add(Objects.requireNonNull(observer))
+        observers.add(requireNonNull(observer))
         observer.codeObserverVisitor = this
     }
 
     void addObservers(List<CodeObserver> observers) {
-        Objects.requireNonNull(observers).each {
+        requireNonNull(observers).each {
             addObserver(it)
         }
     }
@@ -57,8 +56,8 @@ class CodeObserverVisitor {
     }
 
     ContextualNode visit(SourceLanguage language, Node rootNode, File sourceFile) {
-        Objects.requireNonNull(language)
-        Objects.requireNonNull(rootNode)
+        requireNonNull(language)
+        requireNonNull(rootNode)
 
         def observed = false
         ContextualNode contextualRootNode = new ContextualNode(this, rootNode, sourceFile, language, rootNode)

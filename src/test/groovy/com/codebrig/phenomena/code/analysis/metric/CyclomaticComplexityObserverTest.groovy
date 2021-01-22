@@ -5,27 +5,16 @@ import com.codebrig.arthur.observe.structure.filter.FunctionFilter
 import com.codebrig.arthur.observe.structure.filter.MultiFilter
 import com.codebrig.arthur.observe.structure.filter.NameFilter
 import com.codebrig.phenomena.Phenomena
+import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
-import grakn.client.GraknClient
 import groovy.util.logging.Slf4j
-import org.junit.Before
 import org.junit.Test
 
 import static org.junit.Assert.*
 
 @Slf4j
-class CyclomaticComplexityObserverTest {
-
-    @Before
-    void setupGrakn() {
-        try (def graknClient = new GraknClient("172.19.0.1:1729")) {
-            if (graknClient.databases().contains("grakn")) {
-                graknClient.databases().delete("grakn")
-            }
-            graknClient.databases().create("grakn")
-        }
-    }
+class CyclomaticComplexityObserverTest extends PhenomenaTest {
 
     @Test
     void pythonInnerMethod_noSave() {
@@ -68,7 +57,6 @@ class CyclomaticComplexityObserverTest {
         phenomena.connectToGrakn()
         phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
         phenomena.setupOntology()
-        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
         log.info processedFile.rootNodeId
@@ -117,7 +105,6 @@ class CyclomaticComplexityObserverTest {
         phenomena.connectToGrakn()
         phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
         phenomena.setupOntology()
-        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
         log.info processedFile.rootNodeId
@@ -156,7 +143,6 @@ class CyclomaticComplexityObserverTest {
         phenomena.connectToGrakn()
         phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
         phenomena.setupOntology()
-        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
         log.info processedFile.rootNodeId
@@ -195,7 +181,6 @@ class CyclomaticComplexityObserverTest {
         phenomena.connectToGrakn()
         phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
         phenomena.setupOntology()
-        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
         log.info processedFile.rootNodeId
@@ -234,7 +219,6 @@ class CyclomaticComplexityObserverTest {
         phenomena.connectToGrakn()
         phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
         phenomena.setupOntology()
-        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
         log.info processedFile.rootNodeId
@@ -273,7 +257,6 @@ class CyclomaticComplexityObserverTest {
         phenomena.connectToGrakn()
         phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
         phenomena.setupOntology()
-        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
         log.info processedFile.rootNodeId
@@ -312,7 +295,6 @@ class CyclomaticComplexityObserverTest {
         phenomena.connectToGrakn()
         phenomena.setupVisitor(new CodeStructureObserver(), new CyclomaticComplexityObserver())
         phenomena.setupOntology()
-        phenomena.getSchemaSession().close() //todo: remove after https://github.com/graknlabs/grakn/issues/6031
         def processedFile = phenomena.processSourceFile(file, language)
         assertNotNull(processedFile.rootNodeId)
         log.info processedFile.rootNodeId

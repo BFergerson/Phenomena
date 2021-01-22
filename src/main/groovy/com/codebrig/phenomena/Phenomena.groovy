@@ -42,7 +42,7 @@ class Phenomena implements Closeable {
     private int babelfishPort = 9432
     private CodeObserverVisitor visitor
     private BblfshClient babelfishClient
-    private GraknClient graknClient
+    private GraknClient.Core graknClient
     private Grakn.Session schemaSession
     private Grakn.Session dataSession
 
@@ -78,10 +78,9 @@ class Phenomena implements Closeable {
 
     void connectToGrakn() throws ConnectionException {
         log.info "Connecting to Grakn"
-        graknClient = new GraknClient("$graknURI")
+        graknClient = GraknClient.core("$graknURI")
         try {
             schemaSession = graknClient.session(graknKeyspace, Grakn.Session.Type.SCHEMA)
-            //dataSession = graknClient.session(graknKeyspace, Grakn.Session.Type.DATA)
         } catch (Throwable ex) {
             throw new ConnectionException("Connection refused: $graknURI", ex)
         }
@@ -96,8 +95,8 @@ class Phenomena implements Closeable {
     }
 
     void setupVisitor(CodeObserver... codeObservers) {
-        if (dataSession == null) {
-            //throw new IllegalStateException("Phenomena must be connected to Grakn before setting up the visitor")
+        if (graknClient == null) {
+            throw new IllegalStateException("Phenomena must be connected to Grakn before setting up the visitor")
         }
 
         visitor = new CodeObserverVisitor(graknClient, graknKeyspace)
@@ -119,6 +118,7 @@ class Phenomena implements Closeable {
             }
         }
         setupOntology(stringBuilder.toString())
+        schemaSession.close()
     }
 
     void setupOntology(File schemaDefinition) {
@@ -216,7 +216,7 @@ class Phenomena implements Closeable {
         return babelfishClient
     }
 
-    GraknClient getGraknClient() {
+    GraknClient.Core getGraknClient() {
         return graknClient
     }
 
@@ -235,7 +235,6 @@ class Phenomena implements Closeable {
         }
         babelfishClient?.close()
         schemaSession?.close()
-        dataSession?.close()
         visitor?.dataSession?.close() //todo: better
         graknClient?.close()
     }

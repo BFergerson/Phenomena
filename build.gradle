@@ -23,7 +23,7 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.5'
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
-    implementation group: 'io.grakn.client', name: 'grakn-client', version: "2.0.0-alpha-4"
+    implementation group: 'io.grakn.client', name: 'grakn-client', version: "2.0.0-alpha-5"
     implementation files('lib/bblfsh-client-1.11.1.jar')
     implementation 'org.bblfsh:bblfsh-client:1.11.0'
     implementation 'com.github.codebrig:arthur:d7d66a073a'

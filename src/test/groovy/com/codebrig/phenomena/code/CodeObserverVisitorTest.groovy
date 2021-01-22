@@ -2,10 +2,9 @@ package com.codebrig.phenomena.code
 
 import com.codebrig.arthur.observe.structure.filter.FunctionFilter
 import com.codebrig.phenomena.Phenomena
+import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
-import grakn.client.GraknClient
 import groovy.util.logging.Slf4j
-import org.junit.Before
 import org.junit.Test
 
 import java.util.stream.Collectors
@@ -13,17 +12,7 @@ import java.util.stream.Collectors
 import static org.junit.Assert.assertTrue
 
 @Slf4j
-class CodeObserverVisitorTest {
-
-    @Before
-    void setupGrakn() {
-        try (def graknClient = new GraknClient("172.19.0.1:1729")) {
-            if (graknClient.databases().contains("grakn")) {
-                graknClient.databases().delete("grakn")
-            }
-            graknClient.databases().create("grakn")
-        }
-    }
+class CodeObserverVisitorTest extends PhenomenaTest {
 
     @Test
     void onlyVisitFunctionDeclarations() {
