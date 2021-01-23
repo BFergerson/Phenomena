@@ -16,8 +16,8 @@ repositories {
     maven {
         url "https://maven.pkg.github.com/codebrig/arthur"
         credentials {
-            username = System.getenv("GITHUB_ACTOR")
-            password = System.getenv("GITHUB_TOKEN")
+            username = System.getenv("GITHUB_ACTOR") ?: System.getenv("gpr.user")
+            password = System.getenv("GITHUB_TOKEN") ?: System.getenv("gpr.key")
         }
     }
 }
@@ -33,7 +33,7 @@ dependencies {
     implementation group: 'io.grakn.client', name: 'grakn-client', version: "2.0.0-alpha-5"
     implementation files('lib/bblfsh-client-1.11.1.jar')
     implementation 'org.bblfsh:bblfsh-client:1.11.0'
-    implementation 'com.codebrig:arthur:0.4.3'
+    implementation 'com.codebrig:arthur:0.4.4'
 }
 
 test {
