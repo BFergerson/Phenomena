@@ -18,7 +18,7 @@ class ImportJava {
 
     @Before
     void setupGrakn() {
-        try (def graknClient = GraknClient.core("172.19.0.1:1729")) {
+        try (def graknClient = GraknClient.core("localhost:1729")) {
             if (graknClient.databases().contains("grakn")) {
                 graknClient.databases().delete("grakn")
             }
