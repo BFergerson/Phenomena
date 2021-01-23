@@ -16,8 +16,8 @@ repositories {
     maven {
         url "https://maven.pkg.github.com/codebrig/arthur"
         credentials {
-            username = project.findProperty("gpr.user") ?: System.getenv("gpr.user")
-            password = project.findProperty("gpr.key") ?: System.getenv("gpr.key")
+            username = System.getenv("GITHUB_ACTOR")
+            password = System.getenv("GITHUB_TOKEN")
         }
     }
 }
