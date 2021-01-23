@@ -22,7 +22,7 @@ publishing {
     publications {
         gpr(MavenPublication) {
             groupId group
-            artifactId jar.archiveBaseName.toLowerCase()
+            artifactId jar.baseName.toLowerCase()
 
             from(components.java)
         }
