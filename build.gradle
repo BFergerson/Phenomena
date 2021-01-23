@@ -14,8 +14,8 @@ publishing {
             name = "GitHubPackages"
             url = uri("https://maven.pkg.github.com/codebrig/phenomena")
             credentials {
-                username = System.getenv("GITHUB_ACTOR") ?: System.getenv("gpr.user")
-                password = System.getenv("GITHUB_TOKEN") ?: System.getenv("gpr.key")
+                username = System.getenv("GITHUB_ACTOR") ?: (System.getenv("gpr.user") ?: System.getProperty("gpr.user"))
+                password = System.getenv("GITHUB_TOKEN") ?: (System.getenv("gpr.key" ?: System.getProperty("gpr.key")))
             }
         }
     }
