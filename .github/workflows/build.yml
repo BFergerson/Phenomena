@@ -48,3 +48,6 @@ jobs:
       # Run detekt, ktlint and tests
       - name: Run Linters and Test
         run: ./gradlew check --stacktrace
+        env:
+          GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
