@@ -1,7 +1,7 @@
 define
 
 #has_method_call
-JavaMethodDeclarationArtifact plays has_method_call;
+JavaMethodDeclarationArtifact plays method_call:has_method_call;
 
 #is_method_call
-JavaMethodInvocationArtifact plays is_method_call;
+JavaMethodInvocationArtifact plays method_call:is_method_call;

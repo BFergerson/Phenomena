@@ -7,6 +7,7 @@ import com.codebrig.arthur.observe.structure.filter.NameFilter
 import com.codebrig.arthur.observe.structure.filter.RoleFilter
 import com.codebrig.arthur.observe.structure.filter.TypeFilter
 import com.codebrig.phenomena.Phenomena
+import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.ContextualNode
 import com.codebrig.phenomena.code.analysis.language.java.JavaParserIntegration
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertNotNull
 
 @Slf4j
-class JavaIdentifierAccessObserverTest {
+class JavaIdentifierAccessObserverTest extends PhenomenaTest {
 
     @Test
     void innerMethodIdentifierAccess_noSave() {

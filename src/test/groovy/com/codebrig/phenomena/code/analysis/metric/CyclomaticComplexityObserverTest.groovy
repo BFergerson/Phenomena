@@ -5,6 +5,7 @@ import com.codebrig.arthur.observe.structure.filter.FunctionFilter
 import com.codebrig.arthur.observe.structure.filter.MultiFilter
 import com.codebrig.arthur.observe.structure.filter.NameFilter
 import com.codebrig.phenomena.Phenomena
+import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import groovy.util.logging.Slf4j
@@ -13,7 +14,7 @@ import org.junit.Test
 import static org.junit.Assert.*
 
 @Slf4j
-class CyclomaticComplexityObserverTest {
+class CyclomaticComplexityObserverTest extends PhenomenaTest {
 
     @Test
     void pythonInnerMethod_noSave() {

@@ -4,7 +4,7 @@ define
 data_dependence sub relation,
     relates has_data_dependence, relates is_data_dependence;
 
-VariableDeclarator plays has_data_dependence;
-Parameter plays has_data_dependence, plays is_data_dependence;
-Stmt plays has_data_dependence, plays is_data_dependence;
-Expr plays has_data_dependence, plays is_data_dependence;
+VariableDeclarator plays data_dependence:has_data_dependence;
+Parameter plays data_dependence:has_data_dependence, plays data_dependence:is_data_dependence;
+Stmt plays data_dependence:has_data_dependence, plays data_dependence:is_data_dependence;
+Expr plays data_dependence:has_data_dependence, plays data_dependence:is_data_dependence;

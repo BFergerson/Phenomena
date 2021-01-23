@@ -6,15 +6,15 @@ import com.codebrig.arthur.observe.ObservedLanguage
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import com.google.common.collect.Sets
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
-import grakn.client.GraknClient
-import graql.lang.Graql
-import graql.lang.statement.Statement
+import grakn.client.Grakn
+import graql.lang.pattern.variable.ThingVariable
+import graql.lang.pattern.variable.Variable
 import groovy.transform.Canonical
 import org.apache.commons.text.StringEscapeUtils
 
 import java.util.concurrent.ConcurrentHashMap
 
-import static graql.lang.Graql.var
+import static graql.lang.Graql.*
 
 /**
  * Represents a source code node (AST node) which
@@ -40,7 +40,13 @@ class ContextualNode extends SourceNode {
     }
 
     ContextualNode(CodeObserverVisitor context, SourceNode sourceNode, File sourceFile) {
-        super(sourceNode.language, sourceNode.rootNode, sourceNode.underlyingNode)
+        super(sourceNode.language, sourceNode.rootNode, sourceNode.underlyingNode, sourceNode.parentSourceNode)
+        this.context = Objects.requireNonNull(context)
+        this.sourceFile = sourceFile
+    }
+
+    ContextualNode(CodeObserverVisitor context, SourceNode sourceNode, SourceNode parentSourceNode, File sourceFile) {
+        super(sourceNode.language, sourceNode.rootNode, sourceNode.underlyingNode, parentSourceNode)
         this.context = Objects.requireNonNull(context)
         this.sourceFile = sourceFile
     }
@@ -77,6 +83,15 @@ class ContextualNode extends SourceNode {
         return new ArrayList<>(roles)
     }
 
+    @Override
+    ContextualNode getParentSourceNode() {
+        def parentSourceNode = super.getParentSourceNode()
+        if (parentSourceNode == null) {
+            return null
+        }
+        return context.getContextualNode(parentSourceNode)
+    }
+
     void addRelationshipTo(ContextualNode otherNode, String relationshipType) {
         addRelationshipTo(otherNode, relationshipType, "is_$relationshipType", "has_$relationshipType")
     }
@@ -87,12 +102,12 @@ class ContextualNode extends SourceNode {
         relationships.put(new NodeRelationship(relationshipType, rel1, rel2), otherNode)
     }
 
-    void save(GraknClient.Transaction qb) {
+    void save(Grakn.Transaction qb) {
         def selfId = getData(CodeStructureObserver.SELF_ID)
-        def patterns = new ArrayList<Statement>()
+        def patterns = new ArrayList<Variable>()
         def nodePattern = var("self")
         if (selfId != null) {
-            nodePattern = nodePattern.id(selfId)
+            nodePattern = nodePattern.iid(selfId)
         } else {
             nodePattern = nodePattern.isa(entityType)
         }
@@ -110,13 +125,12 @@ class ContextualNode extends SourceNode {
         boolean hasRoles = false
         roles.each {
             hasRoles = true
-            patterns.add(var().isa(it)
-                    .rel("IS_" + it, "self"))
+            patterns.add(var().rel("IS_" + it, "self").isa(it))
         }
 
         if (hasAttributes || hasRoles || selfId == null) {
-            def savedNode = qb.execute(Graql.insert(patterns)).get(0)
-            setData(CodeStructureObserver.SELF_ID, selfId = savedNode.get("self").id().value)
+            def savedNode = qb.query().insert(insert(patterns as List<ThingVariable>)).findFirst().get()
+            setData(CodeStructureObserver.SELF_ID, selfId = savedNode.get("self").asThing().asEntity().getIID())
         }
 
         relationships.each {
@@ -127,13 +141,12 @@ class ContextualNode extends SourceNode {
             }
 
             if (otherSelfId != null) {
-                qb.execute(Graql.match(
-                        var("self").id(selfId),
-                        var("other").id(otherSelfId)
+                qb.query().insert(match(
+                        var("self").iid(selfId),
+                        var("other").iid(otherSelfId)
                 ).insert(
-                        var().isa(it.key.relationshipType)
-                                .rel(it.key.selfRole, "self")
-                                .rel(it.key.otherRole, "other")
+                        rel(it.key.selfRole, "self").rel(it.key.otherRole, "other")
+                                .isa(it.key.relationshipType)
                 ))
             }
         }

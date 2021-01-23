@@ -1,18 +1,18 @@
 define
 
 ##########---------- Attributes ----------##########
-control_value sub attribute, datatype boolean;
+control_value sub attribute, value boolean;
 
 ##########---------- Relationships ----------##########
 control_flow sub relations,
     relates has_control_flow, relates is_control_flow
-    has control_value;
+    owns control_value;
 
 #todo: use CallableDeclaration instead
 ConstructorDeclaration plays has_control_flow, plays is_control_flow;
-MethodDeclaration plays has_control_flow, plays is_control_flow;
+MethodDeclaration plays control_flow:has_control_flow, plays control_flow:is_control_flow;
 
-VariableDeclarator plays has_control_flow, plays is_control_flow;
-Parameter plays has_control_flow, plays is_control_flow;
-Stmt plays has_control_flow, plays is_control_flow;
-Expr plays has_control_flow, plays is_control_flow;
+VariableDeclarator plays control_flow:has_control_flow, plays control_flow:is_control_flow;
+Parameter plays control_flow:has_control_flow, plays control_flow:is_control_flow;
+Stmt plays control_flow:has_control_flow, plays control_flow:is_control_flow;
+Expr plays control_flow:has_control_flow, plays control_flow:is_control_flow;

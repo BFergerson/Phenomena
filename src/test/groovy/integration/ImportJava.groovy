@@ -6,13 +6,25 @@ import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.analysis.DependenceAnalysis
 import com.codebrig.phenomena.code.analysis.MetricAnalysis
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import grakn.client.GraknClient
 import groovy.util.logging.Slf4j
+import org.junit.Before
 import org.junit.Test
 
 import java.util.stream.Collectors
 
 @Slf4j
 class ImportJava {
+
+    @Before
+    void setupGrakn() {
+        try (def graknClient = GraknClient.core("localhost:1729")) {
+            if (graknClient.databases().contains("grakn")) {
+                graknClient.databases().delete("grakn")
+            }
+            graknClient.databases().create("grakn")
+        }
+    }
 
     @Test
     void importAllJava() {

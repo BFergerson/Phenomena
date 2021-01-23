@@ -64,7 +64,7 @@ class JavaIdentifierAccessObserver extends IdentifierAccessObserver {
                 javaParserDeclaration = JavaParserIntegration.getNameNode(javaParserNode) //todo: could probably replace with TypeFilter("SimpleName")
                 def contextualDeclarationName = codeObserverVisitor.getOrCreateContextualNode(MultiFilter.matchAll(
                         new TypeFilter("SimpleName"), new NameFilter(javaParserDeclaration.toString())
-                ).getFilteredNodes(node).next(), node.sourceFile)
+                ).getFilteredNodesIncludingCurrent(node).next(), node.sourceFile)
                 contextualDeclarations.put(javaParserDeclaration, contextualDeclarationName)
             } else if (javaParserNode instanceof SimpleName) {
                 javaParserDeclaration = getDeclarationName(JavaParserFacade.get(integration.typeSolver).solve(javaParserNode))

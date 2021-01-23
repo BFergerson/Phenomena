@@ -3,9 +3,9 @@ package com.codebrig.phenomena.code.analysis.language.java
 import com.codebrig.arthur.observe.structure.naming.JavaNaming
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.code.ContextualNode
-import com.github.javaparser.JavaParser
 import com.github.javaparser.Position
 import com.github.javaparser.Range
+import com.github.javaparser.StaticJavaParser
 import com.github.javaparser.ast.CompilationUnit
 import com.github.javaparser.ast.Node
 import com.github.javaparser.ast.body.*
@@ -54,7 +54,7 @@ class JavaParserIntegration {
 
     CompilationUnit parseFile(File sourceFile) {
         if (!parsedFiles.containsKey(sourceFile)) {
-            parsedFiles.put(sourceFile, JavaParser.parse(sourceFile))
+            parsedFiles.put(sourceFile, StaticJavaParser.parse(sourceFile))
         }
         return parsedFiles.get(sourceFile)
     }

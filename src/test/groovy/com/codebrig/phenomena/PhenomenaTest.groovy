@@ -1,10 +1,22 @@
 package com.codebrig.phenomena
 
+import grakn.client.GraknClient
+import org.junit.Before
 import org.junit.Test
 
 import static org.junit.Assert.fail
 
 class PhenomenaTest {
+
+    @Before
+    void setupGrakn() {
+        try (def graknClient = GraknClient.core("localhost:1729")) {
+            if (graknClient.databases().contains("grakn")) {
+                graknClient.databases().delete("grakn")
+            }
+            graknClient.databases().create("grakn")
+        }
+    }
 
     @Test
     void testInvalidBabelfishConnection() {
@@ -13,8 +25,8 @@ class PhenomenaTest {
 
         try {
             phenomena.connectToBabelfish()
-            fail("Expected a ConnectException to be thrown")
-        } catch (ConnectException ex) {
+            fail("Expected a ConnectionException to be thrown")
+        } catch (ConnectionException ex) {
         }
     }
 
@@ -25,8 +37,8 @@ class PhenomenaTest {
 
         try {
             phenomena.connectToGrakn()
-            fail("Expected a ConnectException to be thrown")
-        } catch (ConnectException ex) {
+            fail("Expected a ConnectionException to be thrown")
+        } catch (ConnectionException ex) {
         }
     }
 }

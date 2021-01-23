@@ -3,15 +3,17 @@ package com.codebrig.phenomena.code.analysis.semantic
 import com.codebrig.arthur.SourceLanguage
 import com.codebrig.arthur.observe.structure.filter.TypeFilter
 import com.codebrig.phenomena.Phenomena
+import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import groovy.util.logging.Slf4j
+import org.junit.Ignore
 import org.junit.Test
 
 import static org.junit.Assert.*
 
 @Slf4j
-class CodeSemanticObserverTest {
+class CodeSemanticObserverTest extends PhenomenaTest {
 
     @Test
     void skipVariableDeclarationFragment_noSave() {
@@ -19,6 +21,7 @@ class CodeSemanticObserverTest {
         def language = SourceLanguage.getSourceLanguage(file)
         def phenomena = new Phenomena()
         def visitor = new CodeObserverVisitor()
+        visitor.addObserver(new CodeStructureObserver())
         visitor.addObserver(new CodeSemanticObserver())
         phenomena.setupVisitor(visitor)
         phenomena.connectToBabelfish()
@@ -27,7 +30,7 @@ class CodeSemanticObserverTest {
         def foundCompilationUnit = false
         def foundVariableDeclarationFragment = false
         new TypeFilter("CompilationUnit")
-                .getFilteredNodes(language, processedFile.parseResponse.uast).each {
+                .getFilteredNodesIncludingCurrent(language, processedFile.parseResponse.uast).each {
             foundCompilationUnit = true
             def contextualNode = visitor.getContextualNode(it.underlyingNode)
             assertEquals(1, contextualNode.getPlayedRoles().size())
@@ -44,6 +47,7 @@ class CodeSemanticObserverTest {
         phenomena.close()
     }
 
+    @Ignore("Needs negation to be enabled in Grakn 2.0")
     @Test
     void skipVariableDeclarationFragment_withSave() {
         def file = new File(".", "/src/test/resources/java/ForStmt.java")
