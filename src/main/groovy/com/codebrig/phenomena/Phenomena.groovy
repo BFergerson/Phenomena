@@ -131,14 +131,7 @@ class Phenomena implements Closeable {
         }
 
         def tx = schemaSession.transaction(Grakn.Transaction.Type.WRITE)
-        def query = Graql.parseQuery(schemaDefinition.replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", "")
-                .replace("valueAttribute sub attribute, value string;", "valueAttribute sub attribute, abstract, value string;")
-                .replace("kindAttribute sub attribute, value string;", "kindAttribute sub attribute, abstract, value string;")
-                .replace("flagsAttribute sub attribute, value string;", "flagsAttribute sub attribute, abstract, value string;")
-                .replace("isConstAttribute sub attribute, value string;", "isConstAttribute sub attribute, abstract, value string;")
-                .replace("staticAttribute sub attribute, value string;", "staticAttribute sub attribute, abstract, value string;")
-                .replace("methodAttribute sub attribute, value string;", "methodAttribute sub attribute, abstract, value string;")
-                .replace("textAttribute sub attribute, value string;", "textAttribute sub attribute, abstract, value string;"))
+        def query = Graql.parseQuery(schemaDefinition.replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", ""))
         tx.query().define(query as GraqlDefine)
         tx.commit()
     }
