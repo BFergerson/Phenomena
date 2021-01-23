@@ -24,7 +24,6 @@ import static groovy.io.FileType.FILES
 /**
  * Main entry-point used to parse, process, and store source code files
  *
- * @version 0.2.4
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */

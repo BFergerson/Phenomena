@@ -14,7 +14,6 @@ import static java.util.Objects.requireNonNull
 /**
  * Used to execute source code observers over source code files
  *
- * @version 0.2.4
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */

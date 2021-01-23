@@ -7,7 +7,6 @@ import com.codebrig.arthur.observe.structure.filter.WildcardFilter
  * Represents an entity which observes the properties of source code nodes
  * in order to extract/calculate additional source code properties.
  *
- * @version 0.2.4
  * @since 0.1
  * @author <a href="mailto:brandon.fergerson@codebrig.com">Brandon Fergerson</a>
  */
