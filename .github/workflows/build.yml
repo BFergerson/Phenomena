@@ -5,7 +5,6 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
-    container: gradle:jdk11
     steps:
 
       # Check out current repository
