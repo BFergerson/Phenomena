@@ -37,7 +37,7 @@ repositories {
         url 'https://repo.grakn.ai/repository/maven/'
     }
     maven {
-        url "https://maven.pkg.github.com/codebrig/arthur"
+        url "https://maven.pkg.github.com/codebrig/phenomena"
         credentials {
             username = System.getenv("GITHUB_ACTOR") ?: System.getenv("gpr.user")
             password = System.getenv("GITHUB_TOKEN") ?: System.getenv("gpr.key")
