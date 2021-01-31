@@ -7,7 +7,6 @@ import com.codebrig.phenomena.code.ProcessedSourceFile
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import gopkg.in.bblfsh.sdk.v1.protocol.generated.Encoding
 import gopkg.in.bblfsh.sdk.v1.protocol.generated.ParseResponse
-import grakn.client.Grakn
 import grakn.client.GraknClient
 import graql.lang.Graql
 import graql.lang.query.GraqlDefine
@@ -41,9 +40,9 @@ class Phenomena implements Closeable {
     private int babelfishPort = 9432
     private CodeObserverVisitor visitor
     private BblfshClient babelfishClient
-    private GraknClient.Core graknClient
-    private Grakn.Session schemaSession
-    private Grakn.Session dataSession
+    private GraknClient graknClient
+    private GraknClient.Session schemaSession
+    private GraknClient.Session dataSession
 
     void init() throws ConnectionException {
         init(new CodeStructureObserver())
@@ -79,7 +78,7 @@ class Phenomena implements Closeable {
         log.info "Connecting to Grakn"
         graknClient = GraknClient.core("$graknURI")
         try {
-            schemaSession = graknClient.session(graknKeyspace, Grakn.Session.Type.SCHEMA)
+            schemaSession = graknClient.session(graknKeyspace, GraknClient.Session.Type.SCHEMA)
         } catch (Throwable ex) {
             throw new ConnectionException("Connection refused: $graknURI", ex)
         }
@@ -129,7 +128,7 @@ class Phenomena implements Closeable {
             throw new IllegalStateException("Phenomena must be connected to Grakn before setting up the ontology")
         }
 
-        def tx = schemaSession.transaction(Grakn.Transaction.Type.WRITE)
+        def tx = schemaSession.transaction(GraknClient.Transaction.Type.WRITE)
         def query = Graql.parseQuery(schemaDefinition.replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", ""))
         tx.query().define(query as GraqlDefine)
         tx.commit()
@@ -208,15 +207,15 @@ class Phenomena implements Closeable {
         return babelfishClient
     }
 
-    GraknClient.Core getGraknClient() {
+    GraknClient getGraknClient() {
         return graknClient
     }
 
-    Grakn.Session getSchemaSession() {
+    GraknClient.Session getSchemaSession() {
         return schemaSession
     }
 
-    Grakn.Session getDataSession() {
+    GraknClient.Session getDataSession() {
         return dataSession
     }
 

@@ -6,7 +6,7 @@ import com.codebrig.arthur.observe.ObservedLanguage
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import com.google.common.collect.Sets
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
-import grakn.client.Grakn
+import grakn.client.GraknClient
 import graql.lang.pattern.variable.ThingVariable
 import graql.lang.pattern.variable.Variable
 import groovy.transform.Canonical
@@ -101,7 +101,7 @@ class ContextualNode extends SourceNode {
         relationships.put(new NodeRelationship(relationshipType, rel1, rel2), otherNode)
     }
 
-    void save(Grakn.Transaction qb) {
+    void save(GraknClient.Transaction qb) {
         def selfId = getData(CodeStructureObserver.SELF_ID)
         def patterns = new ArrayList<Variable>()
         def nodePattern = var("self")
