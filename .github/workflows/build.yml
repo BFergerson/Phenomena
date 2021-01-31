@@ -26,14 +26,10 @@ jobs:
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}
 
       - name: Check build & test
-        run: ./gradlew check build test --stacktrace
+        run: ./gradlew check build -x test --stacktrace
         env:
           GITHUB_ACTOR: ${{ secrets.GITHUB_ACTOR }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Get the version
-        id: vars
-        run: echo ::set-output name=tag::$(gradle properties -q | grep "version:" | awk '{print $2}')
 
   # Prepare a draft release for GitHub Releases page for the manual verification
   # If accepted and published, release workflow would be triggered
