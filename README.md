@@ -19,8 +19,8 @@ This observer creates nodes and edges which contain the structure of the source 
 
 | Structure                   | Supported language(s)              |
 | --------------------------- | ---------------------------------- |
-| Abstract syntax tree        | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Arthur/blob/v0.4.6-alpha/src/main/resources/schema/omnilingual/Arthur_Omnilingual_Base_Structure.gql) |
-| Semantic roles              | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Arthur/blob/v0.4.6-alpha/src/main/resources/schema/omnilingual/Arthur_Omnilingual_Semantic_Roles.gql) |
+| Abstract syntax tree        | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Arthur/blob/v0.4.6/src/main/resources/schema/omnilingual/Arthur_Omnilingual_Base_Structure.gql) |
+| Semantic roles              | [Bash, C++, C#, Go, Java, JavaScript, PHP, Python, Ruby](https://github.com/CodeBrig/Arthur/blob/v0.4.6/src/main/resources/schema/omnilingual/Arthur_Omnilingual_Semantic_Roles.gql) |
 
 ### Dependence
 
