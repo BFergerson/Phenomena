@@ -35,16 +35,13 @@ repositories {
     maven {
         url 'https://repo.grakn.ai/repository/maven/'
     }
-    maven {
-        url 'https://repo.grakn.ai/repository/maven-snapshot/'
-    }
-    maven {
-        url "https://maven.pkg.github.com/codebrig/arthur"
-        credentials {
-            username = System.getenv("GITHUB_ACTOR") ?: (System.getenv("gpr.user") ?: System.getProperty("gpr.user"))
-            password = System.getenv("GITHUB_TOKEN") ?: (System.getenv("gpr.key" ?: System.getProperty("gpr.key")))
-        }
-    }
+//    maven {
+//        url "https://maven.pkg.github.com/codebrig/arthur"
+//        credentials {
+//            username = System.getenv("GITHUB_ACTOR") ?: (System.getenv("gpr.user") ?: System.getProperty("gpr.user"))
+//            password = System.getenv("GITHUB_TOKEN") ?: (System.getenv("gpr.key" ?: System.getProperty("gpr.key")))
+//        }
+//    }
 }
 
 dependencies {
@@ -55,10 +52,10 @@ dependencies {
     implementation group: 'commons-io', name: 'commons-io', version: '2.5'
     implementation group: 'org.apache.commons', name: 'commons-text', version: '1.9'
     implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.4'
-    implementation group: 'io.grakn.client', name: 'grakn-client', version: "0a971ec467d3736d38908ac29aa57ec2316f16c0"
+    implementation "com.vaticle.typedb:typedb-client:2.5.0"
     implementation files('lib/bblfsh-client-1.11.1.jar')
     implementation 'org.bblfsh:bblfsh-client:1.11.0'
-    implementation 'com.codebrig:arthur:0.4.5'
+    implementation 'com.github.codebrig:arthur:0.4.6'
 }
 
 test {
