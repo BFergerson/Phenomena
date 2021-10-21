@@ -5,11 +5,11 @@ services:
     image: bblfsh/bblfshd:v2.16.1-drivers-2019-10-29
     container_name: bblfshd
     ports:
-    - "9432:9432"
+      - "9432:9432"
     environment:
       - JAEGER_DISABLED=1
-  grakn:
-    image: graknlabs/grakn:2.0.0-alpha-4
-    container_name: grakn
+  typedb:
+    image: vaticle/typedb:2.5.0
+    container_name: typedb
     ports:
-    - "1729:1729"
+      - "1729:1729"

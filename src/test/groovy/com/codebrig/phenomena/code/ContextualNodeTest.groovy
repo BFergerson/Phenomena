@@ -8,7 +8,8 @@ import com.codebrig.arthur.observe.structure.filter.MultiFilter
 import com.codebrig.phenomena.Phenomena
 import com.codebrig.phenomena.PhenomenaTest
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
-import grakn.client.GraknClient
+import com.vaticle.typedb.client.api.connection.TypeDBSession
+import com.vaticle.typedb.client.api.connection.TypeDBTransaction
 import org.junit.Test
 
 import java.util.stream.Collectors
@@ -34,8 +35,8 @@ class ContextualNodeTest extends PhenomenaTest {
         def sourceNode = new SourceNode(SourceLanguage.Java, processedFile.parseResponse.uast)
         def contextualNode = visitor.getOrCreateContextualNode(sourceNode, sourceFile)
 
-        def session = phenomena.graknClient.session(phenomena.graknKeyspace, GraknClient.Session.Type.DATA) //phenomena.getDataSession()
-        def tx = session.transaction(GraknClient.Transaction.Type.WRITE)
+        def session = phenomena.graknClient.session(phenomena.graknKeyspace, TypeDBSession.Type.DATA) //phenomena.getDataSession()
+        def tx = session.transaction(TypeDBTransaction.Type.WRITE)
         contextualNode.save(tx)
         contextualNode.save(tx)
         tx.commit()

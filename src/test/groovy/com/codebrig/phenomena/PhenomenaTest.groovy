@@ -1,6 +1,6 @@
 package com.codebrig.phenomena
 
-import grakn.client.GraknClient
+import com.vaticle.typedb.client.connection.core.CoreClient
 import org.junit.Before
 import org.junit.Test
 
@@ -10,9 +10,9 @@ class PhenomenaTest {
 
     @Before
     void setupGrakn() {
-        try (def graknClient = GraknClient.core("localhost:1729")) {
+        try (def graknClient = new CoreClient("localhost:1729")) {
             if (graknClient.databases().contains("grakn")) {
-                graknClient.databases().delete("grakn")
+                graknClient.databases().get("grakn").delete()
             }
             graknClient.databases().create("grakn")
         }
