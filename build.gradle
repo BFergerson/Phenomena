@@ -35,13 +35,13 @@ repositories {
     maven {
         url 'https://repo.grakn.ai/repository/maven/'
     }
-//    maven {
-//        url "https://maven.pkg.github.com/codebrig/arthur"
-//        credentials {
-//            username = System.getenv("GITHUB_ACTOR") ?: (System.getenv("gpr.user") ?: System.getProperty("gpr.user"))
-//            password = System.getenv("GITHUB_TOKEN") ?: (System.getenv("gpr.key" ?: System.getProperty("gpr.key")))
-//        }
-//    }
+    maven {
+        url "https://maven.pkg.github.com/codebrig/arthur"
+        credentials {
+            username = System.getenv("GITHUB_ACTOR") ?: (System.getenv("gpr.user") ?: System.getProperty("gpr.user"))
+            password = System.getenv("GITHUB_TOKEN") ?: (System.getenv("gpr.key" ?: System.getProperty("gpr.key")))
+        }
+    }
 }
 
 dependencies {
@@ -55,7 +55,7 @@ dependencies {
     implementation "com.vaticle.typedb:typedb-client:2.5.0"
     implementation files('lib/bblfsh-client-1.11.1.jar')
     implementation 'org.bblfsh:bblfsh-client:1.11.0'
-    implementation 'com.github.codebrig:arthur:0.4.6'
+    implementation 'com.codebrig:arthur:0.4.6'
 }
 
 test {
