@@ -16,4 +16,4 @@ jobs:
           ref: ${{ github.event.release.tag_name }}
 
       - name: Publish Package
-        run: ./gradlew publish -Pgpr.user=$GITHUB_ACTOR -Pgpr.key=${{ secrets.GH_PUBLISH_TOKEN }} 
+        run: ./gradlew publish -Pgpr.user=bfergerson -Pgpr.key=${{ secrets.GH_PUBLISH_TOKEN }} 
