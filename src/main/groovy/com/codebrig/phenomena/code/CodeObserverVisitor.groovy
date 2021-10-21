@@ -2,8 +2,10 @@ package com.codebrig.phenomena.code
 
 import com.codebrig.arthur.SourceLanguage
 import com.codebrig.arthur.SourceNode
+import com.vaticle.typedb.client.api.connection.TypeDBClient
+import com.vaticle.typedb.client.api.connection.TypeDBSession
+import com.vaticle.typedb.client.api.connection.TypeDBTransaction
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
-import grakn.client.GraknClient
 import groovy.util.logging.Slf4j
 
 import java.util.concurrent.ConcurrentHashMap
@@ -19,7 +21,7 @@ import static java.util.Objects.requireNonNull
 @Slf4j
 class CodeObserverVisitor {
 
-    final GraknClient.Session dataSession
+    final TypeDBSession dataSession
     private final List<CodeObserver> observers
     private final Map<Integer, ContextualNode> contextualNodes
     private final boolean saveToGrakn
@@ -31,9 +33,9 @@ class CodeObserverVisitor {
         this.contextualNodes = new ConcurrentHashMap<>()
     }
 
-    CodeObserverVisitor(GraknClient graknClient, String keyspace) {
+    CodeObserverVisitor(TypeDBClient graknClient, String keyspace) {
         this.saveToGrakn = true
-        this.dataSession = requireNonNull(graknClient).session(requireNonNull(keyspace), GraknClient.Session.Type.DATA)
+        this.dataSession = requireNonNull(graknClient).session(requireNonNull(keyspace), TypeDBSession.Type.DATA)
         this.observers = new ArrayList<>()
         this.contextualNodes = new ConcurrentHashMap<>()
     }
@@ -73,7 +75,7 @@ class CodeObserverVisitor {
         ContextualNode rootObservedNode
         def transaction = null
         if (saveToGrakn) {
-            transaction = dataSession.transaction(GraknClient.Transaction.Type.WRITE)
+            transaction = dataSession.transaction(TypeDBTransaction.Type.WRITE)
             if (observed) {
                 contextualRootNode.save(transaction)
                 if (rootObservedNode == null) {
@@ -92,7 +94,7 @@ class CodeObserverVisitor {
         return rootObservedNode
     }
 
-    private ContextualNode visitCompletely(GraknClient.Transaction qb, File sourceFile, ContextualNode rootSourceNode) {
+    private ContextualNode visitCompletely(TypeDBTransaction qb, File sourceFile, ContextualNode rootSourceNode) {
         ContextualNode rootObservedNode = null
         Stack<ContextualNode> parentStack = new Stack<>()
         Stack<Iterator<SourceNode>> childrenStack = new Stack<>()

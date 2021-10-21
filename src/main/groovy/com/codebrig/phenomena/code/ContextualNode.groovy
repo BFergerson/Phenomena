@@ -5,16 +5,16 @@ import com.codebrig.arthur.SourceNode
 import com.codebrig.arthur.observe.ObservedLanguage
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
 import com.google.common.collect.Sets
+import com.vaticle.typedb.client.api.connection.TypeDBTransaction
+import com.vaticle.typeql.lang.pattern.variable.ThingVariable
+import com.vaticle.typeql.lang.pattern.variable.Variable
 import gopkg.in.bblfsh.sdk.v1.uast.generated.Node
-import grakn.client.GraknClient
-import graql.lang.pattern.variable.ThingVariable
-import graql.lang.pattern.variable.Variable
 import groovy.transform.Canonical
 import org.apache.commons.text.StringEscapeUtils
 
 import java.util.concurrent.ConcurrentHashMap
 
-import static graql.lang.Graql.*
+import static com.vaticle.typeql.lang.TypeQL.*
 
 /**
  * Represents a source code node (AST node) which
@@ -101,7 +101,7 @@ class ContextualNode extends SourceNode {
         relationships.put(new NodeRelationship(relationshipType, rel1, rel2), otherNode)
     }
 
-    void save(GraknClient.Transaction qb) {
+    void save(TypeDBTransaction qb) {
         def selfId = getData(CodeStructureObserver.SELF_ID)
         def patterns = new ArrayList<Variable>()
         def nodePattern = var("self")

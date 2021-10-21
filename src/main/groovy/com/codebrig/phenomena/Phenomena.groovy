@@ -5,11 +5,13 @@ import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.CodeObserverVisitor
 import com.codebrig.phenomena.code.ProcessedSourceFile
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
+import com.vaticle.typedb.client.api.connection.TypeDBClient
+import com.vaticle.typedb.client.api.connection.TypeDBSession
+import com.vaticle.typedb.client.api.connection.TypeDBTransaction
+import com.vaticle.typedb.client.connection.core.CoreClient
+import com.vaticle.typeql.lang.query.TypeQLDefine
 import gopkg.in.bblfsh.sdk.v1.protocol.generated.Encoding
 import gopkg.in.bblfsh.sdk.v1.protocol.generated.ParseResponse
-import grakn.client.GraknClient
-import graql.lang.Graql
-import graql.lang.query.GraqlDefine
 import groovy.util.logging.Slf4j
 import org.apache.commons.collections4.Transformer
 import org.apache.commons.collections4.iterators.TransformIterator
@@ -18,6 +20,7 @@ import org.bblfsh.client.BblfshClient
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
 
+import static com.vaticle.typeql.lang.TypeQL.parseQuery
 import static groovy.io.FileType.FILES
 
 /**
@@ -40,9 +43,9 @@ class Phenomena implements Closeable {
     private int babelfishPort = 9432
     private CodeObserverVisitor visitor
     private BblfshClient babelfishClient
-    private GraknClient graknClient
-    private GraknClient.Session schemaSession
-    private GraknClient.Session dataSession
+    private TypeDBClient graknClient
+    private TypeDBSession schemaSession
+    private TypeDBSession dataSession
 
     void init() throws ConnectionException {
         init(new CodeStructureObserver())
@@ -76,9 +79,9 @@ class Phenomena implements Closeable {
 
     void connectToGrakn() throws ConnectionException {
         log.info "Connecting to Grakn"
-        graknClient = GraknClient.core("$graknURI")
+        graknClient = new CoreClient("$graknURI")
         try {
-            schemaSession = graknClient.session(graknKeyspace, GraknClient.Session.Type.SCHEMA)
+            schemaSession = graknClient.session(graknKeyspace, TypeDBSession.Type.SCHEMA)
         } catch (Throwable ex) {
             throw new ConnectionException("Connection refused: $graknURI", ex)
         }
@@ -128,9 +131,9 @@ class Phenomena implements Closeable {
             throw new IllegalStateException("Phenomena must be connected to Grakn before setting up the ontology")
         }
 
-        def tx = schemaSession.transaction(GraknClient.Transaction.Type.WRITE)
-        def query = Graql.parseQuery(schemaDefinition.replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", ""))
-        tx.query().define(query as GraqlDefine)
+        def tx = schemaSession.transaction(TypeDBTransaction.Type.WRITE)
+        def query = parseQuery(schemaDefinition.replaceAll("[\\n\\r\\s](define)[\\n\\r\\s]", ""))
+        tx.query().define(query as TypeQLDefine)
         tx.commit()
     }
 
@@ -207,15 +210,15 @@ class Phenomena implements Closeable {
         return babelfishClient
     }
 
-    GraknClient getGraknClient() {
+    TypeDBClient getGraknClient() {
         return graknClient
     }
 
-    GraknClient.Session getSchemaSession() {
+    TypeDBSession getSchemaSession() {
         return schemaSession
     }
 
-    GraknClient.Session getDataSession() {
+    TypeDBSession getDataSession() {
         return dataSession
     }
 

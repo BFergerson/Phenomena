@@ -6,7 +6,7 @@ import com.codebrig.phenomena.code.CodeObserver
 import com.codebrig.phenomena.code.analysis.DependenceAnalysis
 import com.codebrig.phenomena.code.analysis.MetricAnalysis
 import com.codebrig.phenomena.code.structure.CodeStructureObserver
-import grakn.client.GraknClient
+import com.vaticle.typedb.client.connection.core.CoreClient
 import groovy.util.logging.Slf4j
 import org.junit.Before
 import org.junit.Test
@@ -18,9 +18,9 @@ class ImportJava {
 
     @Before
     void setupGrakn() {
-        try (def graknClient = GraknClient.core("localhost:1729")) {
+        try (def graknClient = new CoreClient("localhost:1729")) {
             if (graknClient.databases().contains("grakn")) {
-                graknClient.databases().delete("grakn")
+                graknClient.databases().get("grakn").delete()
             }
             graknClient.databases().create("grakn")
         }
